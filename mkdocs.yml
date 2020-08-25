@@ -12,6 +12,11 @@ theme:
   features:
     - instant
 
+extra:
+  social:
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/JnKQsXm
+
 markdown_extensions:
   - markdown.extensions.meta
   - pymdownx.highlight
