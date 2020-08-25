@@ -18,6 +18,7 @@ extra:
       link: https://discord.gg/JnKQsXm
 
 markdown_extensions:
-  - markdown.extensions.meta
-  - pymdownx.highlight
-  - pymdownx.inlinehilite
+  - pymdownx.highlight:
+      use_pygments: true
+      linenums: true
+      linenums_style: pymdownx.inline
