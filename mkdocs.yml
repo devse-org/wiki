@@ -6,6 +6,8 @@ theme:
   language: fr
   palette:
     scheme: slate
+  icon:
+    repo: fontawesome/brands/github
   features:
     - instant
 
