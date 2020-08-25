@@ -3,3 +3,13 @@ site_description: Documentation de DEVSE
 repo_url: https://github.com/DEV-SE-FR/documentation-dev-se-fr
 theme:
   name: material
+  language: fr
+  palette:
+    scheme: slate
+  features:
+    - instant
+
+markdown_extensions:
+  - markdown.extensions.meta
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
