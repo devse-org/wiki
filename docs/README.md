@@ -6,7 +6,6 @@
 Ce répertoire GitHub a été créé pour fournir une documentation sur le dévelopement de systèmes d'exploitation Français.
 N'hésitez pas à contribuer à la documentation, rajouter des exemples, etc !
 
-## Vous devez au moins avoir un minimum de connaissances !
 Nous ne sommes pas affiliés au site Internet OSDEV, mais au serveur Discord Français [DEVSE](https://discord.gg/3XjkM6q).
 
 <a href="https://discord.gg/3XjkM6q"><img src="https://discordapp.com/api/guilds/746454130448531546/widget.png?style=banner3" alt="Discord Banner 3"/></a>
