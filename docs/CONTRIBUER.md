@@ -11,7 +11,7 @@
 - Vous retrouverez pour finir le contenu du document.
 
 - A la fin, vous devez rajouter votre pseudo github comme ceci :
-### Régidé par [pseudo du créateur], contribution.s par [pseudos des contributeurs]
+```### Régidé par [pseudo du créateur], contribution.s par [pseudos des contributeurs]```
 
 # Commits / Pull requests
 Vous devez suivre les règles suivantes pour la rédaction des noms de commits / pull requests.
