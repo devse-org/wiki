@@ -3,7 +3,7 @@
 </center>
 
 # Introduction
-Un port COM était couramment utilisé, comme un port de communication.
+Un port COM était couramment utilisé comme un port de communication.
 Même si aujourd'hui, l'USB a remplacé le port COM, il reste néanmoins très utile et toujours supporté dans nos machines.
 
 Même s'ils sont obselètes, les ports COM sont encore beaucoup utilisés pour le dévelopement de systèmes d'exploitation.
