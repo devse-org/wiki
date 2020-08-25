@@ -1,3 +1,5 @@
 site_name: DEVSE - Wiki
+site_description: Documentation de DEVSE
+repo_url: https://github.com/DEV-SE-FR/documentation-dev-se-fr
 theme:
   name: material
