@@ -6,7 +6,7 @@
 Un port COM était couramment utilisé comme un port de communication.
 Même si aujourd'hui, l'USB a remplacé le port COM, il reste néanmoins très utile et toujours supporté dans nos machines.
 
-Même s'ils sont obselètes, les ports COM sont encore beaucoup utilisés pour le dévelopement de systèmes d'exploitation.
+Même s'ils sont obsolètes, les ports COM sont encore beaucoup utilisés pour le développement de systèmes d'exploitation.
 Ils sont très simples à implémenter et sont très utiles pour le débogage, car, dans presque toutes les machines virtuelles, on peut avoir la sortie d'un port COM vers un fichier, un terminal ou autre.
 Ils sont aussi très utiles car on peut les initialiser très tôt et donc avoir des informations de débogage efficacement.
 
@@ -52,7 +52,7 @@ Pour mettre DLAB il faut mettre le port comme indiqué :
 outb(COM_PORT + 3, 0x80);
 ```
 
-Pour le désaciver, il faut juste remettre le bit 8 à 0.
+Pour le désactiver, il faut juste remettre le bit 8 à 0.
 
 
 ## Les Baud
@@ -64,25 +64,25 @@ Ensuite, il faut passer la valeur par l'offset 0 (les bits inférieurs) et 1 (le
 Exemple permettant de mettre un diviseur de 5 (alors le port auras un 'rate' de 115200 / 5) :
 ```cpp
 outb(COM_PORT + 3, 0x80); // activer le DLAB
-outb(COM_PORT + 0, 5); // les bits les plus petit 
-outb(COM_PORT + 1, 0); // les bits les plus haut
+outb(COM_PORT + 0, 5); // les bits les plus petits 
+outb(COM_PORT + 1, 0); // les bits les plus hauts
 ```
 
 ## La taille des données
 On peut mettre la taille des données envoyées au port COM par update.
-Celle-ci peut aller de 5 bit à 8 bit
+Celle-ci peut aller de 5 bits à 8 bits
 
-5bit = 0 0 (0x0)
+5bits = 0 0 (0x0)
 
-6bit = 0 1 (0x1)
+6bits = 0 1 (0x1)
 
-7bit = 1 0 (0x2)
+7bits = 1 0 (0x2)
 
-8bit = 1 1 (0x3)
+8bits = 1 1 (0x3)
 
-Pour définir la taille de données, vous devez l'écrire dans le port de control de ligne (les bits les plus petits) avoir configuré le rate du port (et donc d'avoir activé le DLAB).
+Pour définir la taille des données, vous devez l'écrire dans le port de contrôle de ligne (les bits les plus petits) avoir configuré le rate du port (et donc d'avoir activé le DLAB).
 ```cpp
-outb(COM_PORT + 3, 0x3); // déactiver le DLAB + mettre la taille de donnée à 8 donc un char/unsigned char en c++
+outb(COM_PORT + 3, 0x3); // désactiver le DLAB + mettre la taille de donnée à 8 donc un char/unsigned char en c++
 ```
 
 ## Ressources
