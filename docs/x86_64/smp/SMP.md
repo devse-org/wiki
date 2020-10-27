@@ -1,11 +1,8 @@
-<center>
-<b>Attention!</b><br>Cet article est en cours d'écriture.
-</center>
-
-# LE SMP
+# Symmetric Multi Processing
 
 ## Introduction
-qu'est ce que le smp ? 
+
+Qu'est ce que le smp ? 
 
 Le smp veut dire symmetric multi processing
 
@@ -27,7 +24,7 @@ Dans ce tutoriel pour implémenter le smp nous prenons en compte que vous avez d
 
 il faut aussi savoir qu'il faudrat implémenter les interruption APIC pour les autres cpu, ce qui n'est pas abordé dans ce tutoriel (pour l'instant)
 
-## OBTENIR LE NUMERO DU CPU ACTUEL
+## Obtenir Le Numéro Du CPU Actuel
 
 obtenir le numero du cpu actuel est très important pour plus tard.
 
@@ -45,10 +42,9 @@ uint32_t get_current_processor_id()
 ```
 
 
-## OBTENIR LES ENTREES LOCAL APIC
+## Obtenir Les Entrees Local APIC
 
 *note : lapic = local apic*
-
 
 pour commencer le smp il faut obtenir les entrées lapic de la table madt
 
@@ -76,7 +72,7 @@ if(get_current_processor_id() == lapic_entry.processor_id){
 }
 ```
 
-## PRE INITIALISATION
+## Pre-Initialisation
 
 avant d'initialiser les cpu, il faut préparer le terrain. 
 
@@ -111,7 +107,7 @@ alors
 sgdt [0x580] ; stockage de la gdt
 sidt [0x590] ; stockage de l'idt
 ```
-#### STACK
+#### Stack
 
 pour la stack on doit stocker une __addresse__ valide en 0x570
 
@@ -119,7 +115,7 @@ pour la stack on doit stocker une __addresse__ valide en 0x570
 POKE(570) = stack_address + stack_size;
 ```
 
-#### CODE DU TRAMPOLINE
+#### Code Du Trampoline
 
 pour le code du trampoline il faut du code assembly délimité par 
 
@@ -196,7 +192,7 @@ write(icr1, 0x600 | ((uint32_t)trampoline_addr / 4096));
 maintenant vous pouvez commencer à coder le code du trampoline ! 
 
 
-## LE CODE DU TRAMPOLINE 
+## Le Code Du Trampoline 
 
 note: pour débugger vous pouvez utiliser ce code 
 
@@ -217,7 +213,6 @@ pour le trampoline il faut savoir que le cpu est initialisé en 16bit, il faut d
 on doit donc faire comme ceci
 
 ```asm
-
 [bits 16]
 trampoline_start:
 
@@ -235,7 +230,7 @@ trampoline_64:
 trampoline_end:
 ```
 
-#### LE CODE  16 BITS
+#### Le Code 16-Bits
 
 pour passer de 16bit à 32bit il faut initialiser une gdt et mettre le bit 0 du cr0 à 1 pour activer le protected mode
 
@@ -255,7 +250,6 @@ il faut que avant le trampoline_end il y ait une structure de gdt pour le 16bit
 
 il faut alors : 
 ```asm
-
 align 16
 gdt_16:
     dw gdt_16_end - gdt_16_start - 1
@@ -275,13 +269,12 @@ gdt_16_end:
 et dans le code on peut faire
 
 ```asm
-
     lgdt [gdt_16 - trampoline_start + TRAMPOLINE_BASE]
 ```
 
 il faut ensuite faire
 
-```
+```asm
     mov eax, cr0
     or al, 0x1
     mov cr0, eax
@@ -290,7 +283,6 @@ il faut ensuite faire
 et pour finir on peut jump dans le code 32bit
 
 ```
-
     jmp 0x8:(trampoline32 - trampoline_start + TRAMPOLINE_BASE)
 ```
 le jmp 0x8:...
@@ -302,6 +294,7 @@ permet de dire de loader le segment de code de la gdt
 
 il faut commencer par charger la table de page dans le cr3
 
+```asm
 mov eax, dword [0x600]
 mov cr3, eax
 ```
@@ -328,6 +321,7 @@ il faut ensuite activer le long mode en écrivant le bit 8 du MSR de l'EFER
 ```
 
 il faut, ensuite activer le paging dans le registre cr0 en activant le bit 31
+
 ```
     mov eax, cr0
     or eax, 1 << 31
@@ -336,7 +330,7 @@ il faut, ensuite activer le paging dans le registre cr0 en activant le bit 31
 
 pour finir on doit charger une gdt 64bit 
 
-il faut donc avoir une structure gdt avant le trampoline end
+Il faut donc avoir une structure gdt avant le trampoline end
 ```asm
 
 align 16
@@ -368,7 +362,7 @@ et pour passer au 64bit on doit jump comme ceci
 ceci met le code segment à 8 
 
 
-#### LE CODE 64 BITS
+#### Le Code 64 Bits
 
 en 64 bit il faut setup les registres ds/ss/es/ par rapport à votre gdt 
 
@@ -426,13 +420,13 @@ il faut pour terminer l'initialisation du smp faire
 
 maintenant vous avez un cpu d'initialisé ! 
 
-## dernière pensée
+## Dernière Pensée
 
 mais il reste encore beaucoup de chose à faire !
-
 un système de lock, mettre à jour le multitasking, initialiser les cpu avec une gdt/idt/... unique etc...
+
 ## Ressources
+
 - manuel intel
 - osdev <3
 - mon code
-### Rédigé par @Supercip971
