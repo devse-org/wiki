@@ -15,7 +15,7 @@ theme:
 extra:
   social:
     - icon: fontawesome/brands/discord
-      link: https://discord.gg/JnKQsXm
+      link: https://discord.com/invite/3XjkM6q
 
 markdown_extensions:
   - pymdownx.highlight:
