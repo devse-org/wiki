@@ -1,0 +1,6 @@
+# ignore python virtual env
+.env
+.venv
+
+# ignore editor garbage
+*~
