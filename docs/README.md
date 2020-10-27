@@ -14,11 +14,11 @@ Nous ne sommes pas affiliés au site Internet OSDEV, mais au serveur Discord Fra
 
 ## L'arborescence 
 
+### x86_64
+Cette section est dédiée au support 64 bit pour l'architecture x86.
+
 ### ARM
 Cette section est dédiée à tout ce qui touche à l'architecture ARM (vide pour l'instant).
-
-### x64
-Cette section est dédiée au support 64 bit.
 
 ### Autres
 Cette section est dédiée à tout ce qui ne rentre pas en rapport avec les architectures x86 et x64, les systèmes de fichiers, les ports COM, les drivers et tout le reste.
