@@ -19,6 +19,3 @@ Cette section est dédiée au support 64 bit pour l'architecture x86.
 
 ### ARM
 Cette section est dédiée à tout ce qui touche à l'architecture ARM (vide pour l'instant).
-
-### Autres
-Cette section est dédiée à tout ce qui ne rentre pas en rapport avec les architectures x86 et x64, les systèmes de fichiers, les ports COM, les drivers et tout le reste.
