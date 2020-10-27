@@ -12,23 +12,23 @@ Le smp est différent de NUMA, les processeur numa sont des processeur où certa
 
 Dans ce tutoriel pour implémenter le smp nous prenons en compte que vous avez déjà implémenté dans votre kernel : 
 
-- [IDT](/x86_64/structures/IDT.md)
-- [GDT](/x86_64/structures/GDT.md)
-- [MADT](/x86_64/périphériques/MADT.md)
-- [LAPIC](/x86_64/périphériques/LAPIC.md)
-- [APIC](/x86_64/périphériques/APIC.md)
+- [IDT](documentation/x86_64/structures/IDT/)
+- [GDT](documentation/x86_64/structures/GDT/)
+- [MADT](documentation/x86_64/périphériques/MADT/)
+- [LAPIC](documentation/x86_64/périphériques/LAPIC/)
+- [APIC](documentation/x86_64/périphériques/APIC/)
 - paging
 - votre kernel soit higher half
 - votre kernel soit 64bit
 - un système de timer pour attendre 
 
-il faut aussi savoir qu'il faudrat implémenter les interruption [APIC](/x86_64/périphériques/APIC.md) pour les autres cpu, ce qui n'est pas abordé dans ce tutoriel (pour l'instant)
+il faut aussi savoir qu'il faudrat implémenter les interruption [APIC](documentation/x86_64/périphériques/APIC/) pour les autres cpu, ce qui n'est pas abordé dans ce tutoriel (pour l'instant)
 
 ## Obtenir Le Numéro Du CPU Actuel
 
 obtenir le numero du cpu actuel est très important pour plus tard.
 
-pour obtenir l'identifiant/numéro du cpu actuel on doit utiliser l'[APIC](/x86_64/périphériques/APIC.md)
+pour obtenir l'identifiant/numéro du cpu actuel on doit utiliser l'[APIC](documentation/x86_64/périphériques/APIC/)
 
 on doit lire dans l'apic au registre 20
 puis on doit shifter les bit à 24 
@@ -44,7 +44,7 @@ uint32_t get_current_processor_id()
 
 ## Obtenir Les Entrees Local APIC
 
-voir : [LAPIC](/x86_64/périphériques/LAPIC.md)
+voir : [LAPIC](documentation/x86_64/périphériques/LAPIC/)
 
 pour commencer le smp il faut obtenir les entrées lapic de la table madt
 
