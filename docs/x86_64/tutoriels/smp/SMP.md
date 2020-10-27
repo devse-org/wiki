@@ -12,23 +12,23 @@ Le smp est différent de NUMA, les processeur numa sont des processeur où certa
 
 Dans ce tutoriel pour implémenter le smp nous prenons en compte que vous avez déjà implémenté dans votre kernel : 
 
-- idt
-- gdt
-- lapic
-- madt
-- apic
+- [IDT](/x86_64/structures/IDT.md)
+- [GDT](/x86_64/structures/GDT.md)
+- [MADT](/x86_64/périphériques/MADT.md)
+- [LAPIC](/x86_64/périphériques/LAPIC.md)
+- [APIC](/x86_64/périphériques/APIC.md)
 - paging
 - votre kernel soit higher half
 - votre kernel soit 64bit
 - un système de timer pour attendre 
 
-il faut aussi savoir qu'il faudrat implémenter les interruption APIC pour les autres cpu, ce qui n'est pas abordé dans ce tutoriel (pour l'instant)
+il faut aussi savoir qu'il faudrat implémenter les interruption [APIC](/x86_64/périphériques/APIC.md) pour les autres cpu, ce qui n'est pas abordé dans ce tutoriel (pour l'instant)
 
 ## Obtenir Le Numéro Du CPU Actuel
 
 obtenir le numero du cpu actuel est très important pour plus tard.
 
-pour obtenir l'identifiant/numéro du cpu actuel on doit utiliser l'apic
+pour obtenir l'identifiant/numéro du cpu actuel on doit utiliser l'[APIC](/x86_64/périphériques/APIC.md)
 
 on doit lire dans l'apic au registre 20
 puis on doit shifter les bit à 24 
@@ -44,28 +44,29 @@ uint32_t get_current_processor_id()
 
 ## Obtenir Les Entrees Local APIC
 
-*note : lapic = local apic*
+voir : [LAPIC](/x86_64/périphériques/LAPIC.md)
 
 pour commencer le smp il faut obtenir les entrées lapic de la table madt
-
-une entrée LAPIC est une entrée de type 0 dans la MADT
 
 chaque cpu a une entrée LAPIC.
 Le nombre de cpu est donc le nombre de LAPIC dans la MADT.
 
 l'entrée LAPIC à 2 entrée importante 
 
-__PROCESSOR_ID__ : numéro du cpu
+__ACPI_ID__ : utilisé pour l'acpi
 
 et 
 
 __APIC_ID__ : utilisé pour l'apic, pendant l'initialisation
 
+__générallement ACPI_ID et APIC_ID sont égaux__
+
+
 il faut prendre en compte que le cpu principal (celui qui est booté au démarrage) est aussi dans la liste. 
 Il faut alors séparer cette entré en comparant si le numéro du cpu actuel est égal au numéro cpu de l'entrée local apic
 
 ```cpp
-if(get_current_processor_id() == lapic_entry.processor_id){
+if(get_current_processor_id() == lapic_entry.apic_id){
     // alors c'est le cpu principal
 }else{
     // un cpu que l'on peut utiliser !
@@ -142,18 +143,20 @@ trampoline_start:
 
 trampoline_end:
 ```
-#### ADDRESSE DE JUMP
+
+#### Addresse de jump
 
 L'addresse de jump est la fonction que le cpu vas appeller après son initialisation
 
-#### PAGE TABLE
+#### Table de page pour le futur cpu
+
 la table de page peut être une copie de la table de page du cpu actuel 
 
 mais si c'est une copie il faut alors après l'initialisation du cpu essayer de donner une copie et non garder la table actuel.
 
 après avoir fait tout ceci on peut passer à l'initialisation du cpu 
 
-## PRE CHARGEMENT DU CPU
+## Chargement du cpu
 
 avant il faut demander à l'apic de charger le cpu 
 
@@ -170,7 +173,7 @@ il faut écrire au ICR2 l'id du processeur shifter de 24
 on a donc 
 
 ```cpp
-write(icr2, (processorid << 24));
+write(icr2, (apic_id << 24));
 write(icr1, 0x500);
 ```
 
@@ -178,15 +181,15 @@ __ensuite il faut attendre 10 ms__ pour que le cpu s'initialise
 
 on doit ensuite envoyer à l'apic l'addresse du trampoline pour demander au cpu d'aller en 0x1000
 
-il faut envoyer comme la première étape le processorid
-(processorid << 24)
+il faut envoyer comme la première étape le apic_id
+(apic_id << 24)
 mais il faut envoyer à l'icr1
 le bit 11 et 10 pour demander aux cpu de charger la page envoyé du trampoline donc  (0x600)
 
 
 ```cpp
 
-write(icr2, (processorid << 24));
+write(icr2, (apic_id << 24));
 write(icr1, 0x600 | ((uint32_t)trampoline_addr / 4096));
 ```
 maintenant vous pouvez commencer à coder le code du trampoline ! 
@@ -290,7 +293,7 @@ le jmp 0x8:...
 permet de dire de loader le segment de code de la gdt
 
 
-#### LE CODE 32 BITS
+#### Le Code 32 Bits
 
 il faut commencer par charger la table de page dans le cr3
 
@@ -427,6 +430,5 @@ un système de lock, mettre à jour le multitasking, initialiser les cpu avec un
 
 ## Ressources
 
-- manuel intel
-- osdev <3
-- mon code
+- [manuel intel](https://software.intel.com/content/www/us/en/develop/articles/intel-sdm.html)
+- [osdev](https://wiki.osdev.org/Main_Page)
