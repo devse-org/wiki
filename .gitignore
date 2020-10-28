@@ -4,3 +4,4 @@
 
 # ignore editor garbage
 *~
+docs/x86_64/tutoriels/premiers_pas/sources/toolchain/cross_compiler/*
