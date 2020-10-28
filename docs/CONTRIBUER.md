@@ -10,8 +10,6 @@
 - Vous retrouverez ensuite si nécéssaire les parties à configurer,
 - Vous retrouverez pour finir le contenu du document.
 
-- A la fin, vous devez rajouter votre pseudo github comme ceci :
-```### Régidé par [pseudo du créateur], contribution.s par [pseudos des contributeurs]```
 
 # Commits / Pull requests
 Vous devez suivre les règles suivantes pour la rédaction des noms de commits / pull requests.
@@ -32,4 +30,9 @@ Il est recommandé de ne pas faire plus d'un Commit par Pull Resquest.
 - Appliquez-vous sur votre code (lisibilité, commentaires, vérification)
 - N'importe quel langage peut être utilisé
 
-### Rédigé par @Supercip971, contribution par @busybox11
+# MERCI AUX CONTRIBUTEURS SUIVANTS <3
+ - [busybox11](https://github.com/busybox11)
+ - [monax](https://github.com/sleepy-monax)
+ - [d0p1](https://github.com/d0p1s4m4)
+ - [fomys](https://github.com/Fomys)
+ - [supercyp](https://github.com/Supercip971)

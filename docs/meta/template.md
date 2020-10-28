@@ -3,5 +3,3 @@
 ## Introduction
 
 ## Ressources
-
-## Rédacteurs

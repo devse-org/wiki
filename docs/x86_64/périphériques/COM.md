@@ -87,5 +87,3 @@ outb(COM_PORT + 3, 0x3); // désactiver le DLAB + mettre la taille de donnée à
 
 ## Ressources
 - https://www.sci.muni.cz/docs/pc/serport.txt
-
-### Rédigé par @Supercip971, contribution par @busybox11
