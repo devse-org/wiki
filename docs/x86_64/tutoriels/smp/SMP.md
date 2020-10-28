@@ -302,10 +302,9 @@ lgdt [gdt_64 - trampoline_start + TRAMPOLINE_BASE]
 
 On peut ensuite passer à la section 64 bits, en utilisant l'instruction `jmp` comme précédement:
 ```intel
-jmp 8:(trampoline64 - trampoline_start + TRAMPOLINE_BASE)
+; jmp 0x8:  permet de charger le segment de code de la GDT
+jmp 0x8:(trampoline64 - trampoline_start + TRAMPOLINE_BASE)
 ```
-ceci met le code segment à 8 
-
 
 #### Le code 64 bits
 
