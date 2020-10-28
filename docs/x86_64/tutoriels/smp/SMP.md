@@ -2,15 +2,15 @@
 
 ## Introduction
 
-Qu'est ce que le smp ? 
+Qu'est ce que le SMP ? 
 
-Le smp veut dire symmetric multi processing
+Le SMP veut dire symmetric multi processing
 
-On utilise ce terme pour dire multi processeur. Un kernel qui supporte le smp peut avoir d'énorme boost de performance. En sachant que __générallement__ les processeur ont 2 thread par cpu, pour un processeur à 8 coeur on a 16 thread exploitable. 
+On utilise ce terme pour dire multi processeur. Un kernel qui supporte le SMP peut avoir d'énorme boost de performance. En sachant que __généralement__ les processeurs ont 2 threads par cpu, pour un processeur de 8 coeur il y a 16 threads exploitables. 
 
-Le smp est différent de NUMA, les processeur numa sont des processeur où certains coeur n'ont pas accès à toute la mémoire. 
+Le SMP est différent de NUMA, les processeurs NUMA sont des processeurs où certains coeurs n'ont pas accès à toute la mémoire. 
 
-Dans ce tutoriel pour implémenter le smp nous prenons en compte que vous avez déjà implémenté dans votre kernel : 
+Dans ce tutoriel pour implémenter le smp nous prenons en compte que vous avez déjà implémenté dans votre kernel: 
 
 - [IDT](documentation/x86_64/structures/IDT/)
 - [GDT](documentation/x86_64/structures/GDT/)
@@ -18,23 +18,23 @@ Dans ce tutoriel pour implémenter le smp nous prenons en compte que vous avez d
 - [LAPIC](documentation/x86_64/périphériques/LAPIC/)
 - [APIC](documentation/x86_64/périphériques/APIC/)
 - paging
-- votre kernel soit higher half
-- votre kernel soit 64bit
+
+On considère aussi que votre kernel posède:
+
+- une architecture higher half
+- un support pour le 64bit
 - un système de timer pour attendre 
 
-il faut aussi savoir qu'il faudrat implémenter les interruption [APIC](documentation/x86_64/périphériques/APIC/) pour les autres cpu, ce qui n'est pas abordé dans ce tutoriel (pour l'instant)
+Il faut aussi savoir qu'il faudrat implémenter les interruption [APIC](documentation/x86_64/périphériques/APIC/) pour les autres CPU, ce qui n'est pas abordé dans ce tutoriel (pour l'instant).
 
-## Obtenir Le Numéro Du CPU Actuel
+## Obtenir le numéro du CPU actuel
 
-obtenir le numero du cpu actuel est très important pour plus tard.
+Obtenir le numero du CPU actuel est très important pour plus tard, il permet d'identifier le coeur sur lequel vous travaillez.
 
-pour obtenir l'identifiant/numéro du cpu actuel on doit utiliser l'[APIC](documentation/x86_64/périphériques/APIC/)
-
-on doit lire dans l'apic au registre 20
-puis on doit shifter les bit à 24 
+Pour obtenir l'identifiant du CPU actuel on doit utiliser l'[APIC](documentation/x86_64/périphériques/APIC/). Le numéro du CPU est contenu dans le registre 20 de l'APIC, et il est situé du 24ème au 32ème bit, il faut donc décaler à droite la valeur lue de 24 bits. 
 
 ```cpp
-// LAPIC_REGISTER = 20
+#define LAPIC_REGISTER 20
 uint32_t get_current_processor_id()
 {
     return apic::read(LAPIC_REGISTER) >> 24;
@@ -42,75 +42,66 @@ uint32_t get_current_processor_id()
 ```
 
 
-## Obtenir Les Entrees Local APIC
+## Obtenir les entrées Local APIC
 
 voir : [LAPIC](documentation/x86_64/périphériques/LAPIC/)
 
-pour commencer le smp il faut obtenir les entrées lapic de la table madt
+Pour commencer à utiliser le SMP il faut obtenir les entrées LAPIC de la tablea MADT. Chaque CPU posède une entrée LAPIC.
 
-chaque cpu a une entrée LAPIC.
-Le nombre de cpu est donc le nombre de LAPIC dans la MADT.
+Pour connaitre le nombre total de CPU il suffit donc de compter le nombre de LAPIC dans la MADT.
 
-l'entrée LAPIC à 2 entrée importante 
+Ces entrées LAPIC ont deux valeurs importantes:
 
-__ACPI_ID__ : utilisé pour l'acpi
+- __`ACPI_ID`__: un identifiant utilisé par l'ACPI
+- __`ACIC_ID`__: un identifiant utilisé par l'APIC pendant l'initialisation.
 
-et 
+Généralement, sur les processeurs modernes `ACPI_ID` et `APIC_ID` sont égaux, mais ce n'est pas toujours le cas.
 
-__APIC_ID__ : utilisé pour l'apic, pendant l'initialisation
-
-__générallement ACPI_ID et APIC_ID sont égaux__
-
-
-il faut prendre en compte que le cpu principal (celui qui est booté au démarrage) est aussi dans la liste. 
-Il faut alors séparer cette entré en comparant si le numéro du cpu actuel est égal au numéro cpu de l'entrée local apic
+Pour utiliser les autres CPU il faudra faire attention, le CPU principal (celui sur lequel votre kernel démarre) est aussi dans la liste. Il faut donc vérifier que le CPU que l'on souhaite utiliser est libre. Pour cela il suffit de comparer l'identifiantn du CPU actuel et l'identifiant du cpu de l'entrée `LAPIC`.
 
 ```cpp
-if(get_current_processor_id() == lapic_entry.apic_id){
-    // alors c'est le cpu principal
-}else{
-    // un cpu que l'on peut utiliser !
+// lapic_entry: entrée lapic que l'on est en train de manipuler
+if (get_current_processor_id() == lapic_entry.apic_id) {
+    // On est actuellement en train de traiter le CPU principal, attention à ne pas faire planter votre kernel!
+} else {
+    // Ce CPU n'est pas le CPU principal, on peut donc s'en servir librement.
 }
 ```
 
 ## Pre-Initialisation
 
-avant d'initialiser les cpu, il faut préparer le terrain. 
+Pour utiliser les CPU il faut d'abord les préparer, en particulier il faut préparer l'IDT, la table de page, le GDT, le code d'initialisation...
 
-Il faut préparer ou vous aller placer l'idt/table_de_page/gdt/code d'initialisation/... de votre cpu 
+On place donc tout ceci ainsi:
 
-nous allons tout placer comme ceci : 
-
-|entrée|addresse|
+|Entrée|Adresse|
 |----|-----|
-|code du trampoline| 0x1000| 
-|stack | 0x570 |
-|gdt | 0x580|
-|idt | 0x590|
-|page table | 0x600 |
-| address de jump | 0x610 |
+|Code du trampoline| 0x1000| 
+|Stack | 0x570 |
+|GDT | 0x580|
+|IDT | 0x590|
+|Table de page | 0x600 |
+|Adresse de saut | 0x610 |
 
-il faut savoir qu'il faudrat plus tard changer la fdt et la table de page, tout ceci est temporaire et devra être remplacé, la stack, la gdt, et la table de page.
+Il faut savoir que tout ceci est temporaire, tout devra être remplacé plus tard.
 
 #### GDT + IDT
-pour stocker la gdt, et l'idt c'est simple 
-on peut juste utiliser les instruction 64bit 
 
-sgdt
+Pour stocker la GDT et l'IDT c'est assez facile, il existe deux instructions en 64 bits qui sont dédiées:
 
-sidt
+- `sgdt [adresse]` pour stocker la GDT à une adresse précise;
+- `sidt [adresse]` pour stocker l'IDT à une adresse précise.
 
-ces instruction permettent de stocker la gdt et l'idt dans un addresse précise.
-
-alors
+Dans notre cas on a donc:
 
 ```intel
 sgdt [0x580] ; stockage de la gdt
 sidt [0x590] ; stockage de l'idt
 ```
+
 #### Stack
 
-pour la stack on doit stocker une __addresse__ valide en 0x570
+Pour initialiser la stack on doit stocker une adresse valide à l'adresse `0x570`:
 
 ```cpp
 POKE(570) = stack_address + stack_size;
@@ -118,141 +109,105 @@ POKE(570) = stack_address + stack_size;
 
 #### Code Du Trampoline
 
-pour le code du trampoline il faut du code assembly délimité par 
+Pour le code du trampoline il faut un code, écrit en assembleur, délimité par `trampoline_start` et `trampoline_end`.
 
-__trampoline_start et __trampoline_end
-
-
-
-il faudrat copier le code du trampline de 0x1000 à la taille du trampoline.
-
-donc 
+Le code trampoline doit être chargé à partir de l'adresse `0x1000`, ce qui donne pour la partie cpp:
 
 ```cpp
-// en sachant que TRAMPOLINE_START == 0x1000
+#define TRAMPOLINE_START 0x1000
+
+// On calcule la taille du programme trampoline pour copier son contenu
 uint64_t trampoline_len = (uint64_t)&trampoline_end - (uint64_t)&trampoline_start;
-    
+
+// On copie le code trampoline au bon endroit
 memcpy((void *)TRAMPOLINE_START, &trampoline_start, trampoline_len);
 ```
-et dans le code assembly : 
+et dans le code assembleur on spécifie le code trampoline avec: 
 
-```asm
+```intel
 trampoline_start:
-
     ; code du trampoline
-
 trampoline_end:
 ```
 
-#### Addresse de jump
+#### Addresse de saut
 
-L'addresse de jump est la fonction que le cpu vas appeller après son initialisation
+L'addresse de saut est l'adresse à laquelle va se rendre le CPU juste après son initialisaiton, on y met donc le programme principal.
 
-#### Table de page pour le futur cpu
+#### Table de page pour le futur CPU
 
-la table de page peut être une copie de la table de page du cpu actuel 
+Pour le futur CPU on peut choisir de prende une copie de la table de page actuelle, mais attention il faut effectuer une copie, et pas simplement une référence à l'ancienne, sinon des évènements étranges peuvent avoir lieu.
 
-mais si c'est une copie il faut alors après l'initialisation du cpu essayer de donner une copie et non garder la table actuel.
+## Chargement du CPU
 
-après avoir fait tout ceci on peut passer à l'initialisation du cpu 
+Pour initialiser le nouveau CPU il faut demander à l'APIC de charger le CPU. Pour ce faire on utilise les deux registres de commande d'interuptions `ICR1` (registre `0x0300`) et `ICR2`.
 
-## Chargement du cpu
-
-avant il faut demander à l'apic de charger le cpu 
-
-il faut faire écrire au 2 registre de commande d'interruption (aussi appelé ICR)
-
-il faut écrire au ICR1  (aka registre 0x300)
-0b10100000000 (0x500)
-
-
-cela veut dire d'envoyer l'interruption d'initialisation au cpu dans ICR2
-
-il faut écrire au ICR2 l'id du processeur shifter de 24
-
-on a donc 
+Pour initialiser le nouveau CPU il faut envoyer à l'APIC l'identifiant du nouveau CPU dans `ICR2` et l'interuption d'initialisation dans `ICR1`:
 
 ```cpp
-write(icr2, (apic_id << 24));
+// On écrit l'identifiant du nouveau CPU dans ICR2, attention à bien utiliser son identifiant APIC
+write(icr2, (apic_id << 24)); 
+// On envoie la demande d'initialisation
 write(icr1, 0x500);
 ```
+L'initialisation peut être un peu longue, il faut donc attendre au moins 10 millisecondes avant de l'utiliser.
 
-__ensuite il faut attendre 10 ms__ pour que le cpu s'initialise
-
-on doit ensuite envoyer à l'apic l'addresse du trampoline pour demander au cpu d'aller en 0x1000
-
-il faut envoyer comme la première étape le apic_id
-(apic_id << 24)
-mais il faut envoyer à l'icr1
-le bit 11 et 10 pour demander aux cpu de charger la page envoyé du trampoline donc  (0x600)
-
+On commence par envoyer le nouveau CPU à l'adresse trampoline, là encore à travers l'APIC. L'identifiant du CPU va encore dans `ICR2`, et l'instruction à écrire dans `ICR1` devient `0x0600 | (trampoline_addr >> 12)`:
 
 ```cpp
-
+// Chargement de l'identifiant du nouveau CPU
 write(icr2, (apic_id << 24));
+// Chargement de l'adresse trampoline
 write(icr1, 0x600 | ((uint32_t)trampoline_addr / 4096));
 ```
-maintenant vous pouvez commencer à coder le code du trampoline ! 
 
+## Le code du trampoline 
 
-## Le Code Du Trampoline 
+Pour commencer on peut simplement utiliser le code suivant, qui envoie le caractère `a` sur le port `COM0`. Ce code est bien sûr temporaire, mais permet de vérifier que le nouveau CPU démarre correctement.
 
-note: pour débugger vous pouvez utiliser ce code 
-
-```asm
+```intel
 mov al, 'a'
 mov dx, 0x3F8
 out dx, al
 ```
-le code output le charactère a dans le port com0
-c'est utile temporairement pour debugger, c'est la solution la plus courte est simple. Bien sûr le code est temporaire
 
+Lorsque le CPU est initialisé il est en 16 bits, il le sera donc aussi lors de l'exécution du trampoline. Il faut donc penser à modifier la configuration du CPU pour le passer en 64 bits. On aura donc 3 parties dans le trampoline: pour passer de 16 à 32 bits, puis de 32 à 64 bits et enfin le trampoline final en 64 bits:
 
-pour le trampoline il faut savoir que le cpu est initialisé en 16bit, il faut donc le passer comme ceci 
-
-16bit => 32bit => 64bit 
-
-
-on doit donc faire comme ceci
-
-```asm
-[bits 16]
+```intel
+[16 bits]
 trampoline_start:
 
 trampoline_16:
     ;...
 
-[bits 32]
+[32 bits]
 trampoline_32:
     ;...
 
-[bits 64]
+[64 bits]
 trampoline_64:
     ;...
 
 trampoline_end:
 ```
 
-#### Le Code 16-Bits
+#### Le code 16 bits
 
-pour passer de 16bit à 32bit il faut initialiser une gdt et mettre le bit 0 du cr0 à 1 pour activer le protected mode
+On commence par passer de 16 bits à 32 vits, pour ça il faut initialiser une nouvelle GDT et mettre le bit 0 du `cr0` à 1 pour activer le mode protégé:
 
-```asm
-    cli ; désactiver les interrupt
-    mov ax, 0x0 ; mettre tout à 0
-    mov ds, ax
-    mov es, ax
-    mov fs, ax
-    mov gs, ax
-    mov ss, ax
+```intel
+cli ; On désactive les interrupt, c'est important pendant le passage de 6 à 32 bits
+mov ax, 0x0 ; On initialise tous les retistres à 0
+mov ds, ax
+mov es, ax
+mov fs, ax
+mov gs, ax
+mov ss, ax
 ```
 
-__pour le chargement de la gdt__
+On doit créer une GDT pour le 16 bits, on procède donc ainsi:
 
-il faut que avant le trampoline_end il y ait une structure de gdt pour le 16bit
-
-il faut alors : 
-```asm
+```intel
 align 16
 gdt_16:
     dw gdt_16_end - gdt_16_start - 1
@@ -269,72 +224,62 @@ gdt_16_start:
 gdt_16_end:
 ```
 
-et dans le code on peut faire
+Et on doit maintenant charger cette GDT:
 
-```asm
-    lgdt [gdt_16 - trampoline_start + TRAMPOLINE_BASE]
+```intel
+lgdt [gdt_16 - trampoline_start + TRAMPOLINE_BASE]
 ```
 
-il faut ensuite faire
+On active maintenant le mode protégé:
 
-```asm
-    mov eax, cr0
-    or al, 0x1
-    mov cr0, eax
+```intel
+mov eax, cr0
+or al, 0x1
+mov cr0, eax
 ```
 
-et pour finir on peut jump dans le code 32bit
+On peut maintenant sauter à la section 32 bits:
 
+```intel
+; jmp 0x8:  permet de charger le segment de code de la GDT
+jmp 0x8:(trampoline32 - trampoline_start + TRAMPOLINE_BASE)
 ```
-    jmp 0x8:(trampoline32 - trampoline_start + TRAMPOLINE_BASE)
-```
-le jmp 0x8:...
 
-permet de dire de loader le segment de code de la gdt
+#### Le code 32 bits
 
+On doit dans un premier temps charger la table de page dans le `cr3`, puis activer le paging et le PAE du `cr4` en activant les bits 5 et 7 du registre `cr4`:
 
-#### Le Code 32 Bits
-
-il faut commencer par charger la table de page dans le cr3
-
-```asm
+```intel
+; Chargement de la table de page:
 mov eax, dword [0x600]
 mov cr3, eax
-```
-et ensuite activer le paging, et le PAE du cr4
-
-en mettant les bit 5 et 7 du registre cr4
-
-```asm
+; Activation du paging et du PAE
 mov eax, cr4
 or eax, 1 << 5
 or eax, 1 << 7
 mov cr4, eax
 ```
 
-il faut ensuite activer le long mode en écrivant le bit 8 du MSR de l'EFER
-(L'extended Feature Enable Register)
+On active maintenant le mode long, en activant le 8ème bit de l'EFER (Extended Feature Enable Register):
 
-```asm
-    mov ecx, 0xc0000080 ; registre efer
-    rdmsr
+```intel
+mov ecx, 0xc0000080 ; registre efer
+rdmsr
 
-    or eax,1 << 8 
-    wrmsr
+or eax,1 << 8 
+wrmsr
 ```
 
-il faut, ensuite activer le paging dans le registre cr0 en activant le bit 31
+On active ensuite le paging en écrivant le 31ème bit du registre `cr0`:
 
+```intel
+mov eax, cr0
+or eax, 1 << 31
+mov cr0, eax
 ```
-    mov eax, cr0
-    or eax, 1 << 31
-    mov cr0, eax
-```
 
-pour finir on doit charger une gdt 64bit 
-
-Il faut donc avoir une structure gdt avant le trampoline end
-```asm
+Et pour finir il faut créer puis charger une GDT 64 bits:
+```intel
 
 align 16
 gdt_64:
@@ -350,83 +295,64 @@ gdt_64_start:
     ; ds selector 16
     dq 0x00CF92000000FFFF
 gdt_64_end:
-```
-et donc charget la gdt 
-```asm
 
+; Chargement de la nouvelle GDT
 lgdt [gdt_64 - trampoline_start + TRAMPOLINE_BASE]
-    
 ```
 
-et pour passer au 64bit on doit jump comme ceci 
-```
-    jmp 8:(trampoline64 - trampoline_start + TRAMPOLINE_BASE)
-```
-ceci met le code segment à 8 
-
-
-#### Le Code 64 Bits
-
-en 64 bit il faut setup les registres ds/ss/es/ par rapport à votre gdt 
-
-```
-    mov ax, 0x10
-    mov ds, ax
-    mov es, ax
-    mov ss, ax
-    mov ax, 0x0
-    mov fs, ax
-    mov gs, ax
+On peut ensuite passer à la section 64 bits, en utilisant l'instruction `jmp` comme précédement:
+```intel
+; jmp 0x8:  permet de charger le segment de code de la GDT
+jmp 0x8:(trampoline64 - trampoline_start + TRAMPOLINE_BASE)
 ```
 
-il faut ensuite charger la gdt/ et l'idt
-par rapport au addresse de stockage utilisé 
+#### Le code 64 bits
+
+On commence par définir les valeurs des registre `ds`, `ss` et `es` en fonction de la nouvelle GDT:
+
+```intel
+mov ax, 0x10
+mov ds, ax
+mov es, ax
+mov ss, ax
+mov ax, 0x0
+mov fs, ax
+mov gs, ax
 ```
+
+Et on charge ensuite la GDT, l'IDT et la stack au bon endroit:
+
+```intel
+; Chargement de la GDT
 lgdt [0x580]
+; Chargement de l'IDT
 lidt [0x590]
-```
-
-on doit aussi charger la stack
-
-```
+; Chargement de la stack
 mov rsp, [0x570]
 mov rbp, 0x0
 ```
-on doit ensuite passer du code copié du trempoline au code physique 
-donc on doit faire
+On doit ensuite passer du code trampoline au code physique à exécuter sur ce nouveau CPU. C'est à ce moment que on doit activer certains bits de `cr4` et `cr0` et surtout le SSE!
 
-```
-    jmp virtual_code
+```intel
+jmp virtual_code
 
 virtual_code:
-```
-
-dans le virtual code on doit activer certains bit de cr4 et cr0
-__si vous voulez le sse, vous devez l'activer ici__
-
-il faut donc activer le bit 1 et désactiver le 2 du registre cr0 pour le monitoring du multi processor et l'émulation 
-
-```
     mov rax, cr0
+    ; Activation du monitoring de multi-processeur et de l'émulation
     btr eax, 2
     bts eax, 1
     mov cr0, rax
 ```
 
-il faut pour terminer l'initialisation du smp faire
-
-```
+Enfin, pour terminer l'initialisation de ce nouveau CPU il faut finir par:
+```intel
     mov rax, [0x610]
     jmp rax
 ```
 
+## Note de fin
 
-maintenant vous avez un cpu d'initialisé ! 
-
-## Dernière Pensée
-
-mais il reste encore beaucoup de chose à faire !
-un système de lock, mettre à jour le multitasking, initialiser les cpu avec une gdt/idt/... unique etc...
+Le nouveau CPU est maintenant fonctionnel, mais ce n'est pas encore fini, il faut mettre en place un système de lock pour la communication inter-CPU, mettre à jour le multitasking pour utiliser ce nouveau CPU, charger une GDT, un IDT et une stack unique...
 
 ## Ressources
 
