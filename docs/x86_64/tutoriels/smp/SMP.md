@@ -102,7 +102,7 @@ Il existe deux instructions en 64 bits qui sont dédiées:
 
 Dans notre cas on a donc:
 
-```intel
+```x86asm
 sgdt [0x580] ; stockage de la GDT
 sidt [0x590] ; stockage de l'IDT
 ```
@@ -132,7 +132,7 @@ memcpy((void *)TRAMPOLINE_START, &trampoline_start, trampoline_len);
 ```
 et dans le code assembleur, on spécifie le code trampoline avec : 
 
-```intel
+```x86asm
 trampoline_start:
     ; code du trampoline
 trampoline_end:
@@ -175,7 +175,7 @@ write(icr1, 0x600 | ((uint32_t)trampoline_addr / 4096));
 Pour commencer, on peut simplement utiliser le code suivant, qui envoie le caractère `a` sur le port `COM0`.
 Ce code est bien sûr temporaire, mais permet de vérifier que le nouveau CPU démarre correctement.
 
-```intel
+```x86asm
 mov al, 'a'
 mov dx, 0x3F8
 out dx, al
@@ -185,7 +185,7 @@ Lorsque le CPU est initialisé il est en 16 bits, il le sera donc aussi lors de 
 Il faut donc penser à modifier la configuration du CPU pour le passer en 64 bits.
 On aura donc 3 parties dans le trampoline : pour passer de 16 à 32 bits, puis de 32 à 64 bits et enfin le trampoline final en 64 bits :
 
-```intel
+```x86asm
 [16 bits]
 trampoline_start:
 
@@ -209,7 +209,7 @@ trampoline_end:
 On commence par passer de 16 bits à 32 bits.
 Pour cela, il faut initialiser une nouvelle GDT et mettre le bit 0 du `cr0` à 1 pour activer le mode protégé :
 
-```intel
+```x86asm
 cli ; On désactive les interrupt, c'est important pendant le passage de 16 à 32 bits
 mov ax, 0x0 ; On initialise tous les registres à 0
 mov ds, ax
@@ -221,7 +221,7 @@ mov ss, ax
 
 On doit créer une GDT 32 bits pour le 32 bit, on procède donc ainsi :
 
-```intel
+```x86asm
 align 16
 gdt_32:
     dw gdt_32_end - gdt_32_start - 1
@@ -240,13 +240,13 @@ gdt_32_end:
 
 Et on doit maintenant charger cette GDT :
 
-```intel
+```x86asm
 lgdt [gdt_32 - trampoline_start + trampoline_addr]
 ```
 
 On peut donc activer le mode protégé :
 
-```intel
+```x86asm
 mov eax, cr0
 or al, 0x1
 mov cr0, eax
@@ -254,7 +254,7 @@ mov cr0, eax
 
 ...Puis sauter en changeant le *segment code* vers l'entrée `0x8` de la GDT :
 
-```intel
+```x86asm
 jmp 0x8:(trampoline32 - trampoline_start + trampoline_addr)
 ```
 
@@ -262,7 +262,7 @@ jmp 0x8:(trampoline32 - trampoline_start + trampoline_addr)
 
 On doit dans un premier temps charger la table de page dans le `cr3`, puis activer le paging et le PAE du `cr4` en activant les bits 5 et 7 du registre `cr4` :
 
-```intel
+```x86asm
 ; Chargement de la table de page :
 mov eax, dword [0x600]
 mov cr3, eax
@@ -275,7 +275,7 @@ mov cr4, eax
 
 On active maintenant le mode long, en activant le 8ème bit de l'EFER (*Extended Feature Enable Register*) :
 
-```intel
+```x86asm
 mov ecx, 0xc0000080 ; registre efer
 rdmsr
 
@@ -285,7 +285,7 @@ wrmsr
 
 On active ensuite le paging en écrivant le 31ème bit du registre `cr0` :
 
-```intel
+```x86asm
 mov eax, cr0
 or eax, 1 << 31
 mov cr0, eax
@@ -293,7 +293,7 @@ mov cr0, eax
 
 Et pour finir il faut créer puis charger une GDT 64 bits :
 
-```intel
+```x86asm
 align 16
 gdt_64:
     dw gdt_64_end - gdt_64_start - 1
@@ -315,7 +315,7 @@ lgdt [gdt_64 - trampoline_start + trampoline_addr]
 
 On peut ensuite passer à la section 64 bits, en utilisant l'instruction `jmp` comme précédement :
 
-```intel
+```x86asm
 ; jmp 0x8 : permet de charger le segment de code de la GDT
 jmp 0x8:(trampoline64 - trampoline_start + trampoline_addr)
 ```
@@ -324,7 +324,7 @@ jmp 0x8:(trampoline64 - trampoline_start + trampoline_addr)
 
 On commence par définir les valeurs des registre `ds`, `ss` et `es` en fonction de la nouvelle GDT :
 
-```intel
+```x86asm
 mov ax, 0x10
 mov ds, ax
 mov es, ax
@@ -336,7 +336,7 @@ mov gs, ax
 
 Et on charge ensuite la GDT, l'IDT et la stack au bon endroit :
 
-```intel
+```x86asm
 ; Chargement de la GDT
 lgdt [0x580]
 ; Chargement de l'IDT
@@ -349,7 +349,7 @@ mov rbp, 0x0
 On doit ensuite passer du code trampoline au code physique à exécuter sur ce nouveau CPU.
 C'est à ce moment que on doit activer certains bits de `cr4` et `cr0` et surtout le SSE !
 
-```intel
+```x86asm
 jmp virtual_code
 
 virtual_code:
@@ -362,7 +362,7 @@ virtual_code:
 
 Enfin, pour terminer l'initialisation de ce nouveau CPU il faut finir par :
 
-```intel
+```x86asm
     mov rax, [0x610]
     jmp rax
 ```
