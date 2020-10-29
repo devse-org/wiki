@@ -16,6 +16,7 @@ Vous devez suivre les règles suivantes pour la rédaction des noms de commits /
 
 ### `type de la modification: ce que vous avez fait / rajouté`
 Les types de modification peuvent être :
+
 - correction
 - x64
 - arm 
