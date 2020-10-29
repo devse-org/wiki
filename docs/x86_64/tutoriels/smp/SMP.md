@@ -192,6 +192,8 @@ trampoline_end:
 ```
 
 #### Le code 16 bits
+note: trampoline_addr est l'addresse ou vous avez placé votre trampoline, dans ce cas, 0x1000
+
 
 On commence par passer de 16 bits à 32 vits, pour ça il faut initialiser une nouvelle GDT et mettre le bit 0 du `cr0` à 1 pour activer le mode protégé:
 
@@ -205,29 +207,29 @@ mov gs, ax
 mov ss, ax
 ```
 
-On doit créer une GDT pour le 16 bits, on procède donc ainsi:
+On doit créer une GDT 32 bit pour le 32 bits, on procède donc ainsi:
 
 ```intel
 align 16
-gdt_16:
-    dw gdt_16_end - gdt_16_start - 1
-    dd gdt_16_start - trampoline_start + TRAMPOLINE_BASE
+gdt_32:
+    dw gdt_32_end - gdt_32_start - 1
+    dd gdt_32_start - trampoline_start + trampoline_addr
 
 align 16
-gdt_16_start:
-    ; null selector 0x0
+gdt_32_start:
+    ; descripteur NULL
     dq 0
-    ; cs selector 8
+    ; descripteur de code
     dq 0x00CF9A000000FFFF
-    ; ds selector 16
+    ; descripteur de donné
     dq 0x00CF92000000FFFF
-gdt_16_end:
+gdt_32_end:
 ```
 
 Et on doit maintenant charger cette GDT:
 
 ```intel
-lgdt [gdt_16 - trampoline_start + TRAMPOLINE_BASE]
+lgdt [gdt_32 - trampoline_start + trampoline_addr]
 ```
 
 On active maintenant le mode protégé:
@@ -238,11 +240,10 @@ or al, 0x1
 mov cr0, eax
 ```
 
-On peut maintenant sauter à la section 32 bits:
+On peut maintenant sauter en changeant le segment code vers l'entrée 0x8 de la gdt:
 
 ```intel
-; jmp 0x8:  permet de charger le segment de code de la GDT
-jmp 0x8:(trampoline32 - trampoline_start + TRAMPOLINE_BASE)
+jmp 0x8:(trampoline32 - trampoline_start + trampoline_addr)
 ```
 
 #### Le code 32 bits
@@ -284,7 +285,7 @@ Et pour finir il faut créer puis charger une GDT 64 bits:
 align 16
 gdt_64:
     dw gdt_64_end - gdt_64_start - 1
-    dd gdt_64_start - trampoline_start + TRAMPOLINE_BASE
+    dd gdt_64_start - trampoline_start + trampoline_addr
 
 align 16
 gdt_64_start:
@@ -297,13 +298,13 @@ gdt_64_start:
 gdt_64_end:
 
 ; Chargement de la nouvelle GDT
-lgdt [gdt_64 - trampoline_start + TRAMPOLINE_BASE]
+lgdt [gdt_64 - trampoline_start + trampoline_addr]
 ```
 
 On peut ensuite passer à la section 64 bits, en utilisant l'instruction `jmp` comme précédement:
 ```intel
 ; jmp 0x8:  permet de charger le segment de code de la GDT
-jmp 0x8:(trampoline64 - trampoline_start + TRAMPOLINE_BASE)
+jmp 0x8:(trampoline64 - trampoline_start + trampoline_addr)
 ```
 
 #### Le code 64 bits
