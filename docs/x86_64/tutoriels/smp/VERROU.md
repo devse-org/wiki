@@ -1,4 +1,4 @@
-# VERROU
+# Verrou
 
 le verrou est utilisé pour que un processeur accède à un code à la fois
 
@@ -30,8 +30,8 @@ exemple de code utilisant le lock :ou
 lock bts dword [rdi], 0
 ```
 
-## VERROUILLAGE & DEVERROUILLAGE
-### CODE ASSEMBLY
+## Verrouillage & Déverrouillage
+### Code assembleur
 pour verrouiller on doit implémenter une fonction
 qui vérifie le vérrou,
 si il est à 1, c'est qu'il est verrouillé et que l'on doit attendre
@@ -105,7 +105,7 @@ le temps pris ici est stocké dans le registre `rax`
 on peut utiliser une fonction c/c++ dans 
 timed_out
 
-### CODE C
+### Code C
 
 dans le code c on peut se permettre de rajouter des informations au verrou, 
 on peut rajouter le fichier, la ligne, le cpu etc...
@@ -160,7 +160,7 @@ maintenant vous pouvez choisir entre 2 possibilité :
 
 * dans la fonction crocheter_le_verrou vous mettez le membre `data` du vérou v à 0, ce qui forcera le vérrou à être dévérouiller
 
-## utilisation
+## Utilisation
 
 maintenant pour utiliser votre verrou vous pouvez juste faire 
 ```cpp
