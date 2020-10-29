@@ -1,4 +1,4 @@
-# Symmetric Multi Processing
+# Symmetric Multiprocessing
 
 ## Un peu de vocabulaire
 
