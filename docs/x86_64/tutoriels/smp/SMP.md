@@ -1,16 +1,14 @@
 # Symmetric Multi Processing
 
-## Introduction
+## Un peu de vocabulaire
 
-Qu'est ce que le SMP ? 
+Le termes "coeur" et CPU seront utilisés tout au long de ce tutoriel. Ils représentent tous deux la même entité, à savoir, une unité centrale de traitement. Vous aurez remarqué que ce groupe nominal barbare, peut-être littéralement traduit par "Central Processing Unit", ou CPU.
 
-Le SMP veut dire symmetric multi processing
+Le terme "thread" désigne un flot d'instructions, exécuté en parallèle à d'autres threads ; ou, autrement dit, un flot d'instruction dont l'exécution n'interfere généralement pas avec l'exécution d'un autre flot d'instructions.
 
-On utilise ce terme pour dire multi processeur. Un kernel qui supporte le SMP peut avoir d'énorme boost de performance. En sachant que __généralement__ les processeurs ont 2 threads par cpu, pour un processeur de 8 coeur il y a 16 threads exploitables. 
+## Préréquis
 
-Le SMP est différent de NUMA, les processeurs NUMA sont des processeurs où certains coeurs n'ont pas accès à toute la mémoire. 
-
-Dans ce tutoriel pour implémenter le smp nous prenons en compte que vous avez déjà implémenté dans votre kernel: 
+Dans ce tutoriel pour implémenter le SMP nous prenons en compte que vous ayez déjà implémenté la base de votre noyau:
 
 - [IDT](documentation/x86_64/structures/IDT/)
 - [GDT](documentation/x86_64/structures/GDT/)
@@ -19,17 +17,27 @@ Dans ce tutoriel pour implémenter le smp nous prenons en compte que vous avez d
 - [APIC](documentation/x86_64/périphériques/APIC/)
 - paging
 
-On considère aussi que votre kernel posède:
+On considère aussi que la structure de votre noyau est composée de ces caractéristiques:
 
 - une architecture higher half
 - un support pour le 64bit
-- un système de timer pour attendre 
+- un système de temporisation
 
-Il faut aussi savoir qu'il faudrat implémenter les interruption [APIC](documentation/x86_64/périphériques/APIC/) pour les autres CPU, ce qui n'est pas abordé dans ce tutoriel (pour l'instant).
+## Introduction
 
-## Obtenir le numéro du CPU actuel
+Qu'est ce que le SMP ? 
 
-Obtenir le numero du CPU actuel est très important pour plus tard, il permet d'identifier le coeur sur lequel vous travaillez.
+SMP est un sigle signifiant "Symetric Multi Processing", que l'on pourrait littéralement traduire par "Multitraitement symétrique". On utilise ce terme pour parler d'un système multiprocesseur, qui exploite plusieurs CPUs de façon parallèle. Un noyau qui supporte le SMP peut bénéficier d'énormes améliorations de performances.
+
+En sachant que - __généralement__ - un processeur possède 2 threads par coeur, pour un processeur de 8 coeurs il y aura 16 threads exploitables.
+
+Le SMP est différent de NUMA, les processeurs NUMA sont des processeurs dont certains de leurs coeurs n'ont pas accès à toute la mémoire.
+
+Il est utile de savoir qu'il faudra implémenter les interruptions [APIC](documentation/x86_64/périphériques/APIC/) pour les autres CPUs, ce qui n'est pas abordé dans ce tutoriel (pour l'instant).
+
+## Obtenir le numéro du coeur actuel
+
+Obtenir le numero du coeur actuel est très important pour plus tard, il permet d'identifier le CPU sur lequel on travaille.
 
 Pour obtenir l'identifiant du CPU actuel on doit utiliser l'[APIC](documentation/x86_64/périphériques/APIC/). Le numéro du CPU est contenu dans le registre 20 de l'APIC, et il est situé du 24ème au 32ème bit, il faut donc décaler à droite la valeur lue de 24 bits. 
 
@@ -40,7 +48,6 @@ uint32_t get_current_processor_id()
     return apic::read(LAPIC_REGISTER) >> 24;
 }
 ```
-
 
 ## Obtenir les entrées Local APIC
 
@@ -57,7 +64,7 @@ Ces entrées LAPIC ont deux valeurs importantes:
 
 Généralement, sur les processeurs modernes `ACPI_ID` et `APIC_ID` sont égaux, mais ce n'est pas toujours le cas.
 
-Pour utiliser les autres CPU il faudra faire attention, le CPU principal (celui sur lequel votre kernel démarre) est aussi dans la liste. Il faut donc vérifier que le CPU que l'on souhaite utiliser est libre. Pour cela il suffit de comparer l'identifiantn du CPU actuel et l'identifiant du cpu de l'entrée `LAPIC`.
+Pour utiliser les autres CPU il faudra faire attention, le CPU principal (celui sur lequel votre kernel démarre) est aussi dans la liste. Il faut donc vérifier que le CPU que l'on souhaite utiliser soit libre. Pour cela il suffit de comparer l'identifiant du CPU actuel avec l'identifiant du CPU de l'entrée `LAPIC`.
 
 ```cpp
 // lapic_entry: entrée lapic que l'on est en train de manipuler
@@ -70,14 +77,14 @@ if (get_current_processor_id() == lapic_entry.apic_id) {
 
 ## Pre-Initialisation
 
-Pour utiliser les CPU il faut d'abord les préparer, en particulier il faut préparer l'IDT, la table de page, le GDT, le code d'initialisation...
+Pour utiliser les CPU il faut d'abord les préparer, en particulier il faut préparer l'IDT, la table de page, la GDT, le code d'initialisation...
 
 On place donc tout ceci ainsi:
 
 |Entrée|Adresse|
 |----|-----|
 |Code du trampoline| 0x1000| 
-|Stack | 0x570 |
+|Pile | 0x570 |
 |GDT | 0x580|
 |IDT | 0x590|
 |Table de page | 0x600 |
@@ -87,7 +94,7 @@ Il faut savoir que tout ceci est temporaire, tout devra être remplacé plus tar
 
 #### GDT + IDT
 
-Pour stocker la GDT et l'IDT c'est assez facile, il existe deux instructions en 64 bits qui sont dédiées:
+Pour stocker la GDT et l'IDT c'est assez simple, il existe deux instructions en 64 bits qui sont dédiées:
 
 - `sgdt [adresse]` pour stocker la GDT à une adresse précise;
 - `sidt [adresse]` pour stocker l'IDT à une adresse précise.
@@ -99,9 +106,9 @@ sgdt [0x580] ; stockage de la gdt
 sidt [0x590] ; stockage de l'idt
 ```
 
-#### Stack
+#### Pile
 
-Pour initialiser la stack on doit stocker une adresse valide à l'adresse `0x570`:
+Pour initialiser la pile on doit stocker une adresse valide à l'adresse `0x570`:
 
 ```cpp
 POKE(570) = stack_address + stack_size;
