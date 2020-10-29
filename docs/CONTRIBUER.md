@@ -37,3 +37,4 @@ Il est recommandé de ne pas faire plus d'un Commit par Pull Resquest.
  - [d0p1](https://github.com/d0p1s4m4)
  - [fomys](https://github.com/Fomys)
  - [supercyp](https://github.com/Supercip971)
+ - [Daimyo](https://github.com/DaimyoHub)
