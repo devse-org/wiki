@@ -10,11 +10,11 @@ Le terme "thread" désigne un flot d'instructions, exécuté en parallèle à d'
 
 Dans ce tutoriel, pour implémenter le SMP, nous prenons en compte que vous avez déjà implémenté la base de votre noyau :
 
-- [IDT](documentation/x86_64/structures/IDT/)
-- [GDT](documentation/x86_64/structures/GDT/)
-- [MADT](documentation/x86_64/périphériques/MADT/)
-- [LAPIC](documentation/x86_64/périphériques/LAPIC/)
-- [APIC](documentation/x86_64/périphériques/APIC/)
+- [IDT](../../structures/IDT/)
+- [GDT](../../structures/GDT/)
+- [MADT](../../périphériques/MADT/)
+- [LAPIC](../../périphériques/LAPIC/)
+- [APIC](../../périphériques/APIC/)
 - Paging
 
 On considère aussi que la structure de votre noyau est composée de ces caractéristiques :
@@ -33,13 +33,13 @@ En sachant que - __généralement__ - un processeur possède 2 threads par coeur
 
 Le SMP est différent de NUMA, les processeurs NUMA sont des processeurs dont certains de leurs coeurs n'ont pas accès à toute la mémoire.
 
-Il est utile de savoir qu'il faudra implémenter les interruptions [APIC](documentation/x86_64/périphériques/APIC/) pour les autres CPUs, ce qui n'est pas abordé dans ce tutoriel (pour l'instant).
+Il est utile de savoir qu'il faudra implémenter les interruptions [APIC](../../périphériques/APIC/) pour les autres CPUs, ce qui n'est pas abordé dans ce tutoriel (pour l'instant).
 
 ## Obtenir le numéro du coeur actuel
 
 Obtenir le numero du coeur actuel est très important pour plus tard, il permet d'identifier le CPU sur lequel on travaille.
 
-Pour obtenir l'identifiant du CPU actuel on doit utiliser l'[APIC](documentation/x86_64/périphériques/APIC/). Le numéro du CPU est contenu dans le registre 20 de l'APIC, et il est situé du 24ème au 32ème bit, il faut donc décaler à droite la valeur lue de 24 bits. 
+Pour obtenir l'identifiant du CPU actuel on doit utiliser l'[APIC](../../périphériques/APIC/). Le numéro du CPU est contenu dans le registre 20 de l'APIC, et il est situé du 24ème au 32ème bit, il faut donc décaler à droite la valeur lue de 24 bits. 
 
 ```cpp
 #define LAPIC_REGISTER 20
