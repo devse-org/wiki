@@ -11,10 +11,7 @@ Nous ne sommes pas affiliés au site Internet OSDEV, mais au serveur Discord Fra
 <a href="https://discord.gg/3XjkM6q"><img src="https://discordapp.com/api/guilds/746454130448531546/widget.png?style=banner3" alt="Discord Banner 3"/></a>
 
 
-<details>
-<summary><font size="5"> l' arborescence </font></summary>
-<br>
-
+## l' arborescence
 ### x86_64
 Cette section est dédiée au support 64 bit pour l'architecture x86.
 
@@ -53,7 +50,6 @@ Cette section est dédiée au support 64 bit pour l'architecture x86.
 - [Awesome (devse)](https://github.com/developpement-systeme-exploitation/awesome)
 
 
-</details>
 
 
 ## Licence 
