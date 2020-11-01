@@ -3,7 +3,7 @@
 - Evitez de faire des fautes d'orthographes.
 - Nous utilisons comme langage principal le C, le C++ et l'assembleur quand il est nécéssaire. Mais seulement la syntaxe intel
 - Merci de ne pas copier-coller d'autres articles.
-- Nous refusons le 32bit car ce n'est plus d'actualité.
+- Nous évitons le 32bit car il n'est plus d'actualité.
 
 # La structure suivante est de rigueur pour l'ensemble des documents :
 - En haut du document, vous retrouvez des liens / une table qui regroupe toute les parties du document,
