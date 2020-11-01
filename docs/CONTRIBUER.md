@@ -3,7 +3,7 @@
 - Veuillez employer un français correct. Notre langue n'est pas des plus simples, mais son bon emploi standard nous permet de nous comprendre mutuellement de façon claire, d'autant plus dans un domaine aussi spécifique que le développement de systèmes d'exploitation.
 - Les langages de programmation principalement utilisés dans les exemples sont le C, le C++ et l'assembleur x86, avec une syntaxe Intel. En effet, ce sont des langages couramment utilisé lorsque l'on programme un noyau, un OS, ou un pilote.
 - Veuillez produire votre propre contenu. Les copier-collers sont contre-productifs pour vous. C'est en réfléchissant par soi-même et en interprétant soi-même ce que l'on évolue.
-- Nous évitons le 32bit car il n'est plus d'actualité.
+- Nous évitons d'utiliser les architectures en 32 bits car elles ne sont plus forcément d'actualité.
 
 # La structure suivante est de rigueur pour l'ensemble des documents :
 - La partie "haute" du document regroupe le sommaire de l'article, ainsi que les liens qui permettent de s'y balader.
