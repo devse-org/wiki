@@ -1,32 +1,31 @@
 # 0 - Introduction
 Ici nous ne ferrons pas de programmation, juste des bonnes définitions pour être préparé.
 
-## Préface (aka gate keeping)
-ce tutoriels vous expliqueras comment créer les __bases__ d'un kernel
+## Préface
 
+Ce tutoriel vous expliquera les __bases__ d'un système d'exploitation par la réalisation pas à pas d'un kernel minimaliste.
 
+:warning: Pour suivre ce tutoriel, il vous est recommandé d'utiliser un système UNIX-Like tel que GNU/Linux. Bien que vous pouvez utilisez Windows celà demande un peux plus de travail et nous n'aborderons pas les étapes necessaires à l'instalation d'un environement de developpement sous Windows.
 
+Avant de se lancer il faut garder en tête que le developpement de système d'exploitation est très long. Il faut donc être conscient qu'il ne s'ajis pas d'un petit projet de quelques jours. Beaucoup de système d'exploitation sont abandonné faute de motivation dans la durée. Aussi n'ayez pas les yeux plus gros que le ventre: vous n'inventerez pas le nouveau Windows ou OS X.
 
-il faut savoir que c'est très dur et long. Beaucoup de kernel sont abandonné... 
+Pour pouvoir menner a bien ce type de projet il faut déjà posseder des bases en programmation, pas besoin d'être un expert avec 30ans d'experience en C rassurez vous.
 
-il faut être déterminé et savoir coder, il faut bien connaitre le c ou c++ (le rust ne serra pas abordé dans ces tutoriels)
-il faut aussi comprendre l'assembleur,cependant  l'architecture de l'assembleur dépend de vos envie. Et il ne serra pas énormément présent
+Une erreur commune est de se lancer dans des gros projet tel que des MMORPG ou dans le cas présent un kernel sans toutefois connaitre la programmation
 
-Il ne faut pas commencer un kernel en parralèle d'apprendre un language, ce serra beaucoup plus dur.
+Bien que dans ce tutoriel nous utiliserons assez peu l'assembleur, en connaitre les bases est un sérieux plus.
 
-Il ne faut pas croire que toutes vos application vont supporter windows, 
-    
-Vous ne pouvez pas coder un kernel en js
+Bref vous l'aurez compris, ne vous lancez pas dans un tel projet si vous n'avez pas un minimum de base. (N'essayez pas d'apprendre sur le tas, prennez du recul, apprennez a programmer et revennez)
 
-Il est __très très très__ recommandé d'utilisé linux, windows complique la vie et wsl est très lent
+Aussi gardez en tête de vous ne pouvez pas coder un système d'exploitation dans n'importe quel langage et la majorité des ressources que vous trouverez sur le net tourne autours du C, C++ voir du Rust.
 
-Il faut lire et ne pas juste faire des bêtes copier coller.
+Il est important que vous prenniez le temps de bien lire les explications plutôt de vous jettez directement sur le code et faire de bête copier/coller. Si vous ne comprennez pas du premier coup ce n'est pas grave, pensez a faire vos propres recherche et a relire plus tard à tête reposé.
 
 ## Introduction
 
 ### Qu'est ce qu'un kernel (ou noyau) ?
 
-Un noyau est l'une des plus grosse partie d'un système d'exploitation. Il permet aux application utilisateur d'accèder au compostants et périphériques. Il gère la mémoire, les fichier, les processus, les drivers, les processeur,  une partie de la sécurité etc...
+Le noyeau est l'élément central d'un système d'exploitation.
 
 Un noyau est l'étape après le boot loader, ou le chargeur de boot.
 
