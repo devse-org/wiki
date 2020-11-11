@@ -17,33 +17,33 @@ Cette section est dédiée au support 64 bit pour l'architecture x86.
 
 #### tutoriels
 - premiers pas
-    - [chapitre 0 - introduction](x86_64/tutoriels/premiers_pas/00-Introduction.md)
-    - [chapitre 1 - Hello world](x86_64/tutoriels/premiers_pas/01-Hello,_World!.md)
-    - [chapitre 2 - Segmentation](x86_64/tutoriels/premiers_pas/02-Segmentation.md)
-    - [chapitre 3 - Interruption](x86_64/tutoriels/premiers_pas/03-Interuption.md)
-    - [chapitre 4 - Mémoire](x86_64/tutoriels/premiers_pas/04-Memoire.md)
-    - [chapitre 5 - Pagination](x86_64/tutoriels/premiers_pas/05-Pagination.md)
-    - [chapitre 6 - Multitache](x86_64/tutoriels/premiers_pas/06-Multitâche.md)
-    - [chapitre 7 - Tache Utilisateur](x86_64/tutoriels/premiers_pas/07-Tâche_Utilisateur.md)    
-    - [chapitre 8 - Epilogue](x86_64/tutoriels/premiers_pas/08-Epilogue.md)
+    - [chapitre 0 - introduction](x86_64/tutoriels/premiers_pas/00-Introduction)
+    - [chapitre 1 - Hello world](x86_64/tutoriels/premiers_pas/01-Hello,_World!)
+    - [chapitre 2 - Segmentation](x86_64/tutoriels/premiers_pas/02-Segmentation)
+    - [chapitre 3 - Interruption](x86_64/tutoriels/premiers_pas/03-Interuption)
+    - [chapitre 4 - Mémoire](x86_64/tutoriels/premiers_pas/04-Memoire)
+    - [chapitre 5 - Pagination](x86_64/tutoriels/premiers_pas/05-Pagination)
+    - [chapitre 6 - Multitache](x86_64/tutoriels/premiers_pas/06-Multitâche)
+    - [chapitre 7 - Tache Utilisateur](x86_64/tutoriels/premiers_pas/07-Tâche_Utilisateur)    
+    - [chapitre 8 - Epilogue](x86_64/tutoriels/premiers_pas/08-Epilogue)
 - smp
-    - [SMP](x86_64/tutoriels/smp/SMP.md)
-    - [VERROU](x86_64/tutoriels/smp/VERROU.md)
+    - [SMP](x86_64/tutoriels/smp/SMP)
+    - [VERROU](x86_64/tutoriels/smp/VERROU)
 
 #### structures
 
-- [GDT](x86_64/structures/GDT.md)
-- [IDT](x86_64/structures/IDT.md)
+- [GDT](x86_64/structures/GDT)
+- [IDT](x86_64/structures/IDT)
 
 #### périphériques
-- [APIC](x86_64/périphériques/APIC.md)
-- [COM](x86_64/périphériques/COM.md)
-- [LAPIC](x86_64/périphériques/LAPIC.md)
-- [MADT](x86_64/périphériques/MADT.md)
-- [PIC](x86_64/périphériques/PIC.md)
-- [PIT](x86_64/périphériques/PIT.md)
+- [APIC](x86_64/périphériques/APIC)
+- [COM](x86_64/périphériques/COM)
+- [LAPIC](x86_64/périphériques/LAPIC)
+- [MADT](x86_64/périphériques/MADT)
+- [PIC](x86_64/périphériques/PIC)
+- [PIT](x86_64/périphériques/PIT)
 #### Interruptions
-- [code d'erreur](x86_64/interruption/CODE_DERREUR.md)
+- [code d'erreur](x86_64/interruption/CODE_DERREUR)
 
 
 #### autre
