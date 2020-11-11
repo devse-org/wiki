@@ -17,33 +17,33 @@ Cette section est dédiée au support 64 bit pour l'architecture x86.
 
 #### tutoriels
 - premiers pas
-    - [chapitre 0 - introduction](documentation/x86_64/tutoriels/premiers_pas/00-Introduction/)
-    - [chapitre 1 - Hello world](documentation/x86_64/tutoriels/premiers_pas/01-01-Hello,_World!/)
-    - [chapitre 2 - Segmentation](documentation/x86_64/tutoriels/premiers_pas/02-Segmentation/)
-    - [chapitre 3 - Interruption](documentation/x86_64/tutoriels/premiers_pas/03-Interruption/)
-    - [chapitre 4 - Mémoire](documentation/x86_64/tutoriels/premiers_pas/04-Memoire/)
-    - [chapitre 5 - Pagination](documentation/x86_64/tutoriels/premiers_pas/05-Pagination/)
-    - [chapitre 6 - Multitache](documentation/x86_64/tutoriels/premiers_pas/06-Multitâche/)
-    - [chapitre 7 - Tache Utilisateur](documentation/x86_64/tutoriels/premiers_pas/07-Tâche_Utilisateur/)    
-    - [chapitre 8 - Epilogue](documentation/x86_64/tutoriels/premiers_pas/08-Epilogue/)
+    - [chapitre 0 - introduction](docs/x86_64/tutoriels/premiers_pas/00-Introduction.md)
+    - [chapitre 1 - Hello world](docs/x86_64/tutoriels/premiers_pas/01-01-Hello,_World!/)
+    - [chapitre 2 - Segmentation](docs/x86_64/tutoriels/premiers_pas/02-Segmentation/)
+    - [chapitre 3 - Interruption](docs/x86_64/tutoriels/premiers_pas/03-Interruption/)
+    - [chapitre 4 - Mémoire](docs/x86_64/tutoriels/premiers_pas/04-Memoire/)
+    - [chapitre 5 - Pagination](docs/x86_64/tutoriels/premiers_pas/05-Pagination/)
+    - [chapitre 6 - Multitache](docs/x86_64/tutoriels/premiers_pas/06-Multitâche/)
+    - [chapitre 7 - Tache Utilisateur](docs/x86_64/tutoriels/premiers_pas/07-Tâche_Utilisateur/)    
+    - [chapitre 8 - Epilogue](docs/x86_64/tutoriels/premiers_pas/08-Epilogue/)
 - smp
-    - [SMP](documentation/x86_64/tutoriels/smp/SMP/)
-    - [VERROU](documentation/x86_64/tutoriels/smp/VERROU/)
+    - [SMP](docs/x86_64/tutoriels/smp/SMP/)
+    - [VERROU](docs/x86_64/tutoriels/smp/VERROU/)
 
 #### structures
 
-- [GDT](documentation/x86_64/structures/GDT/)
-- [IDT](documentation/x86_64/structures/IDT/)
+- [GDT](docs/x86_64/structures/GDT/)
+- [IDT](docs/x86_64/structures/IDT/)
 
 #### périphériques
-- [APIC](documentation/x86_64/périphériques/APIC/)
-- [COM](documentation/x86_64/périphériques/COM/)
-- [LAPIC](documentation/x86_64/périphériques/LAPIC/)
-- [MADT](documentation/x86_64/périphériques/MADT/)
-- [PIC](documentation/x86_64/périphériques/PIC/)
-- [PIT](documentation/x86_64/périphériques/PIT/)
+- [APIC](docs/x86_64/périphériques/APIC/)
+- [COM](docs/x86_64/périphériques/COM/)
+- [LAPIC](docs/x86_64/périphériques/LAPIC/)
+- [MADT](docs/x86_64/périphériques/MADT/)
+- [PIC](docs/x86_64/périphériques/PIC/)
+- [PIT](docs/x86_64/périphériques/PIT/)
 #### Interruptions
-- [code d'erreur](documentation/x86_64/interruption/CODE_DERREUR/)
+- [code d'erreur](docs/x86_64/interruption/CODE_DERREUR/)
 
 
 #### autre
