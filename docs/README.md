@@ -32,8 +32,8 @@ Cette section est dédiée au support 64 bit pour l'architecture x86.
 
 #### structures
 
-- [GDT](x86_64/tutoriels/smp/GDT.md)
-- [IDT](x86_64/tutoriels/smp/IDT.md)
+- [GDT](x86_64/structures/GDT.md)
+- [IDT](x86_64/structures/IDT.md)
 
 #### périphériques
 - [APIC](x86_64/périphériques/APIC.md)
