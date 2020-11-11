@@ -27,8 +27,8 @@ Cette section est dédiée au support 64 bit pour l'architecture x86.
     - [chapitre 7 - Tache Utilisateur](x86_64/tutoriels/premiers_pas/07-Tâche_Utilisateur.md)    
     - [chapitre 8 - Epilogue](x86_64/tutoriels/premiers_pas/08-Epilogue.md)
 - smp
-    - [SMP](x86_64/tutoriels/smp/SMP/)
-    - [VERROU](x86_64/tutoriels/smp/VERROU/)
+    - [SMP](x86_64/tutoriels/smp/SMP.md)
+    - [VERROU](x86_64/tutoriels/smp/VERROU.md)
 
 #### structures
 
