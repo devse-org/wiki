@@ -18,7 +18,7 @@ Cette section est dédiée au support 64 bit pour l'architecture x86.
 #### tutoriels
 - premiers pas
     - [chapitre 0 - introduction](x86_64/tutoriels/premiers_pas/00-Introduction.md)
-    - [chapitre 1 - Hello world](x86_64/tutoriels/premiers_pas/01-01-Hello,_World!/)
+    - [chapitre 1 - Hello world](x86_64/tutoriels/premiers_pas/01-Hello,_World!.md)
     - [chapitre 2 - Segmentation](x86_64/tutoriels/premiers_pas/02-Segmentation/)
     - [chapitre 3 - Interruption](x86_64/tutoriels/premiers_pas/03-Interruption/)
     - [chapitre 4 - Mémoire](x86_64/tutoriels/premiers_pas/04-Memoire/)
