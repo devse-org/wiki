@@ -32,18 +32,18 @@ Cette section est dédiée au support 64 bit pour l'architecture x86.
 
 #### structures
 
-- [GDT](x86_64/structures/GDT/)
-- [IDT](x86_64/structures/IDT/)
+- [GDT](x86_64/structures/GDT.md)
+- [IDT](x86_64/structures/IDT.md)
 
 #### périphériques
-- [APIC](x86_64/périphériques/APIC/)
-- [COM](x86_64/périphériques/COM/)
-- [LAPIC](x86_64/périphériques/LAPIC/)
-- [MADT](x86_64/périphériques/MADT/)
-- [PIC](x86_64/périphériques/PIC/)
-- [PIT](x86_64/périphériques/PIT/)
+- [APIC](x86_64/périphériques/APIC.md)
+- [COM](x86_64/périphériques/COM.md)
+- [LAPIC](x86_64/périphériques/LAPIC.md)
+- [MADT](x86_64/périphériques/MADT.md)
+- [PIC](x86_64/périphériques/PIC.md)
+- [PIT](x86_64/périphériques/PIT.md)
 #### Interruptions
-- [code d'erreur](x86_64/interruption/CODE_DERREUR/)
+- [code d'erreur](x86_64/interruption/CODE_DERREUR.md)
 
 
 #### autre
