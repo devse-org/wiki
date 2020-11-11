@@ -7,18 +7,19 @@ ce tutoriels vous expliqueras comment créer les __bases__ d'un kernel
 
 
 
-il faut savoir que c'est très dur et long. Beaucoup de kernel sont abandonné... 
+Il faut savoir que c'est très dur et long. Beaucoup de kernel sont abandonné... 
 
-il faut être déterminé et savoir coder, il faut bien connaitre le c ou c++ (le rust ne serra pas abordé dans ces tutoriels)
-il faut aussi comprendre l'assembleur,cependant  l'architecture de l'assembleur dépend de vos envie. Et il ne serra pas énormément présent
+Il faut être déterminé et savoir coder, il faut bien connaitre le c ou c++ (le rust ne serra pas abordé dans ces tutoriels).
+
+Il faut aussi comprendre l'assembleur,cependant  l'architecture de l'assembleur dépend de vos envie, de plus il ne serra pas énormément présent.
 
 Il ne faut pas commencer un kernel en parralèle d'apprendre un language, ce serra beaucoup plus dur.
 
-Il ne faut pas croire que toutes vos application vont supporter windows, 
+Il ne faut pas croire que toutes vos application vont supporter windows.
     
-Vous ne pouvez pas coder un kernel en js
+Vous ne pouvez pas coder un kernel en js.
 
-Il est __très très très__ recommandé d'utilisé linux, windows complique la vie et wsl est très lent
+Il est __très très très__ recommandé d'utilisé linux, windows complique la vie et wsl est très lent.
 
 Il faut lire et ne pas juste faire des bêtes copier coller.
 
@@ -39,7 +40,7 @@ Il est très important et très compliqué, il est recommandé de ne pas écrire
 Un bootloader peut aussi charger des éléments important pour le kernel, comme des modules chargé dans le disques, l'A20 etc...
 ### L'architecture 
 
-L'architecture c'est comment un processeur est structuré, comment il fonctionne, quel est son language assembly. 
+L'architecture désigne la façon dont un processeur est structuré, comment il fonctionne, quel est son language assembly. 
 Il y a plusieurs architecture et un kernel peut en supporter plusieurs en même temps : 
 
 - x86 
@@ -48,7 +49,7 @@ Il y a plusieurs architecture et un kernel peut en supporter plusieurs en même 
 - powerpc
 - et bien d'autres
 
-l'architecture est importante, ici nous prenons le x86 car c'est l'architecture la plus utilisée.
+L'architecture est importante, ici nous prenons le x86 car c'est l'architecture la plus utilisée.
 
 le x86 est divisé en *modes* : 
 
@@ -59,7 +60,7 @@ le x86 est divisé en *modes* :
 |protected mode |mode protégé   |32bit
 |long mode      |mode long      |64bit
 
-nous utiliserons ici le mode long car il est le plus récent, même si il a moins de documentation que le mode protégé.
+Nous utiliserons ici le mode long car il est le plus récent, même si il a moins de documentation que le mode protégé.
 
 
 ### Comment ?
@@ -82,6 +83,6 @@ Donc cette route ici est recommandé mais vous faites comme vous le souhaitez
 - pagination 
 - multitache 
 
-à partir d'ici tout deviens très subjectif vous pouvez enchainer sur le smp, le système de fichier, les tâches utilisatrices, etc...
+A partir d'ici tout deviens très subjectif vous pouvez enchainer sur le smp, le système de fichier, les tâches utilisatrices, etc...
 
 # [EN COURS D'ECRITURE]
