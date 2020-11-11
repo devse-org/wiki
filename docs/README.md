@@ -20,7 +20,7 @@ Cette section est dédiée au support 64 bit pour l'architecture x86.
     - [chapitre 0 - introduction](x86_64/tutoriels/premiers_pas/00-Introduction.md)
     - [chapitre 1 - Hello world](x86_64/tutoriels/premiers_pas/01-Hello,_World!.md)
     - [chapitre 2 - Segmentation](x86_64/tutoriels/premiers_pas/02-Segmentation.md)
-    - [chapitre 3 - Interruption](x86_64/tutoriels/premiers_pas/03-Interruption.md)
+    - [chapitre 3 - Interruption](x86_64/tutoriels/premiers_pas/03-Interuption.md)
     - [chapitre 4 - Mémoire](x86_64/tutoriels/premiers_pas/04-Memoire.md)
     - [chapitre 5 - Pagination](x86_64/tutoriels/premiers_pas/05-Pagination.md)
     - [chapitre 6 - Multitache](x86_64/tutoriels/premiers_pas/06-Multitâche.md)
