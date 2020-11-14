@@ -83,5 +83,3 @@ Donc cette route ici est recommandé mais vous faites comme vous le souhaitez
 - multitache 
 
 à partir d'ici tout deviens très subjectif vous pouvez enchainer sur le smp, le système de fichier, les tâches utilisatrices, etc...
-
-# [EN COURS D'ECRITURE]

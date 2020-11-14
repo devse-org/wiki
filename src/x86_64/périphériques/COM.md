@@ -3,6 +3,7 @@
 </center>
 
 # Introduction
+
 Un port COM était, à l'époque, couramment utilisé comme port de communication.
 Même si aujourd'hui, l'USB a remplacé le port COM, il reste néanmoins très utile et toujours supporté par nos machines.
 
@@ -19,6 +20,7 @@ la limite étant calculée en Baud, celui-ci s'exprimant en bit/s, 1 baud corres
 La limite dépend également de la distence du raccord avec le fil, un fil long a une capacité moindre qu'un fil court. On dit souvent 
 
 # Initialisation
+
 Chaque port a besoin d'être initialisé avant son utilisation.
 
 Pour commencer, il y a quelques valeurs constantes à connaître pour chaque port COM. 
@@ -54,8 +56,8 @@ outb(COM_PORT + 3, 0x80);
 
 Pour le désactiver, il faut juste remettre le bit 8 à 0.
 
-
 ## Les Baud
+
 Le port COM se met à jour 115200 fois par seconde.
 Pour controller la vitesse, il faut mettre en place un diviseur, que l'on peut utiliser en activant le DLAB.
 
@@ -69,6 +71,7 @@ outb(COM_PORT + 1, 0); // les bits les plus hauts
 ```
 
 ## La taille des données
+
 On peut mettre la taille des données envoyées au port COM par update.
 Celle-ci peut aller de 5 bits à 8 bits
 
@@ -86,4 +89,5 @@ outb(COM_PORT + 3, 0x3); // désactiver le DLAB + mettre la taille de donnée à
 ```
 
 ## Ressources
+
 - https://www.sci.muni.cz/docs/pc/serport.txt

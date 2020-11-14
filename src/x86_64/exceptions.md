@@ -32,9 +32,6 @@ Cependant, d'autres ne peuvent pas l'être.
 | ///                       	| Faute triple                               	| L'exception faute triple est exécutée lorsqu'il y a une erreur pendant l'interruption de faute double (une erreur dans une erreur dans une erreur). L'interruption faute triple cause un redémarrage de la machine.                                                                                                                                                                                                                                                                                           	| non                                    	|
 
 
-
-
-
 ## Codes d'erreur d'une faute de page
 
 | BIT  	| NOM 	| DESCRIPTION                                                                 |

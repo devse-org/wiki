@@ -1,0 +1,6 @@
+[book]
+authors = ["Communauté DEVSE"]
+language = "fr"
+multilingual = false
+src = "src"
+title = "Développement de système d'exploitation"
