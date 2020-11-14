@@ -16,7 +16,7 @@ La norme RS-232 (qui a été révisée maintes et maintes fois) est une norme qu
 Existant depuis 1981, elle standardise les noms (COM1, COM2, COM3, etc), limite la vitesse à 19200 Baud (cela représente théoriquement un débit de 19200 bits par seconde), ce qui pourrait être largement assez pour un petit terminal.
 
 la limite étant calculée en Baud, celui-ci s'exprimant en bit/s, 1 baud correspond donc à 1 bit par seconde.
-La limite dépend également de la distence du raccord avec le fil, un fil long a une capacité moindre qu'un fil court. On dit souvent 
+La limite dépend également de la distence du raccord avec le fil, un fil long a une capacité moindre qu'un fil court.  
 
 # Initialisation
 Chaque port a besoin d'être initialisé avant son utilisation.
@@ -80,7 +80,7 @@ Celle-ci peut aller de 5 bits à 8 bits
 
 8bits = 1 1 (0x3)
 
-Pour définir la taille des données, vous devez l'écrire dans le port de contrôle de ligne (les bits les plus petits) avoir configuré le rate du port (et donc d'avoir activé le DLAB).
+Pour définir la taille des données, vous devez l'écrire dans le port de contrôle de ligne (les bits les plus petits) après avoir configuré le rate du port (et donc d'avoir activé le DLAB).
 ```cpp
 outb(COM_PORT + 3, 0x3); // désactiver le DLAB + mettre la taille de donnée à 8 donc un char/unsigned char en c++
 ```
