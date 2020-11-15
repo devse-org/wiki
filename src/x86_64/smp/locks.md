@@ -6,16 +6,22 @@ Par exemple, on peut utiliser un verrou pour un driver ATA, pour éviter qu'il y
 
 Un équivalent serrait : 
 
-```cpp
-struct verrou ata_verrou = 0;
-void ata_read(){
-    verrouiller(&ata_verrou);
-    // [CODE]
-    deverrouiller(&ata_verrou);
+```c
+struct Lock lock;
+
+void ata_read(/* ... */)
+{
+    acquire(&lock);
+
+    /* ... */
+
+    release(&lock);
 };
 ```
 
 ## Préréquis
+
+
 Même si le verrou utilise l'instruction `lock` il peut être utiliser même si on a qu'un seul processeur.
 Pour comprendre le verrou il faut avoir un minimum de base en assembleur.
 
@@ -32,6 +38,8 @@ lock bts dword [rdi], 0
 
 ## Verrouillage & Déverrouillage
 ### Code assembleur
+
+
 Pour verrouiller on doit implémenter une fonction qui vérifie le vérrou :
 - si il est à 1, c'est qu'il est verrouillé et que l'on doit attendre
 - si il est à 0, c'est que on peut le déverrouiller 
@@ -48,7 +56,7 @@ locker:
 spin:
     pause   ; pour gagner des performances
     test dword [rdi], 0
-    jnz spin 
+    jnz spin
     jmp locker
 ```
 
