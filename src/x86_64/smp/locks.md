@@ -18,7 +18,6 @@ void ata_read(/* ... */)
     release(&lock);
 };
 ```
-
 ## Préréquis
 
 
