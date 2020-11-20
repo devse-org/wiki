@@ -18,23 +18,26 @@ Bref vous l'aurez compris, ne vous lancez pas dans un tel projet si vous n'avez 
 
 Aussi gardez en tête de vous ne pouvez pas coder un système d'exploitation dans n'importe quel langage et la majorité des ressources que vous trouverez sur le net tourne autours du C, C++ voir du Rust.
 
-Il est important que vous prenniez le temps de bien lire les explications plutôt de vous jettez directement sur le code et faire de bête copier/coller. Si vous ne comprennez pas du premier coup ce n'est pas grave, pensez a faire vos propres recherche et a relire plus tard à tête reposé.
+Il est important que vous prenniez le temps de bien lire les explications plutôt de vous jettez directement sur le code et faire de bête copier/coller. Si vous ne comprennez pas du premier coup ce n'est pas grave, pensez a faire vos propres recherches et à relire plus tard à tête reposé.
 
 ## Introduction
 
 ### Qu'est ce qu'un kernel (ou noyau) ?
 
-Le noyeau est l'élément central d'un système d'exploitation.
+Le Kernel est l'élément central d'un système d'exploitation, il est chargé par le boot loader.
 
-Un noyau est l'étape après le boot loader, ou le chargeur de boot.
+Le kernel a plusieurs responsabilités comme celle de gérer la mémoire, le multitaches etc. Il existe plusieurs type de noyeau qui change grandement la manière d'aborder les systèmes d'exploitations.
+
+La conception du kernel et ses responsabilité change en fonction du type de [kernel](/types-de-kernel.html) et de la vision de l'auteur.
 
 ### Qu'est ce qu'un bootloader ?
 
 Un bootloader est générallement ce qui permet de faire passer de la machine qui démarre à une machine prête pour faire booter/démarrer le noyau 
 
-Il est très important et très compliqué, il est recommandé de ne pas écrire son propre bootloader quand on débute, cela va vite vous décourager...
-
 Un bootloader peut aussi charger des éléments important pour le kernel, comme des modules chargé dans le disques, l'A20 etc...
+
+Dans ce tutoriel nous utiliserons [Limine](https://github.com/limine-bootloader/limine)
+
 ### L'architecture 
 
 L'architecture c'est comment un processeur est structuré, comment il fonctionne, quel est son language assembly. 
@@ -51,11 +54,11 @@ l'architecture est importante, ici nous prenons le x86 car c'est l'architecture 
 le x86 est divisé en *modes* : 
 
 
-| nom anglais   |nom français   |taille de registre
-|------------   |-------------  |-
-|real mode      |mode réel      |16/20 bit
-|protected mode |mode protégé   |32bit
-|long mode      |mode long      |64bit
+| nom anglais       |nom français   |taille de registre
+|------------       |-------------  |-
+|real mode          |mode réel      |16/20 bit
+|protected mode     |mode protégé   |32bit
+|long mode          |mode long      |64bit
 
 nous utiliserons ici le mode long car il est le plus récent, même si il a moins de documentation que le mode protégé.
 
