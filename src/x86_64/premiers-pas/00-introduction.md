@@ -1,11 +1,10 @@
 # 0 - Introduction
-Ici nous ne ferrons pas de programmation, juste des bonnes définitions pour être préparé.
 
 ## Préface
 
-Ce tutoriel vous expliquera les __bases__ d'un système d'exploitation par la réalisation pas à pas d'un kernel minimaliste.
+Ce tutoriel vous expliquera les __bases__ du fonctionnement d'un système d'exploitation par la réalisation pas à pas d'un kernel minimaliste.
 
-:warning: Pour suivre ce tutoriel, il vous est recommandé d'utiliser un système UNIX-Like tel que GNU/Linux. Bien que vous pouvez utilisez Windows celà demande un peux plus de travail et nous n'aborderons pas les étapes necessaires à l'instalation d'un environement de developpement sous Windows.
+⚠️Pour suivre ce tutoriel, il vous est recommandé d'utiliser un système UNIX-Like tel que GNU/Linux. Bien que vous pouvez utilisez Windows celà demande un peux plus de travail et nous n'aborderons pas les étapes necessaires à l'instalation d'un environement de developpement sous Windows.
 
 Avant de se lancer il faut garder en tête que le developpement de système d'exploitation est très long. Il faut donc être conscient qu'il ne s'ajis pas d'un petit projet de quelques jours. Beaucoup de système d'exploitation sont abandonné faute de motivation dans la durée. Aussi n'ayez pas les yeux plus gros que le ventre: vous n'inventerez pas le nouveau Windows ou OS X.
 
