@@ -4,24 +4,24 @@
 - [Types de noyau](./types-de-kernel.md)
 
 - [x86_64](x86_64/index.md)
-  
-  - [périphériques](x86_64/index.md)
+
+  - [périphériques]()
     - [APIC](x86_64/périphériques/APIC.md)
     - [COM](x86_64/périphériques/COM.md)
     - [PIC](x86_64/périphériques/PIC.md)
     - [PIT](x86_64/périphériques/PIT.md)
-  
+
   - [exceptions](x86_64/exceptions.md)
-  
-  - [SMP](x86_64/smp/SMP.md)
+
+  - [SMP]()
     - [SMP](x86_64/smp/SMP.md)
     - [locks](x86_64/smp/locks.md)
 
-  - [structures](x86_64/index.md)
+  - [structures]()
     - [gdt](x86_64/structures/GDT.md)
     - [idt](x86_64/structures/IDT.md)
-  
-  - [tutoriels](x86_64/premiers-pas/00-introduction.md)
+
+  - [tutoriels]()
     - [Premiers Pas](x86_64/premiers-pas/00-introduction.md)
     - [Hello, world!](x86_64/premiers-pas/01-hello-world.md)
     - [Segmentation](x86_64/premiers-pas/02-segmentation.md)
