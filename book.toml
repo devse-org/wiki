@@ -4,3 +4,6 @@ language = "fr"
 multilingual = false
 src = "src"
 title = "Développement de système d'exploitation"
+[output.html]
+default-theme = "ayu"
+git-repository-url="https://github.com/developpement-systeme-exploitation/documentation"
