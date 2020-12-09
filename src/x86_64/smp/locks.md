@@ -1,10 +1,10 @@
 # Verrou
 
-Le verrou est utilisé pour que un thread à un code à la fois
+Le verrou est utilisé pour que un code soit éxécuté par un thread à la fois
 
-Par exemple on peut utiliser un verrou pour un driver ATA, pour éviter qu'il y ait plusieurs écritures en même temps alors on utilise un verrou au début et on le débloque à la fin
+Par exemple on peut utiliser un verrou pour un driver ATA, pour éviter qu'il y ait plusieurs écritures en même temps. Alors on utilise un verrou au début et on le débloque à la fin
 
-un équivalent serrait :
+un équivalent en code serrait :
 
 ```c
 struct Lock lock;
@@ -55,7 +55,7 @@ locker:
     ret
 
 spin:
-    pause   ; pour gagner des performances
+    pause   ; pour éviter au processeur de surchauffer
     test dword [rdi], 0
     jnz spin
     jmp locker
@@ -160,6 +160,7 @@ maintenant vous devez implementer la fonction qui serra appelé dans `timed_out`
 ```cpp
 void crocheter_le_verrou(verrou* v){
     // vous pouvez log des informations importantes ici
+    
 }
 ```
 maintenant vous pouvez choisir entre 2 possibilité :
@@ -186,4 +187,6 @@ void ata_read(/* ... */)
 ```
 et le code serra éxécuté seulement à 1 cpu à la fois !
 
-Il est important d'utiliser les verrou quand il le faut, dans un allocateur de frame, le changement de context, l'utilisation d'appareils...
+Il est important d'utiliser les verrou quand il le faut, dans un allocateur de frame, le changement de contexte, l'utilisation d'appareils...
+
+
