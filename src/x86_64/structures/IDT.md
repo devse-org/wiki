@@ -10,36 +10,40 @@ Il y a deux structures utilisés (en 64bit) :
 
 ## Table d'entrée
 
-La table d'entrée contient une addresse ou est situé toutes les entrées d'interruptions et une taille.
+La table d'entrée contient une addresse qui situe une table d'entrée d'IDT et la taille de la table (en mémoire).
 
 pour la table d'entrée la structure est comme ceci :
 |nom                    |taille     |
 |-----------------------|-----------|
 |taille                 | 16 bit    |
-|addresse des entrées   | 64 bit    |
+|addresse de la table   | 64 bit    |
 
-la taille peut être définie comme ceci : 
+la table d'entrée peut être définie comme ceci:
 ```c
-IDT_table.size = sizeof(IDT_entry_t) * IDT_entry_count;
+IDT_entry_count = 64; 
+IDT_Entry_t ent[IDT_entry_count];
+IDT_table.addr = (uint64_t)ent;
+IDT_table.size = sizeof(IDT_Entry_t) * IDT_entry_count;
 ```
 
 ## entrée d'IDT
 
-l'entrée d'une IDT doit être structuré comme ceci :
+l'entrée d'une IDT doit être structurée comme ceci :
 
-|nom                    |taille     |
-|-----------------------|-----------|
-|offset (0-16)          | 16 bit    |
-|segment de code        | 16 bit    |
-|numéro d'interruption  | 8 bit     |
-|attributs              | 8 bit     |
-|offset (16-32)         | 16 bit    |
-|offset (32-64)         | 32 bit    |
-|zéro                   | 32 bit    |
+|nom                        |taille     |
+|---------------------------|-----------|
+|offset (0-16)              | 16 bit    |
+|segment de code            | 16 bit    |
+|numéro d'interruption      | 8 bit     |
+|attributs                  | 8 bit     |
+|offset (16-32)             | 16 bit    |
+|bits spécifiques au 64bit  | //        |
+|offset (32-64)             | 32 bit    |
+|zéro                       | 32 bit    |
 
 le `segment de code` serra le segment de code utilisé pendant l'interruption
 
-l'`offset` est l'addresse où le cpu va jump quand il y a une interruption 
+l'`offset` est l'addresse où le cpu va jump si il y a une interruption 
 
 ### Les attributs 
 l'attribut d'une entrée d'une IDT est formée comme ceci : 
