@@ -13,6 +13,7 @@ Il y a deux structures utilisés (en 64bit) :
 La table d'entrée contient une addresse qui situe une table d'entrée d'IDT et la taille de la table (en mémoire).
 
 pour la table d'entrée la structure est comme ceci :
+
 |nom                    |taille     |
 |-----------------------|-----------|
 |taille                 | 16 bit    |
