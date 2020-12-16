@@ -2,7 +2,6 @@
 - [wiki](./wiki.md)
 - [Introduction](./introduction.md)
 - [Types de noyau](./types-de-kernel.md)
-
 - [x86_64](x86_64/index.md)
 	- [périphériques]()
 		- [APIC](x86_64/périphériques/APIC.md)
@@ -11,9 +10,6 @@
 		- [PIT](x86_64/périphériques/PIT.md)
 	- [exceptions](x86_64/exceptions.md)
 	
-	- [mémoire]()
-    	- [allocateur de page](x86_64/mémoire/allocateur-de-page.md)
-    	- [paging](x86_64/mémoire/paging.md)
 	- [SMP]()
 		- [SMP](x86_64/smp/SMP.md)
 		- [locks](x86_64/smp/locks.md)
@@ -30,3 +26,5 @@
 		- [Multitâche](x86_64/premiers-pas/06-multitache.md)
 		- [Tache utilisateur](x86_64/premiers-pas/06-tache-utilisateur.md)
 		- [Epilogue](x86_64/premiers-pas/06-epilogue.md)
+- [générique]()
+	- [allocateur de page](allocateur-de-page.md)
