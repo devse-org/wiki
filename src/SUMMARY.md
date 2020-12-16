@@ -10,6 +10,10 @@
 		- [PIC](x86_64/périphériques/PIC.md)
 		- [PIT](x86_64/périphériques/PIT.md)
 	- [exceptions](x86_64/exceptions.md)
+	
+	- [mémoire]()
+    	- [allocateur de page](x86_64/mémoire/allocateur-de-page.md)
+    	- [paging](x86_64/mémoire/paging.md)
 	- [SMP]()
 		- [SMP](x86_64/smp/SMP.md)
 		- [locks](x86_64/smp/locks.md)
