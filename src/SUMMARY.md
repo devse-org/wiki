@@ -27,4 +27,4 @@
 		- [Tache utilisateur](x86_64/premiers-pas/06-tache-utilisateur.md)
 		- [Epilogue](x86_64/premiers-pas/06-epilogue.md)
 - [générique]()
-	- [allocateur de page](allocateur-de-page.md)
+	- [allocateur de mémoire physique](allocateur-de-mémoire-physique.md)
