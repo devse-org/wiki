@@ -2,7 +2,7 @@
 
 Un `allocateur de mémoire physique` est un algorithme d'allocation 'basique' qui est générallement utilisé par le kernel pour allouer et libérer des pages.
 
-> Note : tout au long de ce document, nous utilisons le terme `page` comme zone de mémoire qui à pour taille 4096 byte 
+> Note : tout au long de ce document, le terme `page` est utilisé comme zone de mémoire qui à pour taille 4096 byte 
 > Cette taille peut changer mais pour l'instant il est mieux d'utiliser la même taille de page entre le paging et l'allocateur de mémoire physique
 
 Il doit pouvoir : 
@@ -22,7 +22,7 @@ void init_pmm(memory_map_t memory_map); // PMM = Physical Memory Manager
 
 ## L'Allocateur de mémoire physique avec une bitmap
 
-Dans ce document, nous expliquerons comment mettre en place un allocateur de mémoire physique avec une bitmap.
+Cette partie du document explique comment mettre en place un allocateur de mémoire physique avec une bitmap.
 
 La bitmap est une table de uint64/32/16 ou uint8_t avec chaque bit qui représente une page libre (quand le bit est à 0) ou utilisée (quand le bit est à 1).
 
@@ -30,7 +30,7 @@ vous pouvez facilement convertir une addresse en index/bit de la table par exemp
 
 ```c
 static inline uint64_t get_bitmap_array_index(uint64_t page_addr){
-    return page_addr/8; // ici c'est 8 car nous utilisons une bitmap avec des uint8_t qui font 8bit
+    return page_addr/8; // ici c'est 8 car c'est une bitmap avec des uint8_t (soit 8bit)
 }
 
 static inline uint64_t get_bitmap_bit_index(uint64_t page_addr){
@@ -47,7 +47,7 @@ il faut aussi savoir que la bitmap à l'avantage d'être très rapide, on peut f
 
 ## Changer l'état d'une page dans la bitmap 
 
-pour cette partie vous devez placer une variable temporairement nulle... Cette variable est la bitmap qui serra initialisé plus tard, mais nous devons tout d'abord savoir comment changer l'état d'une page
+pour cette partie vous devez placer une variable temporairement nulle... Cette variable est la bitmap qui serra initialisé plus tard, mais vous devez tout d'abord savoir comment changer l'état d'une page
 
 ici la variable est : 
 
@@ -277,4 +277,4 @@ uint64_t find_free_pages(uint64_t count){
 ```
 
 ---
-maintenant vous pouvez utiliser votre Allocateur de mémoire physique principalement pour le paging ou pour un allocateur plus 'intelligent' (malloc/free/realloc) !
+maintenant vous pouvez utiliser votre allocateur de mémoire physique principalement pour le paging ou pour un allocateur plus 'intelligent' (malloc/free/realloc) !
