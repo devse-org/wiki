@@ -64,9 +64,10 @@ Comment coder un kernel ?
 
 Il faut prendre la route que l'on veut, mais il y a des éléments importants qu'il faut faire dans un ordre assez précis.
 
-Vous pouvez dans certains cas le faire dans l'ordre que vous voulez mais il faut quand même une route... car parfois on se pose la question : quoi faire après ? 
+Vous pouvez dans certains cas faire l'ordre que vous voulez mais il faut quand même une route... car parfois on se pose la question : quoi faire après ? 
 
-Donc cette route ici est recommandé mais vous pouvez le faire de la manière dont vous l'entendez: 
+Donc cette route ici est recommandé mais vous faites comme vous le souhaitez 
+
 
 - démarrage
 - com // pour le debugging 
@@ -78,4 +79,4 @@ Donc cette route ici est recommandé mais vous pouvez le faire de la manière do
 - pagination 
 - multitache 
 
-À partir d'ici, tout devient très subjectif vous pouvez enchainer sur le smp, le système de fichiers, les tâches utilisatrices, etc...
+à partir d'ici tout deviens très subjectif vous pouvez enchainer sur le smp, le système de fichier, les tâches utilisatrices, etc...
