@@ -4,7 +4,7 @@
 
 Les termes "coeurs" et "CPU" seront utilisés tout au long de ce tutoriel. Ils représentent tous deux la même entité, à savoir, une unité centrale de traitement. Vous aurez remarqué que ce groupe nominal barbare peut être littéralement traduit par "Central Processing Unit", ou CPU.
 
-Le terme "thread" désigne un flot d'instructions, exécuté en parallèle à d'autres threads ; ou, autrement dit, un flot d'instructions dont l'exécution n'interfère généralement pas avec l'exécution d'un autre flot d'instructions.
+Le terme "thread" désigne un fil d'instructions, exécuté en parallèle à d'autres threads ; ou, autrement dit, un flot d'instructions dont l'exécution n'interfère généralement pas avec l'exécution d'un autre flot d'instructions.
 
 ## Préréquis
 

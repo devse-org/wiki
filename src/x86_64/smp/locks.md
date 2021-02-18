@@ -1,8 +1,8 @@
 # Verrou
 
-Le verrou est utilisé pour que un code soit éxécuté par un thread à la fois
+Le verrou est utilisé pour qu'un code soit éxécuté par un thread à la fois
 
-Par exemple on peut utiliser un verrou pour un driver ATA, pour éviter qu'il y ait plusieurs écritures en même temps. Alors on utilise un verrou au début et on le débloque à la fin
+Par exemple on peut utiliser un verrou pour un driver ATA, afin éviter qu'il y ait plusieurs écritures en même temps. Alors on utilise un verrou au début et on le débloque à la fin
 
 un équivalent en code serrait :
 
@@ -185,7 +185,7 @@ void ata_read(/* ... */)
     release(&lock);
 };
 ```
-et le code serra éxécuté seulement à 1 cpu à la fois !
+et le code serra éxécuté seulement sur 1 cpu à la fois !
 
 Il est important d'utiliser les verrou quand il le faut, dans un allocateur de frame, le changement de contexte, l'utilisation d'appareils...
 

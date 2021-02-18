@@ -2,11 +2,11 @@
 
 # Local APIC
 
-Le local apic est une entrée de la [MADT](documentation/x86_64/périphériques/MADT/), son type est 0
+Le local apic est une entrée de la [MADT](documentation/x86_64/périphériques/MADT/), son type est 0.
 
-Le nombre d'entrée local apic dans la madt équivaut au nombre de cpu, chaque cpu à son local apic
+Le nombre d'entrées locales apic dans la madt équivaut au nombre de CPUs, chaque CPU a son local apic.
 
-la structure de l'entre  du local apic est
+La structure de l'entrée du local apic est:
 
 | offset/taille (en byte)  | nom |
 |-----|-----|
