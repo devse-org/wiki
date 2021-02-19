@@ -2,6 +2,8 @@
 - [wiki](./wiki.md)
 - [Introduction](./introduction.md)
 - [Types de noyau](./types-de-kernel.md)
+- [cross compilateur]()
+	- [creer un cross compilateur](cross-compilation/creer-un-cross-compiler.md)
 - [gestion de la mémoire]()
 	- [allocateur de mémoire physique](allocateur-de-mémoire-physique.md)
 - [x86_64](x86_64/index.md)
