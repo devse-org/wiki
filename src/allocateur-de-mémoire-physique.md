@@ -135,7 +135,7 @@ for(uint64_t i = bitmap_start; i <= bitmap_end; i+= PAGE_SIZE){
 
 ## L'allocation, la recherche et la libération de pages
 
-Après avoir sa bitmap initializée et que vous pouvez mettre une page comme libre ou utilisée vous pouvez commencer à implementer des fonction d'allocation et de libération de page cependant vous devez commencer par vérifier si une page est utilisée ou libérée (ou si le bit d'une page est à 0 où à 1) :
+Après avoir sa bitmap initialisée et que vous pouvez mettre une page comme libre ou utilisée vous pouvez commencer à implementer des fonction d'allocation et de libération de page cependant vous devez commencer par vérifier si une page est utilisée ou libérée (ou si le bit d'une page est à 0 où à 1) :
 ```c
 static inline bool bitmap_is_bit_set(uint64_t page_addr){
     
