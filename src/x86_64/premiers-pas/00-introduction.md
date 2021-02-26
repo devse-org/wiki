@@ -34,6 +34,9 @@ Un bootloader un programme permettant de démarrer votre kernel.
 Il est très important et très compliqué, il est recommandé de ne pas écrire son propre bootloader quand on débute, cela va vite vous décourager...
 
 Un bootloader peut aussi charger des éléments important pour le kernel, comme des modules chargés dans le disque, l'A20, etc...
+
+Les bootloaders les plus courants dans le développement de systèmes d'exploitation sont [GRUB](https://github.com/fwsGonzo/barebones) et [Limine](https://github.com/limine-bootloader/limine-barebones).
+
 ### L'architecture 
 
 L'architecture du processeur est très importante pour votre kernel. Celle-ci définit le fonctionnement du processseur, sa structure interne, les instructions disponibles ainsi que ses caractéristiques.
@@ -71,6 +74,8 @@ La route ci-dessous est recommandée mais vous pouvez le faire de la manière do
 
 - démarrage
 - com // pour le debugging 
+- GDT (Global Descriptor Table) utilisée à l'époque pour la [segmentation de la mémoire](https://fr.wikipedia.org/wiki/Segmentation_(informatique))
+- IDT (Interrupt Descriptor Table) utilisée pour gérer les [interruptions](https://fr.wikipedia.org/wiki/Interruption_(informatique))
 - Interruption  // pour le debugging d'erreur
 - PIT 
 - Gestion de mémoire physique
