@@ -16,4 +16,6 @@ La méthode monolithique est la manière classique de structurer un kernel. Un k
 
 ## Les unikernels
 
+Les unikernels sont spéciaux car ils n'ont pas comme but d'être utilisés sur une machine de travail, mais plutôt sur un serveur. Les unikernels sont souvent utilisés à des fins de virtualisation, comme Docker.
+
 **Exemples**: IncludeOS, MirageOS, HaLVM, Runtime.js
