@@ -24,7 +24,7 @@
 		- [Segmentation](x86_64/premiers-pas/02-segmentation.md)
 		- [Interruptions](x86_64/premiers-pas/03-interuptions.md)
 		- [Mémoire](x86_64/premiers-pas/04-memoire.md)
-		- [Pagging](x86_64/premiers-pas/05-pagging.md)
+		- [Pagging](x86_64/premiers-pas/05-paging.md)
 		- [Multitâche](x86_64/premiers-pas/06-multitache.md)
 		- [Tache utilisateur](x86_64/premiers-pas/06-tache-utilisateur.md)
 		- [Epilogue](x86_64/premiers-pas/06-epilogue.md)

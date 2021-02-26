@@ -4,11 +4,11 @@
 
 # Introduction
 
-Un port COM était, à l'époque, couramment utilisé comme port de communication.
+Les ports COM étaient, à l'époque, couramment utilisés comme ports de communication.
 Même si aujourd'hui, l'USB a remplacé le port COM, il reste néanmoins très utile et toujours supporté par nos machines.
 
 Même s'ils sont obsolètes, les ports COM sont encore beaucoup utilisés pour le développement de systèmes d'exploitation.
-Ils sont très simples à implémenter et sont très utiles pour le débogage, car, dans presque toutes les machines virtuelles, on peut avoir la sortie d'un port COM vers un fichier, un terminal ou autre.
+Ils sont très simples à implémenter et sont très utiles pour le débogage, car, dans presque toutes les machines virtuelles, on peut obtenir la sortie d'un port COM vers un fichier, un terminal ou autre.
 Ils sont aussi très utiles car on peut les initialiser très tôt et donc avoir des informations de débogage efficacement.
 
 Par exemple, les ports série peuvent envoyer des données et en recevoir, ce qui pourrait, par exemple nous permettre de faire un terminal externe en utilisant uniquement ce port. 
@@ -17,7 +17,7 @@ La norme RS-232 (qui a été révisée maintes et maintes fois) est une norme qu
 Existant depuis 1981, elle standardise les noms (COM1, COM2, COM3, etc), limite la vitesse à 19200 Baud (cela représente théoriquement un débit de 19200 bits par seconde), ce qui pourrait être largement assez pour un petit terminal.
 
 la limite étant calculée en Baud, celui-ci s'exprimant en bit/s, 1 baud correspond donc à 1 bit par seconde.
-La limite dépend également de la distence du raccord avec le fil, un fil long a une capacité moindre qu'un fil court. On dit souvent 
+La limite dépend également de la distance du raccord avec le fil, un fil long a une capacité moindre qu'un fil court.
 
 # Initialisation
 
@@ -50,7 +50,7 @@ Chaque offset a certaines particularités.
 Pour mettre DLAB il faut mettre le port comme indiqué :
 `PORT + 3  = 0x80 = 128 = 0b10000000`
 
-```cpp
+```c
 outb(COM_PORT + 3, 0x80);
 ```
 
