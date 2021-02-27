@@ -17,7 +17,7 @@ pour la table d'entrée la structure est comme ceci :
 |nom                    |taille     |
 |-----------------------|-----------|
 |taille                 | 16 bit    |
-|addresse de la table   | 64 bit    |
+|adresse de la table   | 64 bit    |
 
 la table d'entrée peut être définie comme ceci:
 ```c
@@ -44,7 +44,7 @@ l'entrée d'une IDT doit être structurée comme ceci :
 
 le `segment de code` étant le segment de code utilisé pendant l'interruption.
 
-l'`offset` est l'addresse où le CPU va jump si il y a une interruption. 
+l'`offset` est l'adresse où le CPU va jump si il y a une interruption. 
 
 ### Les attributs 
 l'attribut d'une entrée d'une IDT est formée comme ceci : 
