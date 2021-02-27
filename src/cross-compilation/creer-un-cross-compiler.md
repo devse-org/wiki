@@ -5,20 +5,21 @@
 
 Il faut créer un `cross compiler` car un compilateur (gcc, clang, tcc...) généralement est configuré pour un système cible. 
 
-Par exemple si vous êtes sur linux, vous utiliser un compilateur configuré pour linux. 
+Par exemple si vous êtes sur linux, vous utilisez un compilateur configuré pour linux. 
 
-Cependant celui qui tourne par défaut sur votre machine peut être configuré pour un système d'exploitation en particulier et non pour le votre, cela peut mener, plus tard, à des problèmes. 
+Cependant celui qui tourne par défaut sur votre machine peut être configuré pour un système d'exploitation en particulier et non pour le votre, cela peut mener, plus tard, à d'important problèmes. 
 
-Il faut alors utiliser un cross compiler pour votre kernel et non pour linux. 
+Il faut alors utiliser un cross compiler pour votre kernel et non pour linux.
 
 ## Quel plateforme cible ? 
 
-Il faut déjà savoir quel plateforme cible utiliser, cela dépendra de l'architecture de votre kernel. 
+Il faut déjà savoir quel plateforme cible utiliser, cela dépendra de l'architecture de votre kernel :
 
-Si il est 64bit il faut utiliser: 
+
+pour du x86 64bit il faut utiliser: 
 `x86_64-pc`
 
-mais si il est en 32bit il faut utiliser: 
+pour du x86 32bit il faut utiliser: 
 `i686-pc`
 
 ## Les dépendances
@@ -35,18 +36,17 @@ Pour que vous puissiez compiler gcc et binutils (ld, objdump...) il faut que vou
 
 soit: 
 ```bash
-
 $ sudo apt-get install make build-essential bison flex libgmp3-dev libmpc-dev libmpfr-dev texinfo wget gcc binutils
-
 ```
 
 ## Le téléchargement du code source 
 
 pour le téléchargement du code source vous pouvez utiliser wget et tar pour la décompression 
 
-> il faut noter que le téléchargement peut prendre beaucoup de temps pour les personnes qui n'ont pas de bonne connection.
+> le téléchargement peut prendre beaucoup de temps en fonction de la connection internet.
 
 ### binutils 
+
 pour binutils vous pouvez juste utiliser le lien: 
 ```bash
 https://ftp.gnu.org/gnu/binutils/binutils-$binutilsversion.tar.xz
@@ -65,7 +65,7 @@ on peut avoir `$gccversion` qui peut être égale à 10.1.0
 
 ## Le build
 
-> il faut noter que le build peut prendre lui aussi beaucoup de temps pour les personnes qui ont des ordinateurs un peut lents.
+> le build peut prendre beaucoup de temps en fonction de la puissance de l'ordinateur
 
 pour la construction du cross compilateur il faut utiliser un chemin différent du code source, par exemple si vous avez: 
 ```
@@ -99,7 +99,6 @@ make all -j
 make install -j
 ```
 
-
 ### gcc 
 
 pour gcc dans le chemins gcc-build vous pouvez faire 
@@ -116,3 +115,8 @@ make -j all-target-libgcc
 make -j install-gcc 
 make -j install-target-libgcc
 ```
+
+Vous pouvez maintenant utiliser votre toolchain !
+
+cependant il faudrait plus tard implémenter une toolchain spécifique pour votre os. 
+C'est une toolchain modifiée pour votre système d'exploitation.
