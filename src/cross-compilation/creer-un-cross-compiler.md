@@ -24,7 +24,7 @@ pour du x86 32bit il faut utiliser:
 
 ## Les dépendances
 
-Pour que vous puissiez compiler gcc et binutils (ld, objdump...), il faut que vous ayez ceci: (sur debian)
+Pour que vous puissiez compiler gcc et binutils (ld, objdump...), il faut que vous ayez ces paquets: (sur debian)
 
 - build-essential
 - bison
