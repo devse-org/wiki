@@ -57,7 +57,7 @@ les flags d'un segment est formé comme ceci:
 |nom                    |taille     |
 |-----------------------|-----------|
 | accédé                | 1 bit     |
-| écriture              | 1 bit     |
+| écriture/lisible      | 1 bit     |
 | direction/conformité  | 1 bit     |
 | executable            | 1 bit     |
 | type de descripteur   | 1 bit     |
@@ -66,7 +66,9 @@ les flags d'un segment est formé comme ceci:
 
 __accédé__ : doit être à 0, il est mit à 1 quand le processeur l'utilise
 
-__écriture__: si le bit est à 1 alors l'écriture est autorisé avec le segment, si le bit est à 0 alors le segment est seulement lisible 
+__écriture/lisible__: 
+- si c'est un segment de donnée: si le bit est à 1 alors l'écriture est autorisé avec le segment, si le bit est à 0 alors le segment est seulement lisible 
+- si c'est un segment de code: si le bit est à 1 alors on peut lire le segment sinon le segment ne peut pas être lu
 
 __direction/conformité__: 
 - pour les descripteurs de données:
@@ -83,12 +85,105 @@ __niveau de privilège__: représente le niveau de privilège du descripteur (de
 
 __segment présent__: doit être mit à 1 pour tout descripteur (sauf pour le descripteur null)
 
+## le registre granularité
+
+
+le registre granularité d'un segment est formé comme ceci:
+
+|nom                    |taille     |
+|-----------------------|-----------|
+| granularité           | 1 bit     |
+| taille                | 1 bit     |
+| mode long             | 1 bit     |
+| zéro                  | 1 bit     |
+
+__granularité__: le bit granularité doit être mit quand la limite est fixe, cependant si le bit est à 1 alors la limite est multipliée par 4096
+
+__taille__: le bit taille doit être mit à 0 pour le 16bit/64bit, 1 pour le 32bit
+
+__mode long__: le bit doit être à 1 pour les descripteur de code en 64bit sinon il reste à 0
 ## types de segment
 il y a différents type de segments:
 
-__le segment null__: l'entrée 0 d'une gdt est une entrée nulle, tout le segment est à 0
+### le segment null
+ l'entrée 0 d'une gdt est une entrée nulle, tout le segment est à 0
 
-__le segment code du kernel__: la première entrée doit être un segment pour le kernel
+### le segment code du kernel
+ la première entrée doit être un segment pour le kernel éxecutable soit un segment de code,
+- dans le type il faut que le bit 'type de descripteur' soit à 1
+- il faut que le segment ait l'accès en écriture
+- il faut que le bit executable soit mit
+- le niveau de privilège doit être à 0
+
+cela produit un type pour le mode x86_64:
+`0b10011010`
+
+la granularité doit être à `0b10`
+
+### le segment data du kernel
+la seconde entrée doit être un segment de donnée pour le kernel
+- il faut utiliser la même démarche que le segment de code sauf qu'il faut mettre le bit executable à 0
+
+cela produit un type pour le mode x86_64:
+`0b10010010`
+
+la granularité doit être à `0`
+
+### le segment code des utilisateurs
+la troisième entrée doit être un segment pour les applications éxecutable depuis l'anneau (niveau de privilège) 3
+- il faut reproduire la même démarche que pour le segment code du kernel sauf que le niveau de privilège doit être à 3 pour le segment
+
+cela produit un type pour le mode x86_64:
+`0b11111010`
+
+la granularité doit être à `0b10`
+
+### le segment données des utilisateurs
+la quatrième entrée doit être un segment pour les données d'applications depuis l'anneau (niveau de privilège) 3
+- il faut reproduire la même démarche que pour le segment data du kernel sauf que le niveau de privilège doit être à 3 pour le 
+
+cela produit un type pour le mode x86_64:
+`0b11110010`
+
+la granularité doit être à `0`
+
+# le chargement d'une gdt
+
+pour charger un registre d'une gdt il faut utiliser l'instruction: 
+```x86asm
+lgdt [registre]
+```
+
+avec le registre contenant l'adresse du registre de la gdt. 
+
+cependant en 64bit il faut charger les registre du segment de code et de donnée
+
+en 64bit nous devons simuler un retour d'interruption, car l'instruction `iretq` est le seul moyen d'écrire les registres de code et de données
+
+```x86asm
+gdtr_install:
+    lgdt [rdi]
+    push rbp            
+    mov rbp, rsp        ; sauvegarder la stack en utilisant le registre rbp
+  
+    push qword 0x10     ; le segment de données du kernel (-> ss)
+    push rbp            ; sauvegarde la stack  (-> RSP)
+    pushf               ; pousse les flags dans la stack (-> rflags)
+    push qword 0x8      ; pousse le segment de de code du kernel (-> cs)
+    push .trampoline    ; pousse le futur point de retour (-> RIP) 
+
+    iretq               ; provoque un "retour" d'interruption, le cpu pop alors 
+                        ; toutes les données au dessus pour les registres destinés
+.trampoline:
+    pop rbp
+    ; met tout les segments avec leurs valeurs ciblants le segment de données
+    mov ax, 0x10
+
+    mov ds, ax
+    mov es, ax
+    mov ss, ax
+    ret
+``` 
 
 sources:
 
