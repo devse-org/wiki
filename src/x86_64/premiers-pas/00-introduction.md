@@ -4,21 +4,21 @@
 
 Ce tutoriel vous expliquera les __bases__ du fonctionnement d'un système d'exploitation par la réalisation pas à pas d'un kernel minimaliste.
 
-⚠️Pour suivre ce tutoriel, il vous est recommandé d'utiliser un système UNIX-Like tel que GNU/Linux. Bien que vous pouvez utilisez Windows celà demande un peux plus de travail et nous n'aborderons pas les étapes necessaires à l'instalation d'un environement de developpement sous Windows.
+⚠️Pour suivre ce tutoriel, il vous est recommandé d'utiliser un système UNIX-Like tel que GNU/Linux. Bien que vous puissiez utiliser Windows celà demande un peux plus de travail et nous n'aborderons pas les étapes necessaires à l'instalation d'un environement de developpement sous Windows.
 
-Avant de se lancer il faut garder en tête que le developpement de système d'exploitation est très long. Il faut donc être conscient qu'il ne s'ajis pas d'un petit projet de quelques jours. Beaucoup de système d'exploitation sont abandonné faute de motivation dans la durée. Aussi n'ayez pas les yeux plus gros que le ventre: vous n'inventerez pas le nouveau Windows ou OS X.
+Avant de se lancer il faut garder en tête que le developpement de système d'exploitation est très long. Il faut donc être conscient qu'il ne s'agit pas d'un petit projet de quelques jours. Beaucoup de systèmes d'exploitation sont abandonnés faute de motivation dans la durée. Aussi n'ayez pas les yeux plus gros que le ventre: vous n'inventerez pas le nouveau Windows ou OS X.
 
-Pour pouvoir menner a bien ce type de projet il faut déjà posseder des bases en programmation, pas besoin d'être un expert avec 30ans d'experience en C rassurez vous.
+Pour pouvoir mener a bien ce type de projet il faut déjà posseder des bases en programmation, pas besoin d'être un expert avec 30ans d'expérience en C rassurez vous.
 
-Une erreur commune est de se lancer dans des gros projet tel que des MMORPG ou dans le cas présent un kernel sans toutefois connaitre la programmation
+Une erreur commune est de se lancer dans de gros projet tels qu'un MMORPG ou dans le cas présent un kernel sans toutefois connaitre la programmation
 
 Bien que dans ce tutoriel nous utiliserons assez peu l'assembleur, en connaitre les bases est un sérieux plus.
 
-Bref vous l'aurez compris, ne vous lancez pas dans un tel projet si vous n'avez pas un minimum de base. (N'essayez pas d'apprendre sur le tas, prennez du recul, apprennez a programmer et revennez)
+Bref. Vous l'aurez compris. Ne vous lancez pas dans un tel projet si vous n'avez pas un minimum de base. (N'essayez pas d'apprendre sur le tas, prennez du recul, apprennez a programmer et revennez)
 
-Aussi gardez en tête de vous ne pouvez pas coder un système d'exploitation dans n'importe quel langage et la majorité des ressources que vous trouverez sur le net tourne autours du C, C++ voir du Rust.
+Aussi gardez en tête que vous ne pouvez pas programmer un système d'exploitation dans n'importe quel langage et la majorité des ressources que vous trouverez sur le net tournent autours du C, C++ voire du Rust.
 
-Il est important que vous prenniez le temps de bien lire les explications plutôt de vous jettez directement sur le code et faire de bête copier/coller. Si vous ne comprennez pas du premier coup ce n'est pas grave, pensez a faire vos propres recherches et à relire plus tard à tête reposé.
+Il est important que vous prenniez le temps de bien lire les explications plutôt de vous jeter directement sur le code et faire de bêtes copier/coller. Si vous ne comprennez pas du premier coup ce n'est pas grave, pensez a faire vos propres recherches et à relire plus tard à tête reposée.
 
 ## Introduction
 
@@ -26,9 +26,9 @@ Il est important que vous prenniez le temps de bien lire les explications plutô
 
 Le Kernel est l'élément central d'un système d'exploitation, il est chargé par le boot loader.
 
-Le kernel a plusieurs responsabilités comme celle de gérer la mémoire, le multitaches etc. Il existe plusieurs type de noyeau qui change grandement la manière d'aborder les systèmes d'exploitations.
+Le kernel a plusieurs responsabilités comme celle de gérer la mémoire, le multitaches etc. Il existe plusieurs types de noyeaux qui change grandement la manière d'aborder les systèmes d'exploitations.
 
-La conception du kernel et ses responsabilité change en fonction du type de [kernel](/types-de-kernel.html) et de la vision de l'auteur.
+La conception du kernel et ses responsabilités changent en fonction du type de [kernel](/types-de-kernel.html) et du point de vue de l'auteur.
 
 ### Qu'est ce qu'un bootloader ?
 
@@ -40,7 +40,7 @@ Dans ce tutoriel nous utiliserons [Limine](https://github.com/limine-bootloader/
 
 ### L'architecture 
 
-L'architecture c'est comment un processeur est structuré, comment il fonctionne, quel est son language assembly. 
+L'architecture c'est la façon dont un processeur est structuré, sa façon de fonctionner, son [ISA](https://en.wikipedia.org/wiki/Instruction_set_architecture).
 Il y a plusieurs architecture et un kernel peut en supporter plusieurs en même temps : 
 
 - x86 
