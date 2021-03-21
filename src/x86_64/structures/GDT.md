@@ -99,14 +99,19 @@ __granularité__: Le bit granularité doit être mit quand la limite est fixe, c
 __taille__: Le bit taille doit être mit à 0 pour le 16bit/64bit, 1 pour le 32bit.
 
 __mode long__: Le bit doit être à 1 pour les descripteur de code en 64bit sinon il reste à 0.
+
 ## Types de segment
+
 Il y a différents type de segments:
 
 ### Le segment null
- L'entrée 0 d'une gdt est une entrée nulle, tout le segment est à 0.
+
+L'entrée 0 d'une gdt est une entrée nulle, tout le segment est à 0.
 
 ### Le segment code du kernel
- La première entrée doit être un segment pour le kernel éxecutable soit un segment de code:
+
+La première entrée doit être un segment pour le kernel éxecutable soit un segment de code:
+
 - Dans le type il faut que le bit 'type de descripteur' soit à 1.
 - Il faut que le segment ait l'accès en écriture.
 - Il faut que le bit executable soit mit.
@@ -118,6 +123,7 @@ Cela produit un type pour le mode x86_64:
 La granularité doit être à `0b10`
 
 ### Le segment data du kernel
+
 La seconde entrée doit être un segment de donnée pour le kernel.
 - Il faut utiliser la même démarche que le segment de code sauf qu'il faut mettre le bit executable à 0.
 
@@ -127,7 +133,9 @@ Cela produit un type pour le mode x86_64:
 La granularité doit être à `0`
 
 ### Le segment code des utilisateurs
+
 La troisième entrée doit être un segment pour les applications éxecutable depuis l'anneau (niveau de privilège) 3.
+
 - Il faut reproduire la même démarche que pour le segment code du kernel sauf que le niveau de privilège doit être à 3 pour le segment.
 
 Cela produit un type pour le mode x86_64:
@@ -136,6 +144,7 @@ Cela produit un type pour le mode x86_64:
 La granularité doit être à `0b10`.
 
 ### Le segment données des utilisateurs
+
 La quatrième entrée doit être un segment pour les données d'applications depuis l'anneau (niveau de privilège) 3.
 - Il faut reproduire la même démarche que pour le segment data du kernel sauf que le niveau de privilège doit être à 3.
 
@@ -153,7 +162,6 @@ lgdt [registre]
 ```
 
 Avec le registre contenant l'adresse du registre de la gdt. 
-
 Cependant en 64bit il faut charger les registre du segment de code et de donnée.
 
 En 64bit vous devez '*simuler*' un retour d'interruption, car l'instruction `iretq` est le seul moyen d'écrire les registres de code et de données:
