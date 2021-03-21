@@ -11,7 +11,7 @@ La table globale de descripteur est principalement formée de 2 structures:
 - la gdtr (le registre de segments)
 - le segment
 
-# le registre de segments
+# Le registre de segments
 
 le registre de segments en mode long (x86_64) doit être construit comme ceci:
 
@@ -24,7 +24,7 @@ __taille__: Le registre taille doit contenir la taille de la table de segment, s
 
 __adresse de la table__: L'adresse de la table doit pointer directement vers la table de segments.
 
-# les segments 
+# Les segments 
 
 Un segment en x86_64 est formé comme ceci:
 
@@ -38,17 +38,17 @@ Un segment en x86_64 est formé comme ceci:
 | granularité           | 4 bit     |
 | base haute (24-31)    | 8 bit     |
 
-## les registres base
+## Les registres base
 
 Le registre base est le début du segment, en mode long il faut le mettre à 0.
 
-## les registres limite 
+## Les registres limite 
 
 Le registre limite est une adresse 20bit, il représente la fin du segment.
 Il est multiplié par 4096 si le bit `granularité` est à 1.
 En mode long (64 bit) il faut le mettre à 0xfffff pour demander à ce que le segment prenne toute la mémoire.
 
-## le registre flag
+## Le registre flag
 
 Les flags d'un segment est formé comme ceci:
 
@@ -83,7 +83,7 @@ __niveau de privilège__: Représente le niveau de privilège du descripteur (de
 
 __segment présent__: Doit être mit à 1 pour tout descripteur (sauf pour le descripteur null).
 
-## le registre granularité
+## Le registre granularité
 
 Le registre granularité d'un segment est formé comme ceci:
 
@@ -99,13 +99,13 @@ __granularité__: Le bit granularité doit être mit quand la limite est fixe, c
 __taille__: Le bit taille doit être mit à 0 pour le 16bit/64bit, 1 pour le 32bit.
 
 __mode long__: Le bit doit être à 1 pour les descripteur de code en 64bit sinon il reste à 0.
-## types de segment
+## Types de segment
 Il y a différents type de segments:
 
-### le segment null
+### Le segment null
  L'entrée 0 d'une gdt est une entrée nulle, tout le segment est à 0.
 
-### le segment code du kernel
+### Le segment code du kernel
  La première entrée doit être un segment pour le kernel éxecutable soit un segment de code:
 - Dans le type il faut que le bit 'type de descripteur' soit à 1.
 - Il faut que le segment ait l'accès en écriture.
@@ -117,7 +117,7 @@ Cela produit un type pour le mode x86_64:
 
 La granularité doit être à `0b10`
 
-### le segment data du kernel
+### Le segment data du kernel
 La seconde entrée doit être un segment de donnée pour le kernel.
 - Il faut utiliser la même démarche que le segment de code sauf qu'il faut mettre le bit executable à 0.
 
@@ -126,7 +126,7 @@ Cela produit un type pour le mode x86_64:
 
 La granularité doit être à `0`
 
-### le segment code des utilisateurs
+### Le segment code des utilisateurs
 La troisième entrée doit être un segment pour les applications éxecutable depuis l'anneau (niveau de privilège) 3.
 - Il faut reproduire la même démarche que pour le segment code du kernel sauf que le niveau de privilège doit être à 3 pour le segment.
 
@@ -135,7 +135,7 @@ Cela produit un type pour le mode x86_64:
 
 La granularité doit être à `0b10`.
 
-### le segment données des utilisateurs
+### Le segment données des utilisateurs
 La quatrième entrée doit être un segment pour les données d'applications depuis l'anneau (niveau de privilège) 3.
 - Il faut reproduire la même démarche que pour le segment data du kernel sauf que le niveau de privilège doit être à 3.
 
@@ -144,7 +144,7 @@ Cela produit un type pour le mode x86_64:
 
 La granularité doit être à `0`.
 
-# le chargement d'une gdt
+# Le chargement d'une gdt
 
 Pour charger un registre d'une gdt il faut utiliser l'instruction: 
 
