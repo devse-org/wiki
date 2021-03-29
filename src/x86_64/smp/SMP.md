@@ -6,15 +6,14 @@ Les termes "coeurs" et "CPU" seront utilisés tout au long de ce tutoriel. Ils r
 
 Le terme "thread" désigne un fil d'instructions, exécuté en parallèle à d'autres threads ; ou, autrement dit, un flot d'instructions dont l'exécution n'interfère généralement pas avec l'exécution d'un autre flot d'instructions.
 
-## Préréquis
+## Prérequis
 
 Dans ce tutoriel, pour implémenter le SMP, nous prenons en compte que vous avez déjà implémenté la base de votre noyau :
 
-- [IDT](../../structures/IDT/)
-- [GDT](../../structures/GDT/)
-- [MADT](../../périphériques/MADT/)
-- [LAPIC](../../périphériques/LAPIC/)
-- [APIC](../../périphériques/APIC/)
+- [IDT](/x86_64/structures/IDT.md)
+- [GDT](/x86_64/structures/GDT.md)
+- [MADT](/x86_64/acpi/MADT.md)
+- [APIC](/x86_64/périphériques/APIC.md)
 - Paging
 
 On considère aussi que la structure de votre noyau est composée de ces caractéristiques :
@@ -33,25 +32,25 @@ En sachant que - __généralement__ - un processeur possède 2 threads par coeur
 
 Le SMP est différent de NUMA, les processeurs NUMA sont des processeurs dont certains de leurs coeurs n'ont pas accès à toute la mémoire.
 
-Il est utile de savoir qu'il faudra implémenter les interruptions [APIC](../../périphériques/APIC/) pour les autres CPUs, ce qui n'est pas abordé dans ce tutoriel (pour l'instant).
+Il est utile de savoir qu'il faudra implémenter les interruptions [APIC](/x86_64/périphériques/APIC.md) pour les autres CPUs, ce qui n'est pas abordé dans ce tutoriel (pour l'instant).
 
 ## Obtenir le numéro du coeur actuel
 
 Obtenir le numero du coeur actuel est très important pour plus tard, il permet d'identifier le CPU sur lequel on travaille.
 
-Pour obtenir l'identifiant du CPU actuel on doit utiliser l'[APIC](../../périphériques/APIC/). Le numéro du CPU est contenu dans le registre 20 de l'APIC, et il est situé du 24ème au 32ème bit, il faut donc décaler à droite la valeur lue de 24 bits. 
+Pour obtenir l'identifiant du CPU actuel on doit utiliser l'[APIC](/x86_64/périphériques/APIC.md). Le numéro du CPU est contenu dans le registre 20 de l'APIC, et il est situé du 24ème au 32ème bit, il faut donc décaler à droite la valeur lue de 24 bits. 
 
 ```cpp
 #define LAPIC_REGISTER 20
 uint32_t get_current_processor_id()
 {
-    return apic::read(LAPIC_REGISTER) >> 24;
+    return apic_read(LAPIC_REGISTER) >> 24;
 }
 ```
 
 ## Obtenir les entrées Local APIC
 
-Voir : [LAPIC](documentation/x86_64/périphériques/LAPIC/)
+Voir : [LAPIC](/x86_64/périphériques/APIC.md)
 
 Pour commencer à utiliser le SMP, il faut obtenir les entrées LAPIC de la tablea MADT. Chaque CPU posède une entrée LAPIC.
 
