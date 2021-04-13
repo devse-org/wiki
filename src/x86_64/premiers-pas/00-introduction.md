@@ -1,47 +1,48 @@
 # 0 - Introduction
-Ici nous ne ferons pas de programmation, juste des bonnes définitions pour être préparé.
 
-## Préface (aka gate keeping)
-Ce tutoriel vous expliquera comment créer les __bases__ d'un kernel.
+## Préface
 
-Il faut savoir que c'est très dur et long. Beaucoup de kernel sont abandonnés... 
+Ce tutoriel vous expliquera les __bases__ du fonctionnement d'un système d'exploitation par la réalisation pas à pas d'un kernel minimaliste.
 
-Il faut être déterminé et savoir coder, il faut bien connaitre le C ou le C++ (le Rust ne sera pas abordé dans ces tutoriels).
-Il faut aussi comprendre l'assembleur, cependant, l'architecture de l'assembleur dépend de vos envies. Et il ne sera pas énormément présent.
+⚠️Pour suivre ce tutoriel, il vous est recommandé d'utiliser un système UNIX-Like tel que GNU/Linux. Bien que vous puissiez utiliser Windows celà demande un peux plus de travail et nous n'aborderons pas les étapes necessaires à l'instalation d'un environement de developpement sous Windows.
 
-Il ne faut pas commencer un kernel en parallèle d'apprendre un language, ce sera beaucoup plus difficile.
+Avant de se lancer il faut garder en tête que le developpement de système d'exploitation est très long. Il faut donc être conscient qu'il ne s'agit pas d'un petit projet de quelques jours. Beaucoup de systèmes d'exploitation sont abandonnés faute de motivation dans la durée. Aussi n'ayez pas les yeux plus gros que le ventre: vous n'inventerez pas le nouveau Windows ou OS X.
 
-Ecrire un système supportant les exécutables Windows est extrêmement complexe à créer. 
-    
-Vous ne pouvez pas coder un kernel en javascript.
+Pour pouvoir mener a bien ce type de projet il faut déjà posseder des bases en programmation, pas besoin d'être un expert avec 30ans d'expérience en C rassurez vous.
 
-Il est __très très très__ recommandé d'utiliser GNU/Linux, beaucoup d'outils manquent sur Windows/macOS et WSL est très lent.
+Une erreur commune est de se lancer dans de gros projet tels qu'un MMORPG ou dans le cas présent un kernel sans toutefois connaitre la programmation
 
-Il faut lire et ne pas juste faire de bêtes copier/coller.
+Bien que dans ce tutoriel nous utiliserons assez peu l'assembleur, en connaitre les bases est un sérieux plus.
+
+Bref. Vous l'aurez compris. Ne vous lancez pas dans un tel projet si vous n'avez pas un minimum de base. (N'essayez pas d'apprendre sur le tas, prennez du recul, apprennez a programmer et revennez)
+
+Aussi gardez en tête que vous ne pouvez pas programmer un système d'exploitation dans n'importe quel langage et la majorité des ressources que vous trouverez sur le net tournent autours du C, C++ voire du Rust.
+
+Il est important que vous prenniez le temps de bien lire les explications plutôt de vous jeter directement sur le code et faire de bêtes copier/coller. Si vous ne comprennez pas du premier coup ce n'est pas grave, pensez a faire vos propres recherches et à relire plus tard à tête reposée.
 
 ## Introduction
 
 ### Qu'est ce qu'un kernel (ou noyau) ?
 
-Un noyau est l'une des plus grosses parties d'un système d'exploitation. Il permet aux applications utilisateur d'accéder aux composants et périphériques. Il gère la mémoire, les fichiers, les processus, les drivers, les processeurs, une partie de la sécurité etc...
+Le Kernel est l'élément central d'un système d'exploitation, il est chargé par le boot loader.
 
-Un noyau est l'étape après le bootloader, ou le chargeur de boot.
+Le kernel a plusieurs responsabilités comme celle de gérer la mémoire, le multitaches etc. Il existe plusieurs types de noyeaux qui change grandement la manière d'aborder les systèmes d'exploitations.
+
+La conception du kernel et ses responsabilités changent en fonction du type de [kernel](/types-de-kernel.html) et du point de vue de l'auteur.
+
 
 ### Qu'est ce qu'un bootloader ?
 
 Un bootloader un programme permettant de démarrer votre kernel.
 
-Il est très important et très compliqué, il est recommandé de ne pas écrire son propre bootloader quand on débute, cela va vite vous décourager...
+Un bootloader peut aussi charger des éléments important pour le kernel, comme des modules chargé dans le disques, l'A20 etc...
 
-Un bootloader peut aussi charger des éléments important pour le kernel, comme des modules chargés dans le disque, l'A20, etc...
-
-Les bootloaders les plus courants dans le développement de systèmes d'exploitation sont [GRUB](https://github.com/fwsGonzo/barebones) et [Limine](https://github.com/limine-bootloader/limine-barebones).
+Dans ce tutoriel nous utiliserons [Limine](https://github.com/limine-bootloader/limine)
 
 ### L'architecture 
 
-L'architecture du processeur est très importante pour votre kernel. Celle-ci définit le fonctionnement du processseur, sa structure interne, les instructions disponibles ainsi que ses caractéristiques.
-
-Il y a plusieurs architectures et un kernel peut en supporter plusieurs en même temps: 
+L'architecture c'est la façon dont un processeur est structuré, sa façon de fonctionner, son [ISA](https://en.wikipedia.org/wiki/Instruction_set_architecture).
+Il y a plusieurs architecture et un kernel peut en supporter plusieurs en même temps : 
 
 - x86 
 - RISC-V
@@ -54,11 +55,11 @@ L'architecture est importante, ici nous prenons le x86 car c'est l'architecture 
 Le x86 est divisé en *modes* : 
 
 
-| nom anglais   |nom français   |taille de registre
-|------------   |-------------  |-
-|real mode      |mode réel      |16/20 bit
-|protected mode |mode protégé   |32bit
-|long mode      |mode long      |64bit
+| nom anglais       |nom français   |taille de registre
+|------------       |-------------  |-
+|real mode          |mode réel      |16/20 bit
+|protected mode     |mode protégé   |32bit
+|long mode          |mode long      |64bit
 
 Nous utiliserons ici le mode long, car il est le plus récent, même si il a moins de documentation que le mode protégé.
 
