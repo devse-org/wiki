@@ -30,9 +30,10 @@ Le kernel a plusieurs responsabilités comme celle de gérer la mémoire, le mul
 
 La conception du kernel et ses responsabilités changent en fonction du type de [kernel](/types-de-kernel.html) et du point de vue de l'auteur.
 
+
 ### Qu'est ce qu'un bootloader ?
 
-Un bootloader est générallement ce qui permet de faire passer de la machine qui démarre à une machine prête pour faire booter/démarrer le noyau 
+Un bootloader un programme permettant de démarrer votre kernel.
 
 Un bootloader peut aussi charger des éléments important pour le kernel, comme des modules chargé dans le disques, l'A20 etc...
 
@@ -44,14 +45,14 @@ L'architecture c'est la façon dont un processeur est structuré, sa façon de f
 Il y a plusieurs architecture et un kernel peut en supporter plusieurs en même temps : 
 
 - x86 
-- riscV
-- arm
-- powerpc
-- et bien d'autres
+- RISC-V
+- ARM
+- PowerPC
+- Et bien d'autres...
 
-l'architecture est importante, ici nous prenons le x86 car c'est l'architecture la plus utilisée.
+L'architecture est importante, ici nous prenons le x86 car c'est l'architecture la plus utilisée.
 
-le x86 est divisé en *modes* : 
+Le x86 est divisé en *modes* : 
 
 
 | nom anglais       |nom français   |taille de registre
@@ -60,27 +61,26 @@ le x86 est divisé en *modes* :
 |protected mode     |mode protégé   |32bit
 |long mode          |mode long      |64bit
 
-nous utiliserons ici le mode long car il est le plus récent, même si il a moins de documentation que le mode protégé.
+Nous utiliserons ici le mode long, car il est le plus récent, même si il a moins de documentation que le mode protégé.
 
 
 ### Comment ?
 Comment coder un kernel ? 
 
-Il faut prendre la route que l'on veut, mais il y a des éléments important qu'il faut faire dans un ordre à peut près précis,
+Il faut prendre la route que l'on veut, mais il y a des éléments importants qu'il faut faire dans un ordre assez précis.
 
-Vous pouvez dans certains cas faire l'ordre que vous voulez mais il faut quand même une route... car parfois on se pose la question : quoi faire après ? 
+Vous pouvez dans certains cas le faire dans l'ordre que vous voulez mais il faut quand même une route... car parfois on se pose la question : que faire ensuite ? 
 
-Donc cette route ici est recommandé mais vous faites comme vous le souhaitez 
-
+La route ci-dessous est recommandée mais vous pouvez le faire de la manière dont vous l'entendez: 
 
 - démarrage
 - com // pour le debugging 
-- gdt
-- idt
-- interruption  // pour le debugging d'erreur
-- pit 
-- gestion de mémoire physique
-- pagination 
-- multitache 
+- GDT (Global Descriptor Table) utilisée à l'époque pour la [segmentation de la mémoire](https://fr.wikipedia.org/wiki/Segmentation_(informatique))
+- IDT (Interrupt Descriptor Table) utilisée pour gérer les [interruptions](https://fr.wikipedia.org/wiki/Interruption_(informatique))
+- Interruption  // pour le debugging d'erreur
+- PIT 
+- Gestion de mémoire physique
+- Pagination 
+- Multitâche 
 
-à partir d'ici tout deviens très subjectif vous pouvez enchainer sur le smp, le système de fichier, les tâches utilisatrices, etc...
+À partir d'ici, tout devient très subjectif vous pouvez enchainer sur le SMP, le système de fichiers, les tâches utilisateur, etc...
