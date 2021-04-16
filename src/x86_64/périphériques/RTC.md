@@ -52,6 +52,6 @@ unsigned char rtc_get_seconds()
 ```
 
 # Ressources
-[Wikipedia](https://en.wikipedia.org/wiki/Real-time_clock)
-[OSDev.org - CMOS](https://wiki.osdev.org/CMOS)
-[OSDev.org - RTC](https://wiki.osdev.org/RTC)
+- [Wikipedia](https://en.wikipedia.org/wiki/Real-time_clock)
+- [OSDev.org - CMOS](https://wiki.osdev.org/CMOS)
+- [OSDev.org - RTC](https://wiki.osdev.org/RTC)
