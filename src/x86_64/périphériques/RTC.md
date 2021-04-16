@@ -7,10 +7,13 @@
 RTC ou Real-Time Clock, est une puce qui mesure le passage du temps.
 Elle peut être utilisée pour avoir la date et heure précise. (voir ACPI pour le siècle)
 
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Dallas-Semiconductor-DS1287-Real-Time-IC.jpg/1920px-Dallas-Semiconductor-DS1287-Real-Time-IC.jpg" width="400">
+
+
 # Lire le temps
 Il est possible de lire depuis la RTC en utilisant les fonctions suivantes:
 ```c
-/* Check if RTC is updating */
+/* Vérifier si la RTC est en train de se mettre à jour */
 int rtc_is_updating()
 {
     outb(0x70, 0x0A);
@@ -19,7 +22,7 @@ int rtc_is_updating()
 
 unsigned char rtc_read(int reg)
 {
-    while (rtc_is_updating());
+    while (rtc_is_updating()); /* Attendre que l'update finisse */
     outb(0x70, reg);
 
     return inb(0x71);
@@ -43,7 +46,12 @@ Voici un exemple d'une lecture des secondes
 unsigned char rtc_get_seconds()
 {
     unsigned char seconds = rtc_read(0);
-    unsigned char second = (seconds & 0x0F) + ((seconds / 16) * 10);
+    unsigned char second = (seconds & 0x0F) + ((seconds / 16) * 10); /* Convertir au décimal */
     return second;
 }
 ```
+
+# Ressources
+[Wikipedia](https://en.wikipedia.org/wiki/Real-time_clock)
+[OSDev.org - CMOS](https://wiki.osdev.org/CMOS)
+[OSDev.org - RTC](https://wiki.osdev.org/RTC)
