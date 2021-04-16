@@ -269,7 +269,7 @@ uint64_t find_free_pages(uint64_t count){
         }    
         
         if(!bitmap_is_bit_set(i)){
-            free_count++;  trouvées d'affilée de 1
+            free_count++;  // trouvées d'affilée de 1
             if(free_count == count){ 
                 return i;
             }
