@@ -5,11 +5,11 @@
 
 Il faut créer un `cross compiler` car un compilateur (gcc, clang, tcc...) généralement est configuré pour un système cible. 
 
-Par exemple si vous êtes sur linux, vous utilisez un compilateur configuré pour linux. 
+Par exemple si vous êtes sur GNU/Linux, vous utilisez un compilateur configuré pour GNU/Linux. 
 
 Cependant, celui qui tourne par défaut sur votre machine peut être configuré pour un système d'exploitation en particulier et non pour le vôtre, cela peut mener, plus tard, à d'importants problèmes. 
 
-Il faut alors utiliser un cross compiler pour votre kernel et non pour linux.
+Il faut alors utiliser un cross compiler pour votre kernel et non pour GNU/Linux.
 
 ## Quel plateforme cible ? 
 
