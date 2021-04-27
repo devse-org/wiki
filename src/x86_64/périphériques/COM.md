@@ -25,27 +25,27 @@ Chaque port a besoin d'être initialisé avant son utilisation.
 
 Pour commencer, il y a quelques valeurs constantes à connaître pour chaque port COM. 
 
-| Le port Com | L'id du port  | Son IRQ       |
-|-------------|---------------|---------------|
-| COM1        | 0x3F8         | 4             |
-| COM2        | 0x2F8         | 3             |
-| COM3        | 0x3E8         | 4             |
-| COM4        | 0x2E8         | 3             |
+| Le port Com | L'id du port | Son IRQ |
+| ----------- | ------------ | ------- |
+| COM1        | 0x3F8        | 4       |
+| COM2        | 0x2F8        | 3       |
+| COM3        | 0x3E8        | 4       |
+| COM4        | 0x2E8        | 3       |
 
 Puis, il y a l'offset.
 Chaque offset a certaines particularités.
 (= ID DU PORT + OFFSET)
 
-| offset      | action                                                                                                                                                                                      |
-|-------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 0           | Le port Data du COM, il est utilisé pour envoyer et recevoir des données, si le bit DLAB = 1 alors c'est pour mettre le diviseur du Baud (les bits inférieurs)                              |
-| 1           | Le port Interrupt du COM, il est utilisé pour activer les Interrupt du port, si le bit DLAB = 1 alors c'est pour mettre la valeur du diviseur (du Baud aussi mais pour les bits supérieurs) |
-| 2           | L'identificateur d'Interrupt ou le controleur FIFO                                                                                                                                          | 
-| 3           | le control de ligne (Le bit le plus haut est celui pour DLAB)                                                                                                                               |
-| 4           | Le control de Modem                                                                                                                                                                         |
-| 5           | Le status de la ligne                                                                                                                                                                       |
-| 6           | Le status de Modem                                                                                                                                                                          |
-| 7           | Le scratch register                                                                                                                                                                         |
+| offset | action                                                                                                                                                                                      |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0      | Le port Data du COM, il est utilisé pour envoyer et recevoir des données, si le bit DLAB = 1 alors c'est pour mettre le diviseur du Baud (les bits inférieurs)                              |
+| 1      | Le port Interrupt du COM, il est utilisé pour activer les Interrupt du port, si le bit DLAB = 1 alors c'est pour mettre la valeur du diviseur (du Baud aussi mais pour les bits supérieurs) |
+| 2      | L'identificateur d'Interrupt ou le controleur FIFO                                                                                                                                          |
+| 3      | le control de ligne (Le bit le plus haut est celui pour DLAB)                                                                                                                               |
+| 4      | Le control de Modem                                                                                                                                                                         |
+| 5      | Le status de la ligne                                                                                                                                                                       |
+| 6      | Le status de Modem                                                                                                                                                                          |
+| 7      | Le scratch register                                                                                                                                                                         |
 
 Pour mettre DLAB il faut mettre le port comme indiqué :
 `PORT + 3  = 0x80 = 128 = 0b10000000`

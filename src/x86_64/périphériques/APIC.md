@@ -8,8 +8,8 @@ Le nombre d'entrées locales APIC dans la MADT équivaut au nombre de CPUs, chaq
 
 La structure de l'entrée du local APIC est:
 
-| offset/taille (en byte)  | nom |
-|-----|-----|
-| 2 / 1   |identifiant ACPI  |
-| 3 / 1   |identifiant APIC |
-| 4 / 4   | flag du cpu |
+| offset/taille (en byte) | nom              |
+| ----------------------- | ---------------- |
+| 2 / 1                   | identifiant ACPI |
+| 3 / 1                   | identifiant APIC |
+| 4 / 4                   | flag du cpu      |

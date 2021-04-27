@@ -15,10 +15,10 @@ La table globale de descripteur est principalement formée de 2 structures:
 
 le registre de segments en mode long (x86_64) doit être construit comme ceci:
 
-|nom                    |taille     |
-|-----------------------|-----------|
-|taille                 | 16 bit    |
-|adresse de la table    | 64 bit    |
+| nom                 | taille |
+| ------------------- | ------ |
+| taille              | 16 bit |
+| adresse de la table | 64 bit |
 
 __taille__: Le registre taille doit contenir la taille de la table de segment, soit le nombre de segment multiplié par la taille du segment, cependant en 64bit la taille du segment de la TSS est doublé, il faut alors compter le double.
 
@@ -28,15 +28,15 @@ __adresse de la table__: L'adresse de la table doit pointer directement vers la 
 
 Un segment en x86_64 est formé comme ceci:
 
-|nom                    |taille     |
-|-----------------------|-----------|
-| limite basse (0-15)   | 16 bit    |
-| base basse (0-15)     | 16 bit    |
-| base milieu (16-23)   | 8 bit     |
-| flag                  | 8 bit     |
-| limite haute (16-19)  | 4 bit     |
-| granularité           | 4 bit     |
-| base haute (24-31)    | 8 bit     |
+| nom                  | taille |
+| -------------------- | ------ |
+| limite basse (0-15)  | 16 bit |
+| base basse (0-15)    | 16 bit |
+| base milieu (16-23)  | 8 bit  |
+| flag                 | 8 bit  |
+| limite haute (16-19) | 4 bit  |
+| granularité          | 4 bit  |
+| base haute (24-31)   | 8 bit  |
 
 ## Les registres base
 
@@ -52,15 +52,15 @@ En mode long (64 bit) il faut le mettre à 0xfffff pour demander à ce que le se
 
 Les flags d'un segment est formé comme ceci:
 
-|nom                    |taille     |
-|-----------------------|-----------|
-| accédé                | 1 bit     |
-| écriture/lisible      | 1 bit     |
-| direction/conformité  | 1 bit     |
-| executable            | 1 bit     |
-| type de descripteur   | 1 bit     |
-| niveau de privilège   | 2 bit     |
-| segment présent       | 1 bit     |
+| nom                  | taille |
+| -------------------- | ------ |
+| accédé               | 1 bit  |
+| écriture/lisible     | 1 bit  |
+| direction/conformité | 1 bit  |
+| executable           | 1 bit  |
+| type de descripteur  | 1 bit  |
+| niveau de privilège  | 2 bit  |
+| segment présent      | 1 bit  |
 
 __accédé__ : Doit être à 0, il est mit à 1 quand le processeur l'utilise.
 
@@ -87,12 +87,12 @@ __segment présent__: Doit être mit à 1 pour tout descripteur (sauf pour le de
 
 Le registre granularité d'un segment est formé comme ceci:
 
-|nom                    |taille     |
-|-----------------------|-----------|
-| granularité           | 1 bit     |
-| taille                | 1 bit     |
-| mode long             | 1 bit     |
-| zéro                  | 1 bit     |
+| nom         | taille |
+| ----------- | ------ |
+| granularité | 1 bit  |
+| taille      | 1 bit  |
+| mode long   | 1 bit  |
+| zéro        | 1 bit  |
 
 __granularité__: Le bit granularité doit être mit quand la limite est fixe, cependant si le bit est à 1 alors la limite est multipliée par 4096.
 
