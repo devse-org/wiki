@@ -55,11 +55,11 @@ L'architecture est importante, ici nous prenons le x86 car c'est l'architecture 
 Le x86 est divisé en *modes* : 
 
 
-| nom anglais       |nom français   |taille de registre
-|------------       |-------------  |-
-|real mode          |mode réel      |16/20 bit
-|protected mode     |mode protégé   |32bit
-|long mode          |mode long      |64bit
+| nom anglais    | nom français | taille de registre |
+| -------------- | ------------ | ------------------ |
+| real mode      | mode réel    | 16/20 bit          |
+| protected mode | mode protégé | 32bit              |
+| long mode      | mode long    | 64bit              |
 
 Nous utiliserons ici le mode long, car il est le plus récent, même si il a moins de documentation que le mode protégé.
 

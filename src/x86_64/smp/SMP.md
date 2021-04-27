@@ -81,8 +81,8 @@ Pour utiliser les CPUs, il faut d'abord les préparer, en particulier préparer 
 On place donc tout ceci de cette façon :
 
 | Entrée             | Adresse |
-|--------------------|---------|
-| Code du trampoline | 0x1000  | 
+| ------------------ | ------- |
+| Code du trampoline | 0x1000  |
 | Pile               | 0x570   |
 | GDT                | 0x580   |
 | IDT                | 0x590   |
