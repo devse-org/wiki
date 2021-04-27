@@ -9,6 +9,7 @@
 - [x86_64](x86_64/index.md)
 	- [périphériques]()
 		- [APIC](x86_64/périphériques/APIC.md)
+		- [framebuffer](x86_64/périphériques/framebuffer.md)
 		- [COM](x86_64/périphériques/COM.md)
 		- [PIC](x86_64/périphériques/PIC.md)
 		- [PIT](x86_64/périphériques/PIT.md)
