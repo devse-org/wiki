@@ -13,19 +13,27 @@ Elle peut être utilisée pour avoir la date et heure précise. (voir ACPI pour 
 # Lire le temps
 Il est possible de lire depuis la RTC en utilisant les fonctions suivantes:
 ```c
+
+enum 
+{
+    CMOS_ADDRESS = 0x70,
+    CMOS_DATA = 0x71,
+    STATUS_REGISTER_A = 0x0A
+};
+
 /* Vérifier si la RTC est en train de se mettre à jour */
 int rtc_is_updating()
 {
-    outb(0x70, 0x0A);
-    return inb(0x71) & 0x80;
+    outb(CMOS_ADDRESS, STATUS_REGISTER_A);
+    return inb(CMOS_DATA) & 0x80;
 }
 
 unsigned char rtc_read(int reg)
 {
     while (rtc_is_updating()); /* Attendre que l'update finisse */
-    outb(0x70, reg);
+    outb(CMOS_ADDRESS, reg);
 
-    return inb(0x71);
+    return inb(CMOS_DATA);
 }
 ```
 Voici la table des éléments à lire depuis la RTC et leur registre CMOS
