@@ -4,14 +4,16 @@
 
 > résultat à la fin de ce tutoriel
 
-Dans cette partie nous allons essayer de faire un "hello world !" dans le vga. Cependant vous avez 2 options pour le compilateur, soit vous faites un [cross compilateur](/cross-compilation/creer-un-cross-compiler.md) soit vous utilisez le compilateur fournis par votre distribution linux (gcc), ce n'est pas très recommandé mais vous pouvez toujours repousser l'utilisation du cross compilateur à plus tard (cependant il faut savoir que dans tout les cas vous serrez obligé de le faire). 
-Il faut aussi savoir que notre exemple utilisera [limine](https://github.com/limine-bootloader/limine) et tournera en 64bit.
+Dans cette partie nous allons faire un "hello world !" en 64bit. 
 
-Pour le projet nous utiliserons donc: 
+Pour ce projet nous utiliserons donc: 
+- [un cross compilateur](/cross-compilation/creer-un-cross-compiler.md)
 - [Limine](https://github.com/limine-bootloader/limine) comme bootloader
 - [Echfs](https://github.com/echfs/echfs) comme système de fichier
 
-Nous utiliserons echfs comme système de fichier car c'est assez simple de l'utiliser quand on débute, car normalement sans echfs on doit créer un disque, le partitionner, le monter, installer un système de fichier, mettre nos fichier... Avec echfs c'est plus simple (grâce à l'outil `echfs-utils`). 
+Pour commencer vous devez mettre un place un [cross compilateur](/cross-compilation/creer-un-cross-compiler.md) dans votre projet.
+
+Vous utiliserez echfs comme système de fichier car c'est assez simple de l'utiliser quand on débute, car normalement sans echfs on doit créer un disque, le partitionner, le monter, installer un système de fichier, mettre nos fichier... Avec echfs c'est plus simple (grâce à l'outil `echfs-utils`). 
 
 Vous devez donc cloner limine dans la source de votre projet (ou en le rajoutant en sous module git), ici nous prenons en compte le fait que vous utilisez directement la [branche qui contient les binaires](https://github.com/limine-bootloader/limine/tree/latest-binary).
 
@@ -44,7 +46,7 @@ Puis ensuite vous pouvez compiler les fichiers C mais avant nous devons changer 
 - `-masm=intel`: Utilise l'asm intel pour la génération de code.
 
 ```makefile
-GCC_C_FLAGS :=              \
+C_FLAGS :=                  \
 	-Isrc                   \
 	-std=c11                \
 	-ffreestanding          \
@@ -66,7 +68,7 @@ Maintenant vous pouvez rajouter une target a votre makefile pour compiler vos fi
 
 ```makefile
 %.o: %.c $(C_FILES)
-	$(CC) $(GCC_C_FLAGS) -c $< -o $@
+	$(CC) $(C_FLAGS) -c $< -o $@
 ```
 
 ## Linking
