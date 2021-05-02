@@ -1,6 +1,6 @@
 # Advanced Programmable Interrupt Controller
 
-# Local APIC
+## Local APIC
 
 Le local apic est une entrée de la [MADT](documentation/x86_64/périphériques/MADT/), son type est 0.
 

@@ -1,6 +1,4 @@
-<center>
-<b>Attention!</b><br>Cet article est en cours de rédaction.
-</center>
+# Le port
 
 # Introduction
 
@@ -23,7 +21,7 @@ La limite dépend également de la distance du raccord avec le fil, un fil long 
 
 Chaque port a besoin d'être initialisé avant son utilisation.
 
-Pour commencer, il y a quelques valeurs constantes à connaître pour chaque port COM. 
+Pour commencer, il y a quelques valeurs constantes à connaître pour chaque port COM.
 
 | Le port Com | L'id du port | Son IRQ |
 | ----------- | ------------ | ------- |
@@ -61,12 +59,13 @@ Pour le désactiver, il faut juste remettre le bit 8 à 0.
 Le port COM se met à jour 115200 fois par seconde.
 Pour controller la vitesse, il faut mettre en place un diviseur, que l'on peut utiliser en activant le DLAB.
 
-Ensuite, il faut passer la valeur par l'offset 0 (les bits inférieurs) et 1 (les bits supérieurs). 
+Ensuite, il faut passer la valeur par l'offset 0 (les bits inférieurs) et 1 (les bits supérieurs).
 
 Exemple permettant de mettre un diviseur de 5 (alors le port auras un 'rate' de 115200 / 5) :
-```cpp
+
+```c
 outb(COM_PORT + 3, 0x80); // activer le DLAB
-outb(COM_PORT + 0, 5); // les bits les plus petits 
+outb(COM_PORT + 0, 5); // les bits les plus petits
 outb(COM_PORT + 1, 0); // les bits les plus hauts
 ```
 
@@ -84,10 +83,11 @@ Celle-ci peut aller de 5 bits à 8 bits
 8bits = 1 1 (0x3)
 
 Pour définir la taille des données, vous devez l'écrire dans le port de contrôle de ligne (les bits les plus petits) avoir configuré le rate du port (et donc d'avoir activé le DLAB).
-```cpp
+
+```c
 outb(COM_PORT + 3, 0x3); // désactiver le DLAB + mettre la taille de donnée à 8 donc un char/unsigned char en c++
 ```
 
 ## Ressources
 
-- https://www.sci.muni.cz/docs/pc/serport.txt
+- <https://www.sci.muni.cz/docs/pc/serport.txt>

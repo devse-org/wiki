@@ -4,7 +4,7 @@
 
 Ce tutoriel vous expliquera les __bases__ du fonctionnement d'un système d'exploitation par la réalisation pas à pas d'un kernel minimaliste.
 
-⚠️Pour suivre ce tutoriel, il vous est recommandé d'utiliser un système UNIX-Like tel que GNU/Linux. Bien que vous puissiez utiliser Windows celà demande un peux plus de travail et nous n'aborderons pas les étapes necessaires à l'instalation d'un environement de developpement sous Windows.
+⚠️ Pour suivre ce tutoriel, il vous est recommandé d'utiliser un système UNIX-Like tel que GNU/Linux. Bien que vous puissiez utiliser Windows celà demande un peux plus de travail et nous n'aborderons pas les étapes necessaires à l'instalation d'un environement de developpement sous Windows.
 
 Avant de se lancer il faut garder en tête que le developpement de système d'exploitation est très long. Il faut donc être conscient qu'il ne s'agit pas d'un petit projet de quelques jours. Beaucoup de systèmes d'exploitation sont abandonnés faute de motivation dans la durée. Aussi n'ayez pas les yeux plus gros que le ventre: vous n'inventerez pas le nouveau Windows ou OS X.
 
@@ -30,7 +30,6 @@ Le kernel a plusieurs responsabilités comme celle de gérer la mémoire, le mul
 
 La conception du kernel et ses responsabilités changent en fonction du type de [kernel](/types-de-kernel.html) et du point de vue de l'auteur.
 
-
 ### Qu'est ce qu'un bootloader ?
 
 Un bootloader un programme permettant de démarrer votre kernel.
@@ -39,12 +38,12 @@ Un bootloader peut aussi charger des éléments important pour le kernel, comme 
 
 Dans ce tutoriel nous utiliserons [Limine](https://github.com/limine-bootloader/limine)
 
-### L'architecture 
+### L'architecture
 
 L'architecture c'est la façon dont un processeur est structuré, sa façon de fonctionner, son [ISA](https://en.wikipedia.org/wiki/Instruction_set_architecture).
-Il y a plusieurs architecture et un kernel peut en supporter plusieurs en même temps : 
+Il y a plusieurs architecture et un kernel peut en supporter plusieurs en même temps :
 
-- x86 
+- x86
 - RISC-V
 - ARM
 - PowerPC
@@ -52,8 +51,7 @@ Il y a plusieurs architecture et un kernel peut en supporter plusieurs en même 
 
 L'architecture est importante, ici nous prenons le x86 car c'est l'architecture la plus utilisée.
 
-Le x86 est divisé en *modes* : 
-
+Le x86 est divisé en *modes* :
 
 | nom anglais    | nom français | taille de registre |
 | -------------- | ------------ | ------------------ |
@@ -63,24 +61,24 @@ Le x86 est divisé en *modes* :
 
 Nous utiliserons ici le mode long, car il est le plus récent, même si il a moins de documentation que le mode protégé.
 
-
 ### Comment ?
-Comment coder un kernel ? 
+
+Comment coder un kernel ?
 
 Il faut prendre la route que l'on veut, mais il y a des éléments importants qu'il faut faire dans un ordre assez précis.
 
-Vous pouvez dans certains cas le faire dans l'ordre que vous voulez mais il faut quand même une route... car parfois on se pose la question : que faire ensuite ? 
+Vous pouvez dans certains cas le faire dans l'ordre que vous voulez mais il faut quand même une route... car parfois on se pose la question : que faire ensuite ?
 
-La route ci-dessous est recommandée mais vous pouvez le faire de la manière dont vous l'entendez: 
+La route ci-dessous est recommandée mais vous pouvez le faire de la manière dont vous l'entendez:
 
 - démarrage
-- com // pour le debugging 
+- com // pour le debugging
 - GDT (Global Descriptor Table) utilisée à l'époque pour la [segmentation de la mémoire](https://fr.wikipedia.org/wiki/Segmentation_(informatique))
 - IDT (Interrupt Descriptor Table) utilisée pour gérer les [interruptions](https://fr.wikipedia.org/wiki/Interruption_(informatique))
 - Interruption  // pour le debugging d'erreur
-- PIT 
+- PIT
 - Gestion de mémoire physique
-- Pagination 
-- Multitâche 
+- Pagination
+- Multitâche
 
 À partir d'ici, tout devient très subjectif vous pouvez enchainer sur le SMP, le système de fichiers, les tâches utilisateur, etc...

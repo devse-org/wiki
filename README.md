@@ -1,6 +1,6 @@
 # Wiki DEVSE
-Ce guide est disponible à l'adresse [devse.wiki](devse.wiki).
 
+Ce guide est disponible à l'adresse [devse.wiki](devse.wiki).
 
 ## Documentation
 
@@ -9,7 +9,9 @@ N'hésitez pas à contribuer à la documentation, rajouter des exemples, etc !
 
 Nous ne sommes pas affiliés au site Internet OSDEV, mais au serveur Discord Français [DEVSE](https://discord.gg/3XjkM6q).
 
-<a href="https://discord.gg/3XjkM6q"><img src="https://discordapp.com/api/guilds/746454130448531546/widget.png?style=banner3" alt="Discord Banner 3"/></a>
+<a href="https://discord.gg/3XjkM6q">
+    <img src="https://discordapp.com/api/guilds/746454130448531546/widget.png?style=banner3" alt="Discord Banner 3"/>
+</a>
 
 ## Licence
 
