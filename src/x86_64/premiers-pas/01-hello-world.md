@@ -87,7 +87,7 @@ ENTRY(kernel_start)
 
 Ensuite il faut définir la position des sections du code (que cela soit les données (data/rodata/bss) ou le code (text)), soit la position `0xffffffff80100000` car c'est un kernel higher half, donc il est placé dans la moitié haute de la mémoire: `0xffffffff80000000` mais ici nous rajoutons un décalage de 1M (`0x100000`) (pour éviter de toucher l'adresse 0 en physique). 
 
-Nous devons aussi positioner le header pour le bootloader, il permet de donner des informations importantes quand le bootloader lit le kernel. Le bootloader demande à ce que cette section soit la première dans le code.
+Nous devons aussi positioner le header pour le bootloader (ici dans la section `stivale2hdr`), il permet de donner des informations importantes quand le bootloader lit le kernel. Le bootloader demande à ce que cette section soit la première dans le code.
 
 Pour finir nous avons: 
 ```ld
@@ -98,9 +98,9 @@ SECTIONS
     kernel_phys_offset = 0xffffffff80100000;
     . = kernel_phys_offset;
     
-    .stivalehdr ALIGN(4K):
+    .stivale2hdr ALIGN(4K):
     {
-        KEEP(*(.stivalehdr))
+        KEEP(*(.stivale2hdr))
     }
     
     .text ALIGN(4K):
@@ -153,11 +153,11 @@ Avant de continuer, nous devons créer un fichier `limine.cfg`, c'est un fichier
 
 ```s
 :mykernel
-PROTOCOL=stivale
+PROTOCOL=stivale2
 KERNEL_PATH=boot:///kernel.elf
 ```
 
-Ici nous voulons définir l'entrée `mykernel` qui a le protocol `stivale` et qui a comme fichier elf pour le kernel: `/kernel.elf` dans la partition de `boot`.
+Ici nous voulons définir l'entrée `mykernel` qui a le protocol `stivale2` et qui a comme fichier elf pour le kernel: `/kernel.elf` dans la partition de `boot`.
 
 Ensuite, vous pouvez mettre en place la création du disque:
 
@@ -230,13 +230,13 @@ Maintenant après avoir tout configuré avec le makefile, nous pouvons commencer
 
 Vous commencerez par créer un fichier kernel.c dans le dossier src (le nom du fichier n'est pas obligé d'être kernel.c).
 
-Mais avant nous devons rajouter le header du bootloader, qui permet de donner des informations/configurer le bootloader quand il charge le kernel, ici nous utilisons le protocol stivale [1], nous recommandons d'utiliser [le code/header fournis par stivale](https://github.com/stivale/stivale/blob/master/stivale.h) qui facilite la création du header.
+Mais avant nous devons rajouter le header du bootloader, qui permet de donner des informations/configurer le bootloader quand il charge le kernel, ici nous utilisons le protocol stivale [2], nous recommandons d'utiliser [le code/header fournis par stivale2](https://github.com/stivale/stivale/blob/master/stivale2.h) qui facilite la création du header.
 
-Nous créons une variable dans le `kernel.c` du type stivale_header, nous demandons au linker de la positioner dans la section "`.stivalehdr`" et de forcer le fait qu'elle soit utilisée (pour éviter à ce que le compilateur vire l'entrée automatiquement).
+Nous créons une variable dans le `kernel.c` du type stivale2_header, nous demandons au linker de la positioner dans la section "`.stivale2hdr`" et de forcer le fait qu'elle soit utilisée (pour éviter à ce que le compilateur vire l'entrée automatiquement).
 
 ```c
-__attribute__((section(".stivalehdr"), used))
-struct stivale_header header = {/* entrées */};
+__attribute__((section(".stivale2hdr"), used))
+struct stivale2_header header = {/* entrées */};
 ```
 
 Puis nous replissons toutes les entrées.
@@ -249,40 +249,150 @@ char kernel_stack[STACK_SIZE];
 
 Et: 
 ```c
-struct stivale_header header = {.stack = (uintptr_t)stack + (STACK_SIZE) }// la stack tend vers le bas, donc nous voulons donner le dessus de cette stack
+struct stivale2_header header = {.stack = (uintptr_t)kernel_stack + (STACK_SIZE) }// la stack tend vers le bas, donc nous voulons donner le dessus de cette stack
+```
+
+Le header doit spécifier le point d'entrée du kernel par la variable `entry_point`, il faut le mettre à 0 pour demander au bootloader d'utiliser le point d'entrée spécifié par le fichier elf.
+
+La spécification de stivale2 demande **pour l'instant** à mettre `flags` à 0 car il n'y a aucun flag implémenté.
+
+```c
+__attribute__((section(".stivale2hdr"), used))
+static struct stivale2_header stivale_hdr = 
+{
+    .stack = (uintptr_t)kernel_stack + STACK_SIZE,
+    .entry_point = 0,
+    .flags = 0,
+};
+```
+
+Maintenant il faut mettre en place des tags pour le bootloader, les tags sont une liste liée, càd que chaque entrée doit indiqué ou est la prochaine entrée:
+
+<img src="/x86_64/assets/tutoriel-hello-world-stivale2-linked-list.svg" style="margin:5rem;padding:1rem;width:64rem;background-color:white;">
+
+Il y a plusieurs valeurs valide pour le `identifier` qui identifie l'entrée, et nous pouvons avoir plusieurs tags mais ici nous allons en utiliser qu'un seul, celui pour définir le framebuffer.
+
+Il faut créer une nouvelle variable statique qui contient le premier (*et le seul pour l'instant* )tag de la liste qui aura comme type `stivale2_header_tag_framebuffer`:
+```c
+static struct stivale2_header_tag_framebuffer framebuffer_header_tag = 
+{
+    .tag = 
+    {
+    },
+}; 
+```
+Ici la variable `.tag.identifier` doit être à `STIVALE2_HEADER_TAG_FRAMEBUFFER_ID` pour signifier que ce tag est un qui donne des informations au bootloader à propos du framebuffer (taille en largeur/hauter, ...)
+
+La variable `.tag.next` est à `0` pour l'instant car nous utilison qu'une seule entrée dans la liste.
+
+Ce qui donne:
+```c
+static struct stivale2_header_tag_framebuffer framebuffer_header_tag = 
+{
+    .tag = 
+    {
+        .identifier = STIVALE2_HEADER_TAG_FRAMEBUFFER_ID,
+        .next = 0 // fin de la liste
+    },
+}; 
 ```
 
 Maintenant nous configurons le [framebuffer](/x86_64/périphériques/framebuffer.md), nous voulons juste le mettre pour le moment en pixel et non texte, nous essayerons de remplir l'écran en bleu.
 
-Donc pour demander dans le header de stivale d'avoir un framebuffer de pixels et non texte, il faut mettre `flags` à 1.
-Pour ensuite demander la longueur et largeur du framebuffer (ici nous utiliserons une résolution de: `1440`x`900`) et 32 bit par pixel (donc ̀`framebuffer_bpp=32`).
-Nous voulons aussi que le bootloader utilise un point d'entrée défini par le fichier elf (ici nous avons utilisé `kernel_start`) donc nous mettons `entry_point` à 0 pour demander au bootloader de sélectionner automatique le point d'entrée.
-
-À la fin nous devons arriver avec ceci: 
+Nous devons définir la longueur et largeur du framebuffer (ici nous utiliserons une résolution de: `1440`x`900`) et 32 bit par pixel (donc ̀`framebuffer_bpp=32`).
 
 ```c
+static struct stivale2_header_tag_framebuffer framebuffer_header_tag = 
+{
+    .tag = 
+    {
+        .identifier = STIVALE2_HEADER_TAG_FRAMEBUFFER_ID,
+        .next = 0 // fin de la liste
+    },
+    .framebuffer_width  = 1440,
+    .framebuffer_height = 900,
+    .framebuffer_bpp    = 32
+}; 
+```
+
+Ensuite vous mettez la variable `tags` du `stivale2_header` à l'adresse du tag du framebuffer soit:
+
+```c
+__attribute__((section(".stivale2hdr"), used))
+static struct stivale2_header stivale_hdr = 
+{
+    .stack = (uintptr_t)kernel_stack + STACK_SIZE,
+    .entry_point = 0,
+    .flags = 0,
+    .tags = (uintptr_t)&framebuffer_header_tag
+};
+```
+
+Pour finir vous devriez avoir ceci:
+
+```c
+#define STACK_SIZE 32768
 char kernel_stack[STACK_SIZE];
-__attribute__((section(".stivalehdr"), used))
-struct stivale_header header = {.stack = (uintptr_t)kernel_stack + (STACK_SIZE),
-                         .flags = 1,
-                         .framebuffer_width = 1440,
-                         .framebuffer_height = 900,
-                         .framebuffer_bpp = 32,
-                         .entry_point = 0};
+
+static struct stivale2_header_tag_framebuffer framebuffer_header_tag = 
+{
+    .tag = {
+        .identifier = STIVALE2_HEADER_TAG_FRAMEBUFFER_ID,
+        .next = 0 // fin de la liste
+    },
+    .framebuffer_width  = 1440,
+    .framebuffer_height = 900,
+    .framebuffer_bpp    = 32
+}; 
+
+__attribute__((section(".stivale2hdr"), used))
+static struct stivale2_header stivale_hdr = {
+    .stack = (uintptr_t)kernel_stack + STACK_SIZE,
+    .entry_point = 0,
+    .flags = 0,
+    .tags = (uintptr_t)&framebuffer_header_tag
+};
 ```
 
 ## L'Entrée
 
-Après la mise en place du header pour le bootloader nous devons programmer le point d'entrée, `kernel_start`, c'est une fonction qui ne retourne rien mais qui a un `struct stivale_struct*` comme argument, qui donne sont des informations passé par le bootloader.
+Après la mise en place du header pour le bootloader nous devons programmer le point d'entrée, `kernel_start`, c'est une fonction qui ne retourne rien mais qui a un `struct stivale2_struct*` comme argument, qui donne sont des informations passé par le bootloader.
 
 ```c
-void kernel_start(struct stivale_struct *bootloader_data)
+void kernel_start(struct stivale2_struct *bootloader_data)
 {
     while(1); // nous ne voulons pas sortir de kernel_start 
 }
 ```
 
-maintenant il est conseillé de compiler et de tester le kernel, avant de continuer. Faites un `make run` il faut qu'il n'y ait pas d'erreur (que cela soit du bootloader ou de qemu)
+Maintenant il est conseillé de compiler et de tester le kernel, avant de continuer. Faites un `make run` il faut qu'il n'y ait pas d'erreur (que cela soit du bootloader ou de qemu).
+
+## Lire Le Bootloader_data
+
+Il est important avant de continuer de mettre en place quelques fonctions utilitaires qui permettent de lire le `bootloader_data` car il doit être lu comme une liste lié (comme le header stivale2). Par exemple si on veut obtenir l'entrée qui contient des informations à propos du framebuffer, nous devons regarder toutes les entrées et trouver celle qui a un identifiant pareil à celle du framebuffer.
+
+```c
+void *stivale2_find_tag(struct stivale2_struct *bootloader_data, uint64_t tag_id)
+ {
+    struct stivale2_tag *current = (void *)bootloader_data->tags;
+    while(current != NULL)
+    {    
+        if (current->identifier == tag_id) // est ce que cette entrée est bien celle que l'on cherche ?
+        {
+            return current;
+        }
+
+        current = (void *)current->next; // avance d'une entrée dans la liste
+    }
+    return NULL; // aucune entrée trouvé
+}
+```
+
+Ce qui permettra plus tard d'obtenir le tag contenant des informations à propos du framebuffer comme ceci:
+
+```c
+stivale2_find_tag(bootloader_data, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID);
+```
 
 # Le Framebuffer
 
@@ -302,19 +412,30 @@ struct framebuffer_pixel
 
 Nous rajoutons ensuite dans kernel_start du code pour remplir le framebuffer en bleu.
 
-Pour commencer il faut obtenir le framebuffer, il est passé dans `bootloader_data` mais sous forme d'adresse, nous allons alors le convertir en `framebuffer_pixel`:
+Pour commencer il faut obtenir le tag du framebuffer, il est passé dans le tag `STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID` du `bootloader_data` 
+
+Il faut utiliser `stivale2_find_tag`:
 
 ```c
-struct framebuffer_pixel* framebuffer = bootloader_data->framebuffer_addr;
+struct stivale2_struct_tag_framebuffer *framebuffer_tag;
+framebuffer_tag = stivale2_find_tag(bootloader_data, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID);
 ```
 
-Nous avons une table qui contient chaque pixel de `bootloader_data->framebuffer_width` de longueur et de `bootloader_data->framebuffer_height` de hauteur, donc nous faisons une boucle:
+Maintenant le tag contient la taille du framebuffer, et son adresse.
+
+Pour utiliser l'adresse il faut la convertir en un pointeur `framebuffer_pixel`:
+
 ```c
-for(size_t x = 0; x < bootloader_data->framebuffer_width; x++)
+struct framebuffer_pixel* framebuffer = framebuffer_tag->framebuffer_addr;
+```
+
+Nous avons une table qui contient chaque pixel de `framebuffer_tag->framebuffer_width` de longueur et de `framebuffer_tag->framebuffer_height` de hauteur, donc nous faisons une boucle:
+```c
+for(size_t x = 0; x < framebuffer_tag->framebuffer_width; x++)
 {
-    for(size_t y = 0; y < bootloader_data->framebuffer_height; y++)
+    for(size_t y = 0; y < framebuffer_tag->framebuffer_height; y++)
     {
-        size_t raw_position = x + y*bootloader_data->framebuffer_width; // convertit les valeurs x et y en position brute dans la table 
+        size_t raw_position = x + y*framebuffer_tag->framebuffer_width; // convertit les valeurs x et y en position brute dans la table 
         framebuffer[raw_position].blue = 255; // met la couleur à bleu
     }
 }
@@ -322,11 +443,11 @@ for(size_t x = 0; x < bootloader_data->framebuffer_width; x++)
 
 Si vous le voulez vous pouvez faire quelque chose de plus compliqué:
 ```c
-for(size_t x = 0; x < bootloader_data->framebuffer_width; x++)
+for(size_t x = 0; x < framebuffer_tag->framebuffer_width; x++)
 {
-    for(size_t y = 0; y < bootloader_data->framebuffer_height; y++)
+    for(size_t y = 0; y < framebuffer_tag->framebuffer_height; y++)
     {
-        size_t raw_position = x + y*bootloader_data->framebuffer_width; 
+        size_t raw_position = x + y*framebuffer_tag->framebuffer_width; 
 
         framebuffer[raw_position].blue =  x ^ y;
         framebuffer[raw_position].red =  (y*2) ^ (x*2);
