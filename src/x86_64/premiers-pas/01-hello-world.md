@@ -46,7 +46,7 @@ Puis ensuite vous pouvez compiler les fichiers C mais avant nous devons changer 
 - `-masm=intel`: Utilise l'asm intel pour la génération de code.
 
 ```makefile
-C_FLAGS :=                  \
+CFLAGS :=                  \
 	-Isrc                   \
 	-std=c11                \
 	-ffreestanding          \
@@ -64,11 +64,12 @@ C_FLAGS :=                  \
 
 Maintenant vous pouvez rajouter une target a votre makefile pour compiler vos fichier C en objet:
 
-> Ici nous prenons en comptes que vous avez mit CC soit avec le path de votre cross compilateur soit avec le compilateur fournit par votre distribution GNU/LINUX .
+> Ici nous prenons en comptes que vous avez mit CC soit avec le path de votre cross compilateur.
 
 ```makefile
-%.o: %.c $(C_FILES)
-	$(CC) $(C_FLAGS) -c $< -o $@
+.SUFFIXE: .c
+.o: $(C_FILES)
+	$(CC) $(CFLAGS) -c $< -o $@
 ```
 
 ## Linking
