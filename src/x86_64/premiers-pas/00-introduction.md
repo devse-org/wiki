@@ -28,7 +28,7 @@ Le Kernel est l'élément central d'un système d'exploitation, il est chargé p
 
 Le kernel a plusieurs responsabilités comme celle de gérer la mémoire, le multitaches etc. Il existe plusieurs types de noyeaux qui change grandement la manière d'aborder les systèmes d'exploitations.
 
-La conception du kernel et ses responsabilités changent en fonction du type de [kernel](/types-de-kernel.html) et du point de vue de l'auteur.
+La conception du kernel et ses responsabilités changent en fonction du type de [kernel](types-de-kernel.md) et du point de vue de l'auteur.
 
 ### Qu'est ce qu'un bootloader ?
 

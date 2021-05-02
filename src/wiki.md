@@ -1,5 +1,6 @@
 # Wiki DEVSE
-Ce guide est disponible à l'adresse [devse.wiki](devse.wiki).
+
+Ce guide est disponible à l'adresse [https://devse.wiki](devse.wiki).
 
 <img src="x86_64/assets/devse.jpg" style="width:12rem">
 

@@ -24,7 +24,7 @@ On considère aussi que la structure de votre noyau est composée de ces caract�
 
 ## Introduction
 
-Qu'est ce que le SMP ? 
+Qu'est ce que le SMP ?
 
 SMP est un sigle signifiant "Symetric Multi Processing", que l'on pourrait littéralement traduire par "Multi-traîtement symétrique". On utilise ce terme pour parler d'un système multiprocesseur, qui exploite plusieurs CPUs de façon parallèle. Un noyau qui supporte le SMP peut bénéficier d'énormes améliorations de performances.
 
@@ -38,7 +38,7 @@ Il est utile de savoir qu'il faudra implémenter les interruptions [APIC](/x86_6
 
 Obtenir le numero du coeur actuel est très important pour plus tard, il permet d'identifier le CPU sur lequel on travaille.
 
-Pour obtenir l'identifiant du CPU actuel on doit utiliser l'[APIC](/x86_64/périphériques/APIC.md). Le numéro du CPU est contenu dans le registre 20 de l'APIC, et il est situé du 24ème au 32ème bit, il faut donc décaler à droite la valeur lue de 24 bits. 
+Pour obtenir l'identifiant du CPU actuel on doit utiliser l'[APIC](/x86_64/périphériques/APIC.md). Le numéro du CPU est contenu dans le registre 20 de l'APIC, et il est situé du 24ème au 32ème bit, il faut donc décaler à droite la valeur lue de 24 bits.
 
 ```cpp
 #define LAPIC_REGISTER 20
@@ -91,7 +91,7 @@ On place donc tout ceci de cette façon :
 
 Il faut savoir que tout ceci est temporaire, tout devra être remplacé plus tard.
 
-#### GDT + IDT
+### GDT + IDT
 
 Pour stocker la GDT et l'IDT, c'est assez simple.
 Il existe deux instructions en 64 bits qui sont dédiées:
@@ -106,7 +106,7 @@ sgdt [0x580] ; stockage de la GDT
 sidt [0x590] ; stockage de l'IDT
 ```
 
-#### Pile
+### Pile
 
 Pour initialiser la pile on doit stocker une adresse valide à l'adresse `0x570`:
 
@@ -114,13 +114,13 @@ Pour initialiser la pile on doit stocker une adresse valide à l'adresse `0x570`
 POKE(570) = stack_address + stack_size;
 ```
 
-#### Code du trampoline
+### Code du trampoline
 
 Pour le trampoline nous avons besoin d'un code écrit en assembleur, délimité par `trampoline_start` et `trampoline_end`.
 
 Le code trampoline doit être chargé à partir de l'adresse `0x1000`, ce qui donne pour la partie cpp :
 
-```cpp
+```c
 #define TRAMPOLINE_START 0x1000
 
 // On calcule la taille du programme trampoline pour copier son contenu
@@ -129,7 +129,8 @@ uint64_t trampoline_len = (uint64_t)&trampoline_end - (uint64_t)&trampoline_star
 // On copie le code trampoline au bon endroit
 memcpy((void *)TRAMPOLINE_START, &trampoline_start, trampoline_len);
 ```
-et dans le code assembleur, on spécifie le code trampoline avec : 
+
+et dans le code assembleur, on spécifie le code trampoline avec :
 
 ```x86asm
 trampoline_start:
@@ -137,11 +138,11 @@ trampoline_start:
 trampoline_end:
 ```
 
-#### Addresse de saut
+### Addresse de saut
 
 L'addresse de saut est l'adresse à laquelle va se rendre le CPU juste après son initialisaiton, on y met donc le programme principal.
 
-#### Table de page pour le futur CPU
+### Table de page pour le futur CPU
 
 Pour le futur CPU on peut choisir de prende une copie de la table de page actuelle, mais attention il faut effectuer une copie, et pas simplement une référence à l'ancienne, sinon des évènements étranges peuvent avoir lieu.
 
@@ -154,10 +155,11 @@ Pour initialiser le nouveau CPU il faut envoyer à l'APIC l'identifiant du nouve
 
 ```cpp
 // On écrit l'identifiant du nouveau CPU dans ICR2, attention à bien utiliser son identifiant APIC
-write(icr2, (apic_id << 24)); 
+write(icr2, (apic_id << 24));
 // On envoie la demande d'initialisation
 write(icr1, 0x500);
 ```
+
 L'initialisation peut être un peu longue, il faut donc attendre au moins 10 millisecondes avant de l'utiliser.
 
 On commence par envoyer le nouveau CPU à l'adresse trampoline, là encore à travers l'APIC. L'identifiant du CPU va encore dans `ICR2`, et l'instruction à écrire dans `ICR1` devient `0x0600 | (trampoline_addr >> 12)` :
@@ -169,7 +171,7 @@ write(icr2, (apic_id << 24));
 write(icr1, 0x600 | ((uint32_t)trampoline_addr / 4096));
 ```
 
-## Le code du trampoline 
+## Le code du trampoline
 
 Pour commencer, on peut simplement utiliser le code suivant, qui envoie le caractère `a` sur le port `COM0`.
 Ce code est bien sûr temporaire, mais permet de vérifier que le nouveau CPU démarre correctement.
@@ -202,7 +204,8 @@ trampoline_64:
 trampoline_end:
 ```
 
-#### Le code 16 bits
+### Le code 16 bits
+
 *Note : trampoline_addr est l'addresse ou vous avez placé votre trampoline, dans ce cas, `0x1000`.*
 
 On commence par passer de 16 bits à 32 bits.
@@ -257,7 +260,7 @@ mov cr0, eax
 jmp 0x8:(trampoline32 - trampoline_start + trampoline_addr)
 ```
 
-#### Le code 32 bits
+### Le code 32 bits
 
 On doit dans un premier temps charger la table de page dans le `cr3`, puis activer le paging et le PAE du `cr4` en activant les bits 5 et 7 du registre `cr4` :
 
@@ -278,7 +281,7 @@ On active maintenant le mode long, en activant le 8ème bit de l'EFER (*Extended
 mov ecx, 0xc0000080 ; registre efer
 rdmsr
 
-or eax,1 << 8 
+or eax,1 << 8
 wrmsr
 ```
 
@@ -319,7 +322,7 @@ On peut ensuite passer à la section 64 bits, en utilisant l'instruction `jmp` c
 jmp 0x8:(trampoline64 - trampoline_start + trampoline_addr)
 ```
 
-#### Le code 64 bits
+### Le code 64 bits
 
 On commence par définir les valeurs des registre `ds`, `ss` et `es` en fonction de la nouvelle GDT :
 
