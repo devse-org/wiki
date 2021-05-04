@@ -464,7 +464,7 @@ Qui donneras ce motif si tout fonctionne:
 # Conclusion
 Cette partie du tutoriel est terminée ! vous avez maintenant un kernel qui boot, cependant dans le prochain tutoriel nous implémenterons un driver COM, qui donnera la possibilité d'écrire des informations dans la console, ce qui est très pratique pour debugger.
 
-# Sources / Pour aller plus loins
+# Références
 - [wiki.osdev.org](https://wiki.osdev.org/Main_Page)
 - [wiki.osdev.org barebones](https://wiki.osdev.org/Bare_Bones)
 - [wiki.osdev.org stivale-barebones](https://wiki.osdev.org/Stivale)
@@ -475,3 +475,4 @@ Cette partie du tutoriel est terminée ! vous avez maintenant un kernel qui boot
 - [ld manpage](https://linux.die.net/man/1/ld)
 - [qemu manpage](https://linux.die.net/man/1/qemu-kvm)
 - [echfs-utils information](https://github.com/echfs/echfs)
+- [wikipedia la stack](https://fr.wikipedia.org/wiki/Pile_(informatique))
