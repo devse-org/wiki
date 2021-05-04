@@ -1,4 +1,4 @@
-# 01 - Hello world !
+# 01 - Hello world
 
 <img src="/x86_64/assets/tutoriel-hello-world-result.png">
 
@@ -6,7 +6,8 @@
 
 Dans cette partie vous allez faire un "hello world !" en 64bit. 
 
-Pour ce projet vous utiliserez donc: 
+Pour ce projet vous utiliserez donc :
+
 - [un cross compilateur](/cross-compilation/creer-un-cross-compiler.md)
 - [Limine](https://github.com/limine-bootloader/limine) comme bootloader
 - [Echfs](https://github.com/echfs/echfs) comme système de fichier
@@ -17,11 +18,11 @@ Vous utiliserez echfs comme système de fichier il est assez simple d'utilisatio
 
 Vous devez donc cloner limine dans la source de votre projet (ou en le rajoutant en sous module git), il est fortement recommandé d'utiliser la [branche qui contient les binaires](https://github.com/limine-bootloader/limine/tree/latest-binary).
 
-# Le Fichier Makefile
+## Le Fichier Makefile
 
 > Note: vous pouvez utiliser d'autres système de build, il faut juste suivre les même commandes et arguments pour gcc/ld.
 
-## Compilation
+### Compilation
 
 Pour commencer vous devez obtenir tout les fichier '.c' avec find et obtenir le fichier objet '.o' équivalent à ce fichier c.
 
@@ -72,7 +73,7 @@ Maintenant vous pouvez rajouter une target a votre makefile pour compiler vos fi
 	$(CC) $(CFLAGS) -c $< -o $@
 ```
 
-## Linking
+### Linking
 
 Après avoir compilé tout les fichier C en fichier objet, vous devez les lier pour créer le fichier du kernel.
 
@@ -80,7 +81,8 @@ Vous utiliserez `ld` (celui fourni par le binutils de votre cross-compilateur).
 
 Avant il vous faut un fichier de linking, qui définit la position de certaines parties du code. Vous le mettrez dans le chemins `src/link.ld`.
 
-Il faut commencer par définir le point d'entrée, où commence le code... Ici la fonction: `kernel_start` pour commencer, donc: 
+Il faut commencer par définir le point d'entrée, où commence le code... Ici la fonction: `kernel_start` pour commencer, donc :
+
 ```ld
 ENTRY(kernel_start)
 ```
@@ -89,7 +91,8 @@ Il faut ensuite définir la position des sections du code (pour les données (da
 
 Vous devez aussi positionner le header pour le bootloader (ici dans la section `stivale2hdr`), il permet de donner des informations importantes quand le bootloader lit le kernel. Le bootloader demande à cette section d'être la première dans le kernel.
 
-Pour finir vous devez avoir : 
+Pour finir vous devez avoir :
+
 ```ld
 ENTRY(kernel_start)
 
@@ -131,7 +134,8 @@ Comme pour la compilation des fichiers C, vous devez passer des arguments spéci
 - `-z max-page-size=0x1000`: Signifie que la taille max d'une page ne peut pas dépasser `0x1000` (4096).
 - `-nostdlib` Demande à ne pas utiliser la librairie standard.
 - `-T{CHEMIN_DU_FICHIER_DE_LINKING}`: Demande à utiliser le fichier de linking.
-Donc ici:
+
+Donc ici :
 
 ```makefile
 LD_FLAGS :=                 \
@@ -148,7 +152,7 @@ kernel.elf: $(OBJS)
     $(LD) $(LD_FLAGS) $(OBJS) -o $@
 ```
 
-## Création Du Fichier De Configuration Du Bootloader
+### Création Du Fichier De Configuration Du Bootloader
 
 Avant de continuer, vous devez créer un fichier `limine.cfg`. C'est un fichier lu par le bootloader qui paramètre certaines options et permet de pointer où se trouve le kernel dans le disque :
 
@@ -162,28 +166,30 @@ Ici vous voulez définir l'entrée `mykernel` qui a le protocole `stivale2` et q
 
 Ensuite, vous pouvez mettre en place la création du disque:
 
-## Création Du Disque
+### Création Du Disque
 
 Pour commencer il faut créer un path pour le disk, (ici `disk.hdd`).
 
 ```makefile
 KERNEL_DISK := disk.hdd
 ```
-Ensuite dans la target de création du disque du makefile:
 
-vous créez un fichier disk.hdd vide de taille 8M (avec `dd`).
+Ensuite dans la target de création du disque du makefile:
+Vous créez un fichier disk.hdd vide de taille 8M (avec `dd`).
 
 ```makefile
 dd if=/dev/zero bs=8M count=0 seek=64 of=$(KERNEL_DISK)
 ```
 
 Vous formatez le disque pour utiliser un système de partition `MBR` avec 1 seule partition (qui prend tout le disque).
+
 ```makefile
 parted -s $(KERNEL_DISK) mklabel msdos
 parted -s $(KERNEL_DISK) mkpart primary 1 100%
 ```
 
 Vous utilisez echfs-utils pour formater la partition en echfs et pour rajouter le fichier kernel, le fichier config pour limine, et un fichier système pour limine (`limine.sys`).
+
 ```makefile
 echfs-utils -m -p0 $(KERNEL_DISK) quick-format 4096 # taille de block de 4096
 echfs-utils -m -p0 $(KERNEL_DISK) import kernel.elf kernel.elf
@@ -191,12 +197,14 @@ echfs-utils -m -p0 $(KERNEL_DISK) import limine.cfg limine.cfg
 echfs-utils -m -p0 $(KERNEL_DISK) import ./limine/limine.sys limine.sys
 ```
 
-Puis nous installons limine sur la partition echfs:
+Puis vous installez limine sur la partition echfs:
+
 ```makefile
 ./limine/limine-install-linux-x86_64 $(KERNEL_DISK)
 ```
 
 Ce qui donne comme résultat:
+
 ```makefile
 $(KERNEL_DISK): kernel.elf 
 	rm -f $(KERNEL_DISK)
@@ -210,23 +218,23 @@ $(KERNEL_DISK): kernel.elf
 	./limine/limine-install-linux-x86_64 $(KERNEL_DISK)
 ```
 
-## L'Execution
+### L'Execution
 
 Une fois le disque créé, vous allez faire une cible : `run`. Elle servira plus tard quand vous pourrez enfin tester votre kernel.
 
-Elle est assez simple: vous lançez qemu-system-x86_64, avec une mémoire de `512M`, on active `kvm` (une accélération pour l'émulation), on utilise le disque `disk.hdd`, et des options de debug, comme:
+Elle est assez simple: vous lançez qemu-system-x86_64, avec une mémoire de `512M`, on active `kvm` (une accélération pour l'émulation), on utilise le disque `disk.hdd`, et des options de debug, comme :
+
 - `-serial stdio`: Redirige la sortie de qemu dans `stdio` .
 - `-d cpu_reset`: Signale dans la console quand le cpu se réinitialise après une erreur.
 - `-device pvpanic`: signale quand il y a des évenements de panic.
 - `-s`: Permet de debug avec gdb.
-
 
 ```makefile
 run: $(KERNEL_DISK)
     qemu-system-x86_64 -m 512M -s -device pvpanic -serial stdio -enable-kvm -d cpu_reset -hda ./disk.hdd
 ```
 
-# Le Code
+## Le Code
 
 Après avoir tout configuré avec le makefile, vous pouvez commencer à coder ! 
 
@@ -249,7 +257,8 @@ Il faut commencer par créer une variable pour définir la [stack](https://fr.wi
 char kernel_stack[STACK_SIZE];
 ```
 
-Et: 
+Et :
+
 ```c
 struct stivale2_header header = {.stack = (uintptr_t)kernel_stack + (STACK_SIZE) }// la stack tend vers le bas, donc vous voulez donner le dessus de cette stack
 ```
@@ -274,7 +283,8 @@ Maintenant il faut mettre en place des tags pour le bootloader, les tags sont un
 
 Il y a plusieurs valeurs valides pour l'`identifier` qui identifie l'entrée et vous pouvez avoir plusieurs tags. Pour l'instant vous allez en utiliser qu'un seul : celui pour définir le framebuffer.
 
-Il faut créer une nouvelle variable statique qui contient le premier (*et le seul pour l'instant* )tag de la liste qui aura comme type `stivale2_header_tag_framebuffer`:
+Il faut créer une nouvelle variable statique qui contient le premier (*et le seul pour l'instant* )tag de la liste qui aura comme type `stivale2_header_tag_framebuffer` :
+
 ```c
 static struct stivale2_header_tag_framebuffer framebuffer_header_tag = 
 {
@@ -283,11 +293,13 @@ static struct stivale2_header_tag_framebuffer framebuffer_header_tag =
     },
 }; 
 ```
+
 Ici, la valeur de la variable `.tag.identifier` doit être `STIVALE2_HEADER_TAG_FRAMEBUFFER_ID`. Cela signifie que ce tag donne des informations au bootloader à propos du framebuffer (taille en largeur/hauter, ...).
 
 La variable `.tag.next` est à `0` pour le moment, car vous utilisez qu'une seule entrée dans la liste.
 
 Ce qui donne:
+
 ```c
 static struct stivale2_header_tag_framebuffer framebuffer_header_tag = 
 {
@@ -300,7 +312,6 @@ static struct stivale2_header_tag_framebuffer framebuffer_header_tag =
 ```
 
 Maintenant vous allez configurer le [framebuffer](/x86_64/périphériques/framebuffer.md). Pour le moment, vous voulez le mettre en pixel et non en texte : car vous allez essayez de remplir l'écran en bleu.
-
 Vous devez définir la longueur et largeur du framebuffer (ici vous utiliserez une résolution de: `1440`x`900`) et 32 bit par pixel (donc ̀`framebuffer_bpp=32`).
 
 ```c
@@ -356,7 +367,7 @@ static struct stivale2_header stivale_hdr = {
 };
 ```
 
-## L'Entrée
+### L'Entrée
 
 Après la mise en place du header pour le bootloader vous devez programmer le point d'entrée, `kernel_start`, c'est une fonction qui ne retourne rien mais qui a un `struct stivale2_struct*` comme argument. Cet argument (ici bootloader_data) représente les informations passées par le bootloader.
 
@@ -369,7 +380,7 @@ void kernel_start(struct stivale2_struct *bootloader_data)
 
 Maintenant il est conseillé de compiler et de tester le kernel, avant de continuer. Faites un `make run`, il faut qu'il n'y ait aucune erreur ; ni du bootloader, ni de Qemu.
 
-## Lire Le Bootloader_data
+### Lire Le Bootloader_data
 
 Il est important avant de continuer de mettre en place quelques fonctions utilitaires qui permettent de lire le `bootloader_data` car il doit être lu comme une liste lié (comme le header stivale2). Par exemple si on veut obtenir l'entrée qui contient des informations à propos du framebuffer, vous devez regarder toutes les entrées et trouver celle qui a un identifiant pareil à celle du framebuffer.
 
@@ -396,7 +407,7 @@ Ce qui permettra plus tard d'obtenir le tag contenant des informations à propos
 stivale2_find_tag(bootloader_data, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID);
 ```
 
-# Le Framebuffer
+## Le Framebuffer
 
 Vous allez remplir l'écran en bleu pour essayer de debug, le framebuffer est structuré comme ceci:
 
@@ -431,7 +442,8 @@ Pour utiliser l'adresse il faut la convertir en un pointeur `framebuffer_pixel`:
 struct framebuffer_pixel* framebuffer = framebuffer_tag->framebuffer_addr;
 ```
 
-Nous avons une table qui contient chaque pixel de `framebuffer_tag->framebuffer_width` de longueur et de `framebuffer_tag->framebuffer_height` de hauteur, donc vous allez faire une boucle:
+Nous avons une table qui contient chaque pixel de `framebuffer_tag->framebuffer_width` de longueur et de `framebuffer_tag->framebuffer_height` de hauteur, donc vous allez faire une boucle :
+
 ```c
 for(size_t x = 0; x < framebuffer_tag->framebuffer_width; x++)
 {
@@ -443,7 +455,8 @@ for(size_t x = 0; x < framebuffer_tag->framebuffer_width; x++)
 }
 ```
 
-Si vous le voulez vous pouvez faire quelque chose de plus compliqué:
+Si vous le voulez vous pouvez faire quelque chose de plus compliqué :
+
 ```c
 for(size_t x = 0; x < framebuffer_tag->framebuffer_width; x++)
 {
@@ -461,10 +474,11 @@ for(size_t x = 0; x < framebuffer_tag->framebuffer_width; x++)
 Qui donneras ce motif si tout fonctionne:
 <img src="/x86_64/assets/tutoriel-hello-world-result.png">
 
-# Conclusion
+## Conclusion
 Cette partie du tutoriel est terminée ! vous avez maintenant un kernel qui boot, cependant dans le prochain tutoriel vous implémenterez un driver COM, qui donnera la possibilité d'écrire des informations dans la console, ce qui est très pratique pour debugger.
 
-# Références
+## Références
+
 - [wiki.osdev.org](https://wiki.osdev.org/Main_Page)
 - [wiki.osdev.org barebones](https://wiki.osdev.org/Bare_Bones)
 - [wiki.osdev.org stivale-barebones](https://wiki.osdev.org/Stivale)
