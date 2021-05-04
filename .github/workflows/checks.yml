@@ -9,10 +9,10 @@ jobs:
     - name: Check out code
       uses: actions/checkout@main
     - name: Run mdl
-      uses: actionshub/markdownlint@main
+      uses: avto-dev/markdown-lint@v1.5.0
       with:
-          args: '**/*.md'
-          config: .github/workflows/markdown-lint-config.yaml
+        args: '**/*.md'
+        config: .github/workflows/markdown-lint-config.yaml
 
   markdown-links:
     runs-on: ubuntu-latest
