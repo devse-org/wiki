@@ -13,7 +13,7 @@ Pour ce projet nous utiliserons donc:
 
 Pour commencer vous devez mettre un place un [cross compilateur](/cross-compilation/creer-un-cross-compiler.md) dans votre projet.
 
-Vous utiliserez echfs comme système de fichier car c'est assez simple de l'utiliser quand on débute, car normalement sans echfs on doit créer un disque, le partitionner, le monter, installer un système de fichier, mettre nos fichier... Avec echfs c'est plus simple (grâce à l'outil `echfs-utils`). 
+Vous utiliserez echfs comme système de fichier il est assez simple d'utilisation pour les débutants, normalement sans echfs, il faut créer un disque, le partitionner, le monter, installer un système de fichier, ajouter nos fichier... En utilisant echfs avec son outil `echfs-utils`, c'est bien plus simple. 
 
 Vous devez donc cloner limine dans la source de votre projet (ou en le rajoutant en sous module git), ici nous prenons en compte le fait que vous utilisez directement la [branche qui contient les binaires](https://github.com/limine-bootloader/limine/tree/latest-binary).
 
@@ -25,14 +25,14 @@ Vous devez donc cloner limine dans la source de votre projet (ou en le rajoutant
 
 Pour commencer nous devons obtenir tout les fichier '.c' avec find et obtenir le fichier objet '.o' équivalent à ce fichier c.
 
-> Ici nous prenons en compte que vous utiliser le dossier "src" pour mettre le code de votre kernel.
+> Ici nous prenons en compte que vous utilisez le dossier "src" pour mettre le code de votre kernel.
 
 ```makefile
 SRCS := $(wildcard ./src/**.c)
 OBJS := $(SRCS:.c=.o)
 ```
 
-Puis ensuite vous pouvez compiler les fichiers C mais avant nous devons changer certains flags du compilateurs:
+Ensuite, juste avant de compiler les fichiers `.c`, il faut changer certains flags du compilateur:
 
 - `-ffreestanding`: Active l'environnement freestanding, cela signifie que le compilateur désactive les librairies standards du C (faites pour GNU/linux). Il signifie aussi que les programmes ne commencent pas forcément à `main`. 
 - `-O1`: Vous pouvez utiliser -O2 ou même -O3 même si rarement le compilateur peut retirer des bouts de code qui ne devraient pas être retiré.
@@ -64,7 +64,7 @@ CFLAGS :=                  \
 
 Maintenant vous pouvez rajouter une target a votre makefile pour compiler vos fichier C en objet:
 
-> Ici nous prenons en comptes que vous avez mit CC soit avec le path de votre cross compilateur.
+> Ici, nous prenons en compte que vous avez mis CC, soit avec le path de votre cross-compilateur.
 
 ```makefile
 .SUFFIXE: .c
@@ -74,9 +74,9 @@ Maintenant vous pouvez rajouter une target a votre makefile pour compiler vos fi
 
 ## Linking
 
-Après avoir compilé tout les fichier C en fichier objet, nous devons les liers pour créer le fichier du kernel.
+Après avoir compilé tout les fichier C en fichier objet, nous devons les lier pour créer le fichier du kernel.
 
-Nous utiliserons `ld` (soit celui fournit par le binutils de votre cross compilateur soit celui fournit par votre distribution)
+Nous utiliserons `ld` (celui fourni par le binutils de votre cross-compilateur).
 
 Avant il nous faut un fichier de linking, qui définit la position de certaines parties du code. Nous le mettrons dans le chemins `src/link.ld`.
 
@@ -85,11 +85,11 @@ Il faut commencer par définir le point d'entrée, où commence le code... Ici l
 ENTRY(kernel_start)
 ```
 
-Ensuite il faut définir la position des sections du code (que cela soit les données (data/rodata/bss) ou le code (text)), soit la position `0xffffffff80100000` car c'est un kernel higher half, donc il est placé dans la moitié haute de la mémoire: `0xffffffff80000000` mais ici nous rajoutons un décalage de 1M (`0x100000`) (pour éviter de toucher l'adresse 0 en physique). 
+Il faut ensuite définir la position des sections du code (pour les données (data/rodata/bss) et le code (text)), soit la position 0xffffffff80100000. Étant donné que c'est un kernel "higher-half", il est donc placé dans la moitié haute de la mémoire : 0xffffffff80000000. Ici, nous rajoutons un décalage de 1M (0x100000) pour éviter de toucher l'adresse 0 en physique.
 
-Nous devons aussi positioner le header pour le bootloader (ici dans la section `stivale2hdr`), il permet de donner des informations importantes quand le bootloader lit le kernel. Le bootloader demande à ce que cette section soit la première dans le code.
+Nous devons aussi positionner le header pour le bootloader (ici dans la section `stivale2hdr`), il permet de donner des informations importantes quand le bootloader lit le kernel. Le bootloader demande à cette section d'être la première dans le kernel.
 
-Pour finir nous avons: 
+Pour finir nous avons : 
 ```ld
 ENTRY(kernel_start)
 
@@ -126,7 +126,7 @@ SECTIONS
 }
 ```
 
-Comme pour la compilation des fichiers C, nous devons passer des arguments spécifiques:
+Comme pour la compilation des fichiers C, nous devons passer des arguments spécifiques :
 
 - `-z max-page-size=0x1000`: Signifie que la taille max d'une page ne peut pas dépasser `0x1000` (4096).
 - `-nostdlib` Demande à ne pas utiliser la librairie standard.
@@ -141,7 +141,7 @@ LD_FLAGS :=                 \
 
 ```
 
-Maintenant nous pouvons lier les fichiers objets en un `kernel.elf`: (en utilisant une nouvelle target dans le fichier Makefile):
+En utilisant une nouvelle target dans le fichier Makefile, nous pouvons désormais lier les fichiers objets en un kernel.elf :
 
 ```makefile
 kernel.elf: $(OBJS)
@@ -149,7 +149,8 @@ kernel.elf: $(OBJS)
 ```
 
 ## Création Du Fichier De Configuration Du Bootloader
-Avant de continuer, nous devons créer un fichier `limine.cfg`, c'est un fichier lu par le bootloader, il paramètre certaines options et pointe où se trouve le kernel dans le disque:
+
+Avant de continuer, nous devons créer un fichier `limine.cfg`. C'est un fichier lu par le bootloader qui paramètre certaines options et permet de pointer où se trouve le kernel dans le disque :
 
 ```s
 :mykernel
@@ -157,7 +158,7 @@ PROTOCOL=stivale2
 KERNEL_PATH=boot:///kernel.elf
 ```
 
-Ici nous voulons définir l'entrée `mykernel` qui a le protocol `stivale2` et qui a comme fichier elf pour le kernel: `/kernel.elf` dans la partition de `boot`.
+Ici nous voulons définir l'entrée `mykernel` qui a le protocole `stivale2` et qui a comme fichier elf pour le kernel: `/kernel.elf` dans la partition de `boot`.
 
 Ensuite, vous pouvez mettre en place la création du disque:
 
@@ -211,7 +212,8 @@ $(KERNEL_DISK): kernel.elf
 
 ## L'Execution
 
-Ici une fois avoir créer le disque nous allons faire une cible: `run`, elle servira plus tard quand vous pourrez enfin tester votre kernel ;) .
+Une fois le disque créé, nous allons faire une cible : `run`. Elle servira plus tard quand vous pourrez enfin tester votre kernel.
+
 Elle est assez simple: nous lançons qemu-system-x86_64, avec une mémoire de `512M`, on active `kvm` (une accélération pour l'émulation), on utilise le disque `disk.hdd`, et des options de debug, comme:
 - `-serial stdio`: Redirige la sortie de qemu dans `stdio` .
 - `-d cpu_reset`: Signale dans la console quand le cpu se réinitialise après une erreur.
@@ -226,21 +228,21 @@ run: $(KERNEL_DISK)
 
 # Le Code
 
-Maintenant après avoir tout configuré avec le makefile, nous pouvons commencer à coder ! 
+Après avoir tout configuré avec le makefile, nous pouvons commencer à coder ! 
 
 Vous commencerez par créer un fichier kernel.c dans le dossier src (le nom du fichier n'est pas obligé d'être kernel.c).
 
-Mais avant nous devons rajouter le header du bootloader, qui permet de donner des informations/configurer le bootloader quand il charge le kernel, ici nous utilisons le protocol stivale 2, nous recommandons d'utiliser [le code/header fournis par stivale2](https://github.com/stivale/stivale/blob/master/stivale2.h) qui facilite la création du header.
+Mais avant nous devons rajouter le header du bootloader, qui permet de donner des informations/configurer le bootloader quand il charge le kernel, ici nous utilisons le protocole stivale 2, nous recommandons d'utiliser [le code/header fournis par stivale2](https://github.com/stivale/stivale/blob/master/stivale2.h) qui facilite la création du header.
 
-Nous créons une variable dans le `kernel.c` du type stivale2_header, nous demandons au linker de la positioner dans la section "`.stivale2hdr`" et de forcer le fait qu'elle soit utilisée (pour éviter à ce que le compilateur vire l'entrée automatiquement).
+Nous créons une variable dans le `kernel.c` du type stivale2_header, nous demandons au linker de la positioner dans la section "`.stivale2hdr`" et de forcer le fait qu'elle soit utilisée (pour éviter que le compilateur vire l'entrée automatiquement).
 
 ```c
 __attribute__((section(".stivale2hdr"), used))
 struct stivale2_header header = {/* entrées */};
 ```
 
-Puis nous replissons toutes les entrées.
-Il faut avant créer une variable pour définir la [stack](https://fr.wikipedia.org/wiki/Pile_(informatique)) du kernel. Nous utilisons une stack de taille 32768 (32K) soit:
+Puis nous remplissons toutes les entrées du header:
+Il faut commencer par créer une variable pour définir la [stack](https://fr.wikipedia.org/wiki/Pile_(informatique)) du kernel. Nous utilisons une stack de taille 32768 (32K) soit :
 
 ```c
 #define STACK_SIZE 32768
@@ -266,11 +268,11 @@ static struct stivale2_header stivale_hdr =
 };
 ```
 
-Maintenant il faut mettre en place des tags pour le bootloader, les tags sont une liste liée, càd que chaque entrée doit indiqué ou est la prochaine entrée:
+Maintenant il faut mettre en place des tags pour le bootloader, les tags sont une liste liée, c'est à dire que chaque entrée doit indiquer où est la prochaine entrée :
 
 <img src="/x86_64/assets/tutoriel-hello-world-stivale2-linked-list.svg" style="margin:5rem;padding:1rem;width:64rem;background-color:white;">
 
-Il y a plusieurs valeurs valide pour le `identifier` qui identifie l'entrée, et nous pouvons avoir plusieurs tags mais ici nous allons en utiliser qu'un seul, celui pour définir le framebuffer.
+Il y a plusieurs valeurs valides pour l'`identifier` qui identifie l'entrée et nous pouvons avoir plusieurs tags. Ici nous allons en utiliser qu'un seul : celui pour définir le framebuffer.
 
 Il faut créer une nouvelle variable statique qui contient le premier (*et le seul pour l'instant* )tag de la liste qui aura comme type `stivale2_header_tag_framebuffer`:
 ```c
@@ -281,9 +283,9 @@ static struct stivale2_header_tag_framebuffer framebuffer_header_tag =
     },
 }; 
 ```
-Ici la variable `.tag.identifier` doit être à `STIVALE2_HEADER_TAG_FRAMEBUFFER_ID` pour signifier que ce tag est un qui donne des informations au bootloader à propos du framebuffer (taille en largeur/hauter, ...)
+Ici, la valeur de la variable `.tag.identifier` doit être `STIVALE2_HEADER_TAG_FRAMEBUFFER_ID`. Cela signifie que ce tag donne des informations au bootloader à propos du framebuffer (taille en largeur/hauter, ...).
 
-La variable `.tag.next` est à `0` pour l'instant car nous utilison qu'une seule entrée dans la liste.
+La variable `.tag.next` est à `0` pour l'instant car nous utilisons qu'une seule entrée dans la liste.
 
 Ce qui donne:
 ```c
@@ -297,7 +299,7 @@ static struct stivale2_header_tag_framebuffer framebuffer_header_tag =
 }; 
 ```
 
-Maintenant nous configurons le [framebuffer](/x86_64/périphériques/framebuffer.md), nous voulons juste le mettre pour le moment en pixel et non texte, nous essayerons de remplir l'écran en bleu.
+Maintenant nous configurons le [framebuffer](/x86_64/périphériques/framebuffer.md). Pour le moment, nous voulons le mettre en pixel et non en texte : essayons de remplir l'écran en bleu.
 
 Nous devons définir la longueur et largeur du framebuffer (ici nous utiliserons une résolution de: `1440`x`900`) et 32 bit par pixel (donc ̀`framebuffer_bpp=32`).
 
@@ -315,7 +317,7 @@ static struct stivale2_header_tag_framebuffer framebuffer_header_tag =
 }; 
 ```
 
-Ensuite vous mettez la variable `tags` du `stivale2_header` à l'adresse du tag du framebuffer soit:
+Ensuite, initialisez variable `tags` du `stivale2_header` à l'adresse du tag du framebuffer soit :
 
 ```c
 __attribute__((section(".stivale2hdr"), used))
@@ -328,7 +330,7 @@ static struct stivale2_header stivale_hdr =
 };
 ```
 
-Pour finir vous devriez avoir ceci:
+Pour finir vous devriez avoir ceci :
 
 ```c
 #define STACK_SIZE 32768
@@ -356,7 +358,7 @@ static struct stivale2_header stivale_hdr = {
 
 ## L'Entrée
 
-Après la mise en place du header pour le bootloader nous devons programmer le point d'entrée, `kernel_start`, c'est une fonction qui ne retourne rien mais qui a un `struct stivale2_struct*` comme argument, qui donne sont des informations passé par le bootloader.
+Après la mise en place du header pour le bootloader nous devons programmer le point d'entrée, `kernel_start`, c'est une fonction qui ne retourne rien mais qui a un `struct stivale2_struct*` comme argument. Cet argument (ici bootloader_data) représente les informations passées par le bootloader.
 
 ```c
 void kernel_start(struct stivale2_struct *bootloader_data)
@@ -365,7 +367,7 @@ void kernel_start(struct stivale2_struct *bootloader_data)
 }
 ```
 
-Maintenant il est conseillé de compiler et de tester le kernel, avant de continuer. Faites un `make run` il faut qu'il n'y ait pas d'erreur (que cela soit du bootloader ou de qemu).
+Maintenant il est conseillé de compiler et de tester le kernel, avant de continuer. Faites un `make run`, il faut qu'il n'y ait aucune erreur ; ni du bootloader, ni de Qemu.
 
 ## Lire Le Bootloader_data
 
