@@ -19,7 +19,7 @@ Vous devez donc cloner limine dans la source de votre projet (ou en le rajoutant
 
 # Le Fichier Makefile
 
-> Note: vous pouvez utiliser d'autres make system, il faut juste suivre les même commandes et arguments pour gcc/ld.
+> Note: vous pouvez utiliser d'autres système de build, il faut juste suivre les même commandes et arguments pour gcc/ld.
 
 ## Compilation
 
@@ -28,13 +28,13 @@ Pour commencer nous devons obtenir tout les fichier '.c' avec find et obtenir le
 > Ici nous prenons en compte que vous utiliser le dossier "src" pour mettre le code de votre kernel.
 
 ```makefile
-C_FILES := $(shell find ./src/ -type f -name '*.c')
-O_FILES := $(C_FILES:.c=.o)
+SRCS := $(wildcard ./src/**.c)
+OBJS := $(SRCS:.c=.o)
 ```
 
 Puis ensuite vous pouvez compiler les fichiers C mais avant nous devons changer certains flags du compilateurs:
 
-- `-ffreestanding`: Active l'environnement freestanding, cela signifie que le compilateur désactive les librairies standarts du C (faites pour linux). Il signifie aussi que les programmes ne commencent pas forcément à `main`. 
+- `-ffreestanding`: Active l'environnement freestanding, cela signifie que le compilateur désactive les librairies standards du C (faites pour GNU/linux). Il signifie aussi que les programmes ne commencent pas forcément à `main`. 
 - `-O1`: Vous pouvez utiliser -O2 ou même -O3 même si rarement le compilateur peut retirer des bouts de code qui ne devraient pas être retiré.
 - `-m64`: Active le 64bit.
 - `-mno-red-zone`: Désactive la red-zone (en mode 64bit).
@@ -68,7 +68,7 @@ Maintenant vous pouvez rajouter une target a votre makefile pour compiler vos fi
 
 ```makefile
 .SUFFIXE: .c
-.o: $(C_FILES)
+.o: $(SRCS)
 	$(CC) $(CFLAGS) -c $< -o $@
 ```
 
@@ -144,8 +144,8 @@ LD_FLAGS :=                 \
 Maintenant nous pouvons lier les fichiers objets en un `kernel.elf`: (en utilisant une nouvelle target dans le fichier Makefile):
 
 ```makefile
-kernel.elf: $(O_FILES)
-    $(LD) $(LD_FLAGS) $(O_FILES) -o $@
+kernel.elf: $(OBJS)
+    $(LD) $(LD_FLAGS) $(OBJS) -o $@
 ```
 
 ## Création Du Fichier De Configuration Du Bootloader
@@ -230,7 +230,7 @@ Maintenant après avoir tout configuré avec le makefile, nous pouvons commencer
 
 Vous commencerez par créer un fichier kernel.c dans le dossier src (le nom du fichier n'est pas obligé d'être kernel.c).
 
-Mais avant nous devons rajouter le header du bootloader, qui permet de donner des informations/configurer le bootloader quand il charge le kernel, ici nous utilisons le protocol stivale [2], nous recommandons d'utiliser [le code/header fournis par stivale2](https://github.com/stivale/stivale/blob/master/stivale2.h) qui facilite la création du header.
+Mais avant nous devons rajouter le header du bootloader, qui permet de donner des informations/configurer le bootloader quand il charge le kernel, ici nous utilisons le protocol stivale 2, nous recommandons d'utiliser [le code/header fournis par stivale2](https://github.com/stivale/stivale/blob/master/stivale2.h) qui facilite la création du header.
 
 Nous créons une variable dans le `kernel.c` du type stivale2_header, nous demandons au linker de la positioner dans la section "`.stivale2hdr`" et de forcer le fait qu'elle soit utilisée (pour éviter à ce que le compilateur vire l'entrée automatiquement).
 
@@ -367,7 +367,7 @@ void kernel_start(struct stivale2_struct *bootloader_data)
 
 Maintenant il est conseillé de compiler et de tester le kernel, avant de continuer. Faites un `make run` il faut qu'il n'y ait pas d'erreur (que cela soit du bootloader ou de qemu).
 
-## Lire Le Bootloader_data
+## Lire Le Bootloader_data
 
 Il est important avant de continuer de mettre en place quelques fonctions utilitaires qui permettent de lire le `bootloader_data` car il doit être lu comme une liste lié (comme le header stivale2). Par exemple si on veut obtenir l'entrée qui contient des informations à propos du framebuffer, nous devons regarder toutes les entrées et trouver celle qui a un identifiant pareil à celle du framebuffer.
 
