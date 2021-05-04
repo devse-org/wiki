@@ -10,6 +10,9 @@ jobs:
       uses: actions/checkout@main
     - name: Run mdl
       uses: actionshub/markdownlint@main
+      with:
+          args: '**/*.md'
+          config: .github/workflows/markdown-lint-config.yaml
 
   markdown-links:
     runs-on: ubuntu-latest
