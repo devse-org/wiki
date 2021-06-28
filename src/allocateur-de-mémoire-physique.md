@@ -97,7 +97,7 @@ Vous devez trouver une entrée valide de la carte de la mémoire et placer la bi
 for(int i = 0; i < mem_map.size && bitmap==NULL; i++){
     mem_map_entry_t entry = mem_map.entry[i];
     if(entry.is_free && entry.size >= bitmap_size){
-        bitmap = entry->start;
+        bitmap = entry.start;
     }
 }
 ```
