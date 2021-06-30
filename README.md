@@ -5,7 +5,7 @@ Ce guide est disponible à l'adresse [devse.wiki](https://devse.wiki).
 ## Documentation
 
 Ce répertoire GitHub a été créé pour fournir une documentation sur le développement de systèmes d'exploitation en Français.
-N'hésitez pas à contribuer à la documentation, rajouter des exemples, etc !
+N'hésitez pas à contribuer à la documentation, rajouter des exemples, etc ... Cette documentation est open source et est disponible à l'adresse [github.com/developpement-systeme-exploitation/documentation](https://github.com/developpement-systeme-exploitation/documentation).
 
 Nous ne sommes pas affiliés au site Internet OSDEV, mais au serveur Discord Français [DEVSE](https://discord.gg/3XjkM6q).
 
