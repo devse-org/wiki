@@ -23,7 +23,7 @@ pour du x86 32bit il faut utiliser:
 
 ## Les dépendances
 
-Pour que vous puissiez compiler GCC et binutils (ld, objdump...), il faut que vous ayez ces paquets: (sur debian)
+Pour que vous puissiez compiler GCC et binutils (ld, objdump...), il faut que vous ayez ces paquets:
 
 - build-essential
 - bison
@@ -33,7 +33,12 @@ Pour que vous puissiez compiler GCC et binutils (ld, objdump...), il faut que vo
 - libmpc-dev
 - libmpfr-dev
 
-soit:
+soit  (sur debian):
+
+```bash
+sudo apt-get install make build-essential bison flex libgmp3-dev libmpc-dev libmpfr-dev texinfo wget gcc binutils
+```
+soit  (sur arch):
 
 ```bash
 sudo apt-get install make build-essential bison flex libgmp3-dev libmpc-dev libmpfr-dev texinfo wget gcc binutils
