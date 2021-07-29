@@ -42,9 +42,6 @@ sudo apt-get install make build-essential bison flex libgmp3-dev libmpc-dev libm
 Pour que vous puissiez compiler GCC et binutils (ld, objdump...), il faut que vous ayez ces paquets:  (sur arch)
 
 - base-devel
-- bison
-- flex
-- texinfo
 - gmp
 - libmpc
 - mpfr
