@@ -52,7 +52,7 @@ uint32_t get_current_processor_id()
 
 Voir : [LAPIC](/x86_64/périphériques/APIC.md)
 
-Pour commencer à utiliser le SMP, il faut obtenir les entrées LAPIC de la tablea MADT. Chaque CPU posède une entrée LAPIC.
+Pour commencer à utiliser le SMP, il faut obtenir les entrées LAPIC de la table MADT. Chaque CPU posède une entrée LAPIC.
 
 Pour connaitre le nombre total de CPUs il suffit donc de compter le nombre de LAPIC dans la MADT.
 
