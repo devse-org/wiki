@@ -45,11 +45,12 @@ Pour que vous puissiez compiler GCC et binutils (ld, objdump...), il faut que vo
 - gmp
 - libmpc
 - mpfr
+- wget
 
 soit:
 
 ```bash
-sudo pacman -Sy base-devel gmp libmpc mpfr
+sudo pacman -Sy base-devel gmp libmpc mpfr wget
 ```
 
 ## Le téléchargement du code source
