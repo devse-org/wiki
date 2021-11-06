@@ -64,7 +64,7 @@ Les flags d'un segment est formé comme ceci:
 
 __accédé__ : Doit être à 0, il est mit à 1 quand le processeur l'utilise.
 
-__écriture/lisible__: 
+__écriture/lisible__:
 - Si c'est un segment de donnée: si le bit est à 1 alors l'écriture est autorisé avec le segment, si le bit est à 0 alors le segment est seulement lisible.
 - Si c'est un segment de code: si le bit est à 1 alors on peut lire le segment sinon le segment ne peut pas être lu.
 
@@ -146,7 +146,7 @@ La granularité doit être à `0b10`.
 ### Le segment données des utilisateurs
 
 La quatrième entrée doit être un segment pour les données d'applications depuis l'anneau (niveau de privilège) 3.
-- Il faut reproduire la même démarche que pour le segment data du kernel sauf que le niveau de privilège doit être à 3.
+Il faut reproduire la même démarche que pour le segment data du kernel sauf que le niveau de privilège doit être à 3.
 
 Cela produit un type pour le mode x86_64:
 `0b11110010`.
@@ -155,43 +155,37 @@ La granularité doit être à `0`.
 
 # Le chargement d'une gdt
 
-Pour charger un registre d'une gdt il faut utiliser l'instruction: 
+Pour charger un registre d'une gdt il faut utiliser l'instruction:
 
 ```x86asm
 lgdt [registre]
 ```
 
-Avec le registre contenant l'adresse du registre de la gdt. 
-Cependant en 64bit il faut charger les registre du segment de code et de donnée.
-
-En 64bit vous devez '*simuler*' un retour d'interruption, car l'instruction `iretq` est le seul moyen d'écrire les registres de code et de données:
+Avec le registre contenant l'adresse du registre de la gdt.
+Cependant en 64bit il faut charger les registre du segment de code et de donnée. Ici nous allons utiliser l'instruction `retf` qui permet de charger un segment de code:
 
 ```x86asm
 gdtr_install:
     lgdt [rdi]
-    push rbp            
-    mov rbp, rsp        ; sauvegarder la stack en utilisant le registre rbp
-  
-    push qword 0x10     ; le segment de données du kernel (-> ss)
-    push rbp            ; sauvegarde la stack  (-> RSP)
-    pushf               ; pousse les flags dans la stack (-> rflags)
-    push qword 0x8      ; pousse le segment de de code du kernel (-> cs)
-    push .trampoline    ; pousse le futur point de retour (-> RIP) 
-
-    iretq               ; provoque un "retour" d'interruption, le cpu pop alors 
-                        ; toutes les données au dessus pour les registres destinés
-.trampoline:
-    pop rbp
     ; met tout les segments avec leurs valeurs ciblants le segment de données
     mov ax, 0x10
 
     mov ds, ax
     mov es, ax
     mov ss, ax
-    ret
-``` 
 
-Sources:
+    mov rax, qword .trampoline ; addresse de retour
+    push qword 0x8 ; segment de code
+    push rax 
+
+    o64 retf  ; fait un far return
+
+.trampoline:
+    pop rbp
+    ret
+```
+
+## Références
 
 - [wikipedia](https://en.wikipedia.org/wiki/Global_Descriptor_Table)
 - [osdev](https://wiki.osdev.org/GDT)
