@@ -88,6 +88,6 @@ Pour définir la taille des données, vous devez l'écrire dans le port de contr
 outb(COM_PORT + 3, 0x3); // désactiver le DLAB + mettre la taille de donnée à 8 donc un char/unsigned char en c++
 ```
 
-## Ressources
+## Références 
 
-- <https://www.sci.muni.cz/docs/pc/serport.txt>
+- https://www.sci.muni.cz/docs/pc/serport.txt

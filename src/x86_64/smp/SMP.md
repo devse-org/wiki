@@ -374,7 +374,7 @@ Enfin, pour terminer l'initialisation de ce nouveau CPU il faut finir par :
 Le nouveau CPU est maintenant fonctionnel, mais ce n'est pas encore fini.
 Il faut mettre en place un système de lock pour la communication inter-CPU, mettre à jour le multitasking pour utiliser ce nouveau CPU, charger une GDT, un IDT et une stack unique...
 
-## Ressources
+## Références 
 
 - [manuel intel](https://software.intel.com/content/www/us/en/develop/articles/intel-sdm.html)
 - [osdev](https://wiki.osdev.org/Main_Page)
