@@ -187,6 +187,6 @@ gdtr_install:
 
 ## Références
 
-- [wikipedia](https://en.wikipedia.org/wiki/Global_Descriptor_Table)
-- [osdev](https://wiki.osdev.org/GDT)
+- [wikipedia gdt](https://en.wikipedia.org/wiki/Global_Descriptor_Table)
+- [osdev gdt](https://wiki.osdev.org/GDT)
 - [documentation intel](https://www.intel.com/content/www/us/en/architecture-and-technology/64-ia-32-architectures-software-developer-vol-3a-part-1-manual.html)

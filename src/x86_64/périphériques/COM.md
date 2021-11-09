@@ -90,4 +90,4 @@ outb(COM_PORT + 3, 0x3); // désactiver le DLAB + mettre la taille de donnée à
 
 ## Références 
 
-- https://www.sci.muni.cz/docs/pc/serport.txt
+- [The Serial Port rel. 14, part 1/3](https://www.sci.muni.cz/docs/pc/serport.txt)

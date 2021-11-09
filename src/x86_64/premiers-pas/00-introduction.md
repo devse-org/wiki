@@ -82,3 +82,9 @@ La route ci-dessous est recommandée mais vous pouvez le faire de la manière do
 - Multitâche
 
 À partir d'ici, tout devient très subjectif vous pouvez enchainer sur le SMP, le système de fichiers, les tâches utilisateur, etc...
+
+## Références 
+
+- [wikipedia ISA](https://en.wikipedia.org/wiki/Instruction_set_architecture)
+- [wikipedia interruptions](https://fr.wikipedia.org/wiki/Interruption_(informatique))
+- [wikipedia segmentation de la mémoire](https://fr.wikipedia.org/wiki/Segmentation_(informatique))
