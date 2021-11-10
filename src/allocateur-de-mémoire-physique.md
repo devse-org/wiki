@@ -30,11 +30,13 @@ La bitmap est une table de uint64/32/16 ou uint8_t avec chaque bit qui représen
 Vous pouvez facilement convertir une adresse en index/bit de la table, par exemple :
 
 ```c
-static inline uint64_t get_bitmap_array_index(uint64_t page_addr){
+static inline uint64_t get_bitmap_array_index(uint64_t page_addr)
+{
     return page_addr/8; // ici c'est 8 car c'est une bitmap avec des uint8_t (soit 8bit)
 }
 
-static inline uint64_t get_bitmap_bit_index(uint64_t page_addr){
+static inline uint64_t get_bitmap_bit_index(uint64_t page_addr)
+{
     return page_addr%8;
 }
 ```
@@ -94,9 +96,11 @@ Après avoir obtenu la taille de la future bitmap vous devez trouver une place p
 Vous devez trouver une entrée valide de la carte de la mémoire et placer la bitmap au début de cette entrée.
 
 ```c
-for(int i = 0; i < mem_map.size && bitmap==NULL; i++){
+for(int i = 0; i < mem_map.size && bitmap==NULL; i++)
+{
     mem_map_entry_t entry = mem_map.entry[i];
-    if(entry.is_free && entry.size >= bitmap_size){
+    if(entry.is_free && entry.size >= bitmap_size)
+    {
         bitmap = entry.start;
     }
 }
@@ -110,11 +114,14 @@ uint64_t free_memory = 0;
 
 memset(bitmap, 0xff, bitmap_size); // mettre toutes les pages comme utilisées
 
-for(int i = 0; i < mem_map.size; i++){
+for(int i = 0; i < mem_map.size; i++)
+{
     mem_map_entry_t entry = mem_map.entry[i];
     // en espérant ici que entry.start et entry.end sont déjà aligné par rapport à une page
-    if(entry.is_free){
-        for(uint64_t j = entry.start; j < entry.end; j+=PAGE_SIZE){
+    if(entry.is_free)
+    {
+        for(uint64_t j = entry.start; j < entry.end; j+=PAGE_SIZE)
+        {
 
             bitmap_clear_bit(j/PAGE_SIZE);
             free_memory += PAGE_SIZE;
@@ -129,7 +136,8 @@ Cependant, la zone où est placée la bitmap est marquée comme libre. Une tâch
 ```c
 uint64_t bitmap_start = (uint64_t)bitmap;
 uint64_t bitmap_end = bitmap_start + bitmap_size;
-for (uint64_t i = bitmap_start; i <= bitmap_end; i+= PAGE_SIZE){
+for (uint64_t i = bitmap_start; i <= bitmap_end; i+= PAGE_SIZE)
+{
     bitmap_set_bit(i/PAGE_SIZE);
 }
 ```
@@ -140,9 +148,11 @@ Une fois votre bitmap initialisée vous pouvez mettre une page comme libre ou ut
 Cependant, vous devez commencer par vérifier si une page est utilisée ou libérée (ou si le bit d'une page est à 0 où à 1) :
 
 ```c
-static inline bool bitmap_is_bit_set(uint64_t page_addr){
+static inline bool bitmap_is_bit_set(uint64_t page_addr)
+{
     uint64_t bit = get_bitmap_bit_index(page_addr);
     uint64_t byte = get_bitmap_array_index(page_addr);
+
     return bitmap[byte] & (1 << bit);
 }
 ```
@@ -155,15 +165,22 @@ Pour commencer, vous devez mettre en place une fonction qui cherche et trouve de
 
 ```c
 // note ici c'est la fonction brut, il y a plusieurs optimizations possiblent qui serront abordés plus tard
-uint64_t find_free_pages(uint64_t count){
+uint64_t find_free_pages(uint64_t count)
+{
     uint64_t free_count = 0; // le nombre de pages libres de suite
-    for(int i = 0; i < (mem_size/PAGE_SIZE); i++){
-        if(!bitmap_is_bit_set(i)){
+
+    for(int i = 0; i < (mem_size/PAGE_SIZE); i++)
+    {
+        if(!bitmap_is_bit_set(i))
+        {
             free_count++; // on augmente le nombre de page trouvées d'affilée de 1
-            if(free_count == count){
+            if(free_count == count)
+            {
                 return i;
             }
-        }else{
+        }
+        else
+        {
             free_count = 0;
         }
     }
@@ -176,10 +193,12 @@ uint64_t find_free_pages(uint64_t count){
 Après avoir trouvé les pages, vous devrez les mettre comme utilisées:
 
 ```c
-void* alloc_page(uint64_t count){
+void* alloc_page(uint64_t count)
+{
     uint64_t page = find_free_pages(count); // ici pas de gestion d'erreur mais vous pouvez vérifier si il n'y a plus de pages disponibles
 
-    for(int i = page; i < count+page; i++){
+    for(int i = page; i < count+page; i++)
+    {
         bitmap_set_bit(i);
     }
     return (void*)(page*PAGE_SIZE);
@@ -197,9 +216,11 @@ Le fonctionnement est plus simple que l'allocation, vous devez juste mettres les
 **Note** : Ici il n'y a pas de vérification d'erreur car c'est un exemple.
 
 ```c
-void free_page(void* addr, uint64_t page_count){
+void free_page(void* addr, uint64_t page_count)
+{
     uint64_t target= ((uint64_t)addr) / PAGE_SIZE;
-    for(int i = target; i<= target+page_count; i++){
+    for(int i = target; i<= target+page_count; i++)
+    {
         bitmap_clear_bit(i);
     }
 }
@@ -216,16 +237,22 @@ Une optimisation basique serait de créer une variable last_free_page qui donne 
 
 ```c
 uint64_t last_free_page = 0;
-uint64_t find_free_pages(uint64_t count){
+uint64_t find_free_pages(uint64_t count)
+{
     uint64_t free_count = 0;
-    for(int i = last_free_page; i < (mem_size/PAGE_SIZE); i++){
-        if(!bitmap_is_bit_set(i)){
+    for(int i = last_free_page; i < (mem_size/PAGE_SIZE); i++)
+    {
+        if(!bitmap_is_bit_set(i))
+        {
             free_count++;  trouvées d'affilée de 1
-            if(free_count == count){
+            if(free_count == count)
+            {
                 last_free_page = i; // la dernière page libre
                 return i;
             }
-        }else{
+        }
+        else
+        {
             free_count = 0;
         }
     }
@@ -238,7 +265,8 @@ Cependant, si on ne trouve pas de page libre à partir de la dernière page libr
 
 ```c
 // à la fin de la fonction find_free_pages()
-if(last_free_page != 0){
+if(last_free_page != 0)
+{
     last_free_page = 0;
     return find_free_pages(count); // juste réésayer mais avec la dernière page libre en 0x0
 }
@@ -262,19 +290,25 @@ On peut donc rajouter
 uint64_t find_free_pages(uint64_t count){
     int i = 0;
 
-    for(int i = 0; i < (mem_size/PAGE_SIZE); i++){
+    for(int i = 0; i < (mem_size/PAGE_SIZE); i++)
+    {
         // vous pouvez aussi utiliser des uint64_t ou n'importe quel autres types
-        while(bitmap[i/8] == 0xff && i < (mem_size/PAGE_SIZE)-8){
+        while(bitmap[i/8] == 0xff && i < (mem_size/PAGE_SIZE)-8)
+        {
             free_count = 0; // en sachant que les pages sont utilisées, alors on reset le nombre de page libres de suite
             i += 8- (i % 8); // rajouter mettre i au prochain index de la bitmap
         }
 
-        if(!bitmap_is_bit_set(i)){
+        if(!bitmap_is_bit_set(i))
+        {
             free_count++;  // trouvées d'affilée de 1
-            if(free_count == count){
+            if(free_count == count)
+            {
                 return i;
             }
-        }else{
+        }
+        else
+        {
             free_count = 0;
         }
     }

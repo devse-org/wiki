@@ -24,7 +24,7 @@ __taille__: Le registre taille doit contenir la taille de la table de segment, s
 
 __adresse de la table__: L'adresse de la table doit pointer directement vers la table de segments.
 
-# Les segments 
+# Les segments
 
 Un segment en x86_64 est formé comme ceci:
 
@@ -42,7 +42,7 @@ Un segment en x86_64 est formé comme ceci:
 
 Le registre base est le début du segment, en mode long il faut le mettre à 0.
 
-## Les registres limite 
+## Les registres limite
 
 Le registre limite est une adresse 20bit, il représente la fin du segment.
 Il est multiplié par 4096 si le bit `granularité` est à 1.
@@ -65,13 +65,16 @@ Les flags d'un segment est formé comme ceci:
 __accédé__ : Doit être à 0, il est mit à 1 quand le processeur l'utilise.
 
 __écriture/lisible__:
+
 - Si c'est un segment de donnée: si le bit est à 1 alors l'écriture est autorisé avec le segment, si le bit est à 0 alors le segment est seulement lisible.
 - Si c'est un segment de code: si le bit est à 1 alors on peut lire le segment sinon le segment ne peut pas être lu.
 
-__direction/conformité__: 
+__direction/conformité__:
+
 - Pour les descripteurs de données:
     - Le bit défini le sens du segment, si il est mit alors le sens du segment est vers le bas, il doit être à 0 pour le 64 bit.
-- Pour les descripteurs de code: 
+
+- Pour les descripteurs de code:
     - Si le bit est à 1 alors le code peut être éxécuté par un niveau de privilège plus bas ou égal au registre `niveau de privilège`.
     - Si le bit est à 0 alors le code peut seulement être éxecuté par le registre `niveau de privilège`.
 
@@ -125,6 +128,7 @@ La granularité doit être à `0b10`
 ### Le segment data du kernel
 
 La seconde entrée doit être un segment de donnée pour le kernel.
+
 - Il faut utiliser la même démarche que le segment de code sauf qu'il faut mettre le bit executable à 0.
 
 Cela produit un type pour le mode x86_64:

@@ -4,7 +4,7 @@
 
 > résultat à la fin de ce tutoriel
 
-Dans cette partie vous allez faire un "hello world !" en 64bit. 
+Dans cette partie vous allez faire un "hello world !" en 64bit.
 
 Pour ce projet vous utiliserez donc :
 
@@ -35,7 +35,7 @@ OBJS := $(SRCS:.c=.o)
 
 Ensuite, juste avant de compiler les fichiers `.c`, il faut changer certains flags du compilateur:
 
-- `-ffreestanding`: Active l'environnement freestanding, cela signifie que le compilateur désactive les librairies standards du C (faites pour GNU/linux). Il signifie aussi que les programmes ne commencent pas forcément à `main`. 
+- `-ffreestanding`: Active l'environnement freestanding, cela signifie que le compilateur désactive les librairies standards du C (faites pour GNU/linux). Il signifie aussi que les programmes ne commencent pas forcément à `main`.
 - `-O1`: Vous pouvez utiliser -O2 ou même -O3 même si rarement le compilateur peut retirer des bouts de code qui ne devraient pas être retiré.
 - `-m64`: Active le 64bit.
 - `-mno-red-zone`: Désactive la red-zone (en mode 64bit).
@@ -236,7 +236,7 @@ run: $(KERNEL_DISK)
 
 ## Le Code
 
-Après avoir tout configuré avec le makefile, vous pouvez commencer à coder ! 
+Après avoir tout configuré avec le makefile, vous pouvez commencer à coder !
 
 Vous commencerez par créer un fichier kernel.c dans le dossier src (le nom du fichier n'est pas obligé d'être kernel.c).
 
@@ -246,7 +246,7 @@ Vous allez créer une variable dans le `kernel.c` du type `stivale2_header`, vou
 
 ```c
 __attribute__((section(".stivale2hdr"), used))
-struct stivale2_header header = {/* entrées */};
+struct stivale2_header header = { /* entrées */ };
 ```
 
 Puis vous remplissez toutes les entrées du header:
@@ -269,8 +269,7 @@ La spécification de stivale2 demande **pour l'instant** à mettre `flags` à 0 
 
 ```c
 __attribute__((section(".stivale2hdr"), used))
-static struct stivale2_header stivale_hdr = 
-{
+static struct stivale2_header stivale_hdr = {
     .stack = (uintptr_t)kernel_stack + STACK_SIZE,
     .entry_point = 0,
     .flags = 0,
@@ -386,7 +385,7 @@ Il est important avant de continuer de mettre en place quelques fonctions utilit
 
 ```c
 void *stivale2_find_tag(struct stivale2_struct *bootloader_data, uint64_t tag_id)
- {
+{
     struct stivale2_tag *current = (void *)bootloader_data->tags;
     while(current != NULL)
     {    
@@ -418,7 +417,7 @@ struct framebuffer_pixel
     uint8_t green;
     uint8_t red;
     uint8_t __unused;
-}__attribute__((packed));
+} __attribute__((packed));
 ```
 
 > voir:  [framebuffer](/x86_64/périphériques/framebuffer.md)  pour plus d'information
@@ -462,11 +461,11 @@ for(size_t x = 0; x < framebuffer_tag->framebuffer_width; x++)
 {
     for(size_t y = 0; y < framebuffer_tag->framebuffer_height; y++)
     {
-        size_t raw_position = x + y*framebuffer_tag->framebuffer_width; 
+        size_t raw_position = x + y * framebuffer_tag->framebuffer_width; 
 
-        framebuffer[raw_position].blue =  x ^ y;
-        framebuffer[raw_position].red =  (y*2) ^ (x*2);
-        framebuffer[raw_position].green =  (y*4) ^ (x*4);
+        framebuffer[raw_position].blue = x ^ y;
+        framebuffer[raw_position].red = (y * 2) ^ (x * 2);
+        framebuffer[raw_position].green = (y * 4) ^ (x * 4);
     }
 }
 ```

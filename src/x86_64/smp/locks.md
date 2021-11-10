@@ -122,28 +122,32 @@ Les fonction en c doivent être utilisées comme ceci :
 void lock(volatile uint32_t* lock);
 void unlock(volatile uint32_t* lock);
 ```
+
 Si on veut rajouter plus d'informations au lock on doit faire une structure contenant un membre 32bit
 
 ```cpp
-struct verrou{
+struct verrou
+{
     uint32_t data; // ne doit pas être changé
     const char* fichier;
     uint64_t line;
     uint64_t cpu;
-}__attribute__(packed);
+} __attribute__(packed);
 ```
 Vous devez maintenant rajouter des fonction verrouiller et déverrouiller qui appelleront respectivement lock et unlock
 
-*note : si vous voulez avoir la ligne/le fichier, vous devez utiliser des #define et non des fonction*
+> Note : si vous voulez avoir la ligne/le fichier, vous devez utiliser des #define et non des fonction
 
 ```cpp
-void verrouiller(verrou* v){
-
+void verrouiller(verrou* v)
+{
     // code pour remplir les données du vérrou
 
     lock(&(v->data));
 }
-void deverrouiller(verrou* v){
+
+void deverrouiller(verrou* v)
+{
     unlock(&(v->data));
 }
 ```
@@ -151,11 +155,12 @@ void deverrouiller(verrou* v){
 Maintenant vous devez implementer la fonction qui serra appelé dans `timed_out`
 
 ```cpp
-void crocheter_le_verrou(verrou* v){
+void crocheter_le_verrou(verrou* v)
+{
     // vous pouvez log des informations importantes ici
-    
 }
 ```
+
 maintenant vous pouvez choisir entre 2 possibilité :
 
 * dans la fonction crocheter_le_verrou vous continuez en attandant jusqu'à ce que le verrou soit déverrouillé
@@ -176,10 +181,9 @@ void ata_read(/* ... */)
     /* ... */
 
     release(&lock);
-};
+}
 ```
+
 Le code sera désormais exécuté seulement sur 1 cpu à la fois !
 
 Il est important d'utiliser les verrou quand il le faut, dans un allocateur de frame, le changement de contexte, l'utilisation d'appareils...
-
-
