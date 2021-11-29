@@ -9,7 +9,7 @@ Il doit pouvoir :
 
 - Allouer une/plusieurs page libre
 - Libérer une page allouée
-- Gérer qu'elle zone de la mémoire est utilisable ou non
+- Gérer quelle zone de la mémoire est utilisable ou non
 
 Voici un code C basique présentant les fonctions de base à implémenter pour un allocateur de mémoire physique:
 
