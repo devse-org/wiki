@@ -1,134 +1,126 @@
 
-# Créer un cross compiler GCC (C/C++)
+# Créer un cross compilateur GCC (C/C++)
 
-## Pourquoi créer un cross compiler ?
+## Pourquoi faire un cross compilateur ?
 
-Il faut créer un `cross compiler` car un compilateur (GCC, clang, TCC...) généralement est configuré pour un système cible.
+Il faut faire un cross compilateur car le compilateur fournis avec votre système est configuré pour une plateforme cible (CPU, système d'exploitation etc).
 
-Par exemple si vous êtes sur GNU/Linux, vous utilisez un compilateur configuré pour GNU/Linux.
+Par exemple, comparons deux platformes différentes (Ubuntu x64 et Debian GNU/Hurd i386).
+La commande`gcc -dumpmachine` nous indique la platforme que cible le compilateur, sur Ubuntu GNU/Linux la commande me retourne `x86_64-linux-gnu` 
+tandis que sur Debian GNU/Hurd nous avons `i686-gnu`.
 
-Cependant, celui qui tourne par défaut sur votre machine peut être configuré pour un système d'exploitation en particulier et non pour le vôtre, cela peut mener, plus tard, à d'importants problèmes.
+Le resultat obtenu n'est pas surprennant, nous avons deux systèmes d'exploitation différent sur du materiel différent.
 
-Il faut alors utiliser un cross compiler pour votre kernel et non pour GNU/Linux.
+Ne pas faire un cross compilateur et utiliser le compilateur fournis avec le système c'est allez au devant de toute une série de problèmes.
 
 ## Quel plateforme cible ?
 
-Il faut déjà savoir quel plateforme cible utiliser, cela dépendra de l'architecture de votre kernel:
+Tout cela va dépendre de l'architecture que vous ciblez (x86, risc-v) et du format de vos binaires (ELF, mach-o, PE).
 
-- pour du x86 64bit il faut utiliser: `x86_64-pc`
-- pour du x86 32bit il faut utiliser: `i686-pc`
+Par exemple pour un système x86-64 en utilisant le format ELF: `x86_64-elf`
+Ou encore `i686-elf` pour x86 (32bit)
 
-## Les dépendances
+Bien sur en attendant d'avoir notre propre toolchain.
 
-Pour que vous puissiez compiler GCC et binutils (ld, objdump...), il faut que vous ayez ces paquets: (sur debian)
+## Compiler GCC et les binutils
 
-- `build-essential`
-- `bison`
-- `flex`
-- `texinfo`
-- `libgmp3-dev`
-- `libmpc-dev`
-- `libmpfr-dev`
+Maintenant que la théorie à été rapidement esquissée nous allons pouvoir passer à la pratique.
 
-Soit:
+créons un dossier toolchain/local à la racine de notre projet. C'est dans ce dossier que sera notre cross compilateur une fois compilé.
+
+créons donc une variable `$prefix`:
 
 ```bash
-sudo apt-get install make build-essential bison flex libgmp3-dev libmpc-dev libmpfr-dev texinfo wget gcc binutils
+prefix="<chemin vers votre projet>/toolchain/local"
 ```
 
-Cependant si vous êtes sur Arch Linux vous devez avoir ces paquets:
-
-- `base-devel`
-- `gmp`
-- `libmpc`
-- `mpfr`
-- `wget`
-
-Soit:
-
+Profitons en pour modifier notre `$PATH`:
 ```bash
-sudo pacman -Sy base-devel gmp libmpc mpfr wget
+export PATH="$PATH:$prefix/bin"
 ```
 
-## Le téléchargement du code source
-
-Pour le téléchargement du code source vous pouvez utiliser `wget` pour le téléchargement et `tar` pour la décompression.
-
-> Le téléchargement peut prendre beaucoup de temps en fonction de la connection internet.
-
-### Téléchargement binutils
-
-Pour binutils vous devez utiliser le lien:
-
+Puis nous allons définir une variable `$target` (qui contiendra notre platforme cible).
+Comme dans notre guide nous nous concentrons sur x86-64 notre variable sera définis comme ceci:
 ```bash
-https://ftp.gnu.org/gnu/binutils/binutils-$binutilsversion.tar.xz
+target="x86_64-elf"
 ```
 
-Avec `$binutilsversion` qui peut être égale à `2.33.1`.
+Nos variables d'environment étant définis nous pouvons passer à l'installation des dépendances.
 
-### Téléchargement GCC
+### Dépendance
 
-Pour GCC il faut cependant utiliser le lien:
+Pour pouvoir compiler gcc et binutils sous Debian GNU/Linux il nous faut les paquets suivant:
+
+- build-essential
+- bison
+- flex
+- texinfo
+- libgmp3-dev
+- libmpc-dev
+- libmpfr-dev
+
+Que l'on peut les installer simplement comme ceci:
 
 ```bash
-ftp://ftp.gnu.org/gnu/gcc/gcc-$gccversion/gcc-$gccversion.tar.xz
+sudo apt install build-essential bison flex libgmp3-dev \
+                    libmpc-dev libmpfr-dev texinfo
 ```
 
-On peut avoir `$gccversion` qui peut être égale à `10.1.0`.
+Nous allons pouvoir passer à la compilation.
 
-## Le build
+### binutils
 
-> Le build peut prendre beaucoup de temps en fonction de la puissance de l'ordinateur ou du disque.
+Commençons par télécharger et décompresser les sources de binutils.
 
-Pour la construction du cross compilateur il faut utiliser un chemin différent du code source, par exemple, si vous avez:
-
-- `toolchain/gcc`
-- `toolchain/binutils`
-
-Vous pouvez rajouter les chemins:
-
-- `toolchain/binutils-build`
-- `toolchain/gcc-build`
-
-Vous devez aussi mettre en place un `prefix` cela permet au compilateur d'être sûr que tout les fichiers de build du cross compilateur finissent dans le même dossier.
-
-Vous pouvez dire que `prefix` est directement le dossier toolchain de ce cas.
-
-- `toolchain/local`
-
-### Build binutils
-
-Pour binutils dans le chemin binutils-build vous pouvez faire:
+Ici dans ce tutoriel nous compilerons binutils `2.35`.
 
 ```bash
-../binutils/configure --prefix="$prefix" --target="$target" --with-sysroot --disable-nls --disable-werror
+binutils_version="2.35"
+wget "https://ftp.gnu.org/gnu/binutils/binutils-$binutils_version.tar.xz"
+tar -xf "binutils-$binutils_version.tar.xz"
 ```
 
-Vous pouvez ensuite éxecuter:
+Maintenant que l'archive est décompressé nous allons passer à la compilation.
 
 ```bash
-make all -j
-make install -j
+cd "binutils-$binutils_version"
+mkdir build && cd build
+../configure --prefix="$prefix" --target="$target"  \
+                --with-sysroot --disable-nls --disable-werror
+make all -j $(nproc)
+make install -j $(nproc)
 ```
 
-### Build GCC
+Comme la compilation risque de prendre un moment, vous pouvez en profiter pour vous faire un café.
 
-Pour GCC dans le chemin gcc-build vous pouvez éxecuter:
+### gcc 
+
+Maintenant les binutils sont compilé, nous allons pouvoir passer à gcc.
+
+Ici nous compilerons gcc `10.2.0`.
 
 ```bash
-../gcc/configure --prefix="$prefix" --target="$target" --with-sysroot --disable-nls --enable-languages=c,c++ --with-newlib
+gcc_version="10.2.0"
+wget http://ftp.gnu.org/gnu/gcc/gcc-$gcc_version/gcc-$gcc_version.tar.xz
+tar -xf gcc-$gcc_version.tar.xz
 ```
 
-Vous pouvez ensuite faire:
+Puis on passe à la compilation:
 
 ```bash
-make -j all-gcc
+cd "gcc-$gcc_version"
+mkdir build && cd build
+../configure --prefix="$prefix" --target="$target" --with-sysroot \
+            --disable-nls --enable-languages=c,c++ --with-newlib
+make -j all-gcc 
 make -j all-target-libgcc
-make -j install-gcc
+make -j install-gcc 
 make -j install-target-libgcc
 ```
 
-Vous pouvez maintenant utiliser votre toolchain !
+La encore ça va prendre un certain temps, on peut donc s'accorder une deuxième pause café.
+
+Une fois la compilation terminée vous pouvez utilisez votre cross compilateur, dans le cas de ce tutoriel `x86_64-elf-gcc`.
 
 Cependant il faudrait plus tard implémenter une toolchain spécifique pour votre os.
 C'est une toolchain modifiée pour votre système d'exploitation.
