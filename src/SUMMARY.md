@@ -2,6 +2,7 @@
 
 - [wiki](./wiki.md)
 - [Introduction](./introduction.md)
+- [BootLoader](./bootloader.md)
 - [Types de noyau](./types-de-kernel.md)
 - [cross compilateur]()
 	- [creer un cross compilateur](cross-compilation/creer-un-cross-compiler.md)
